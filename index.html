@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
+  <title>Smart Pump Controller</title>
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(145deg, #0d2b3e, #07212e);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    /* Password Prompt */
+    .password-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(7, 33, 46, 0.95);
+      backdrop-filter: blur(20px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      padding: 1.5rem;
+    }
+
+    .password-box {
+      background: rgba(8, 32, 44, 0.8);
+      backdrop-filter: blur(16px);
+      border-radius: 3rem;
+      border: 1px solid rgba(60, 200, 255, 0.10);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+      padding: 2.5rem 2.2rem;
+      text-align: center;
+      max-width: 420px;
+      width: 100%;
+      animation: fadeIn 0.5s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .password-box .lock-icon {
+      font-size: 3.5rem;
+      color: #4cc9ff;
+      margin-bottom: 1rem;
+      display: block;
+      animation: pulseLock 2s infinite;
+    }
+
+    @keyframes pulseLock {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+
+    .password-box h1 {
+      font-size: 2rem;
+      font-weight: 500;
+      letter-spacing: -0.3px;
+      background: linear-gradient(135deg, #b0ecff, #4cc0ff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 0.5rem;
+    }
+
+    .password-box .subtitle {
+      color: #8ab8d4;
+      font-size: 0.9rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .password-input-group {
+      margin-bottom: 1.2rem;
+      text-align: left;
+    }
+
+    .password-input-group label {
+      color: #b0d0e0;
+      font-size: 0.85rem;
+      display: block;
+      margin-bottom: 0.4rem;
+    }
+
+    .password-input-group input {
+      width: 100%;
+      background: rgba(0, 30, 45, 0.5);
+      border: 1px solid #236480;
+      border-radius: 60px;
+      padding: 0.8rem 1.2rem;
+      color: #d4f0ff;
+      font-size: 1rem;
+      outline: none;
+      backdrop-filter: blur(4px);
+      transition: 0.2s;
+    }
+
+    .password-input-group input:focus {
+      border-color: #4bb0ff;
+      box-shadow: 0 0 16px #0077be44;
+    }
+
+    .password-btn {
+      width: 100%;
+      background: linear-gradient(135deg, #0077be, #005f8a);
+      color: white;
+      border: none;
+      padding: 0.8rem;
+      border-radius: 60px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+      border: 1px solid #3a9bdb;
+      box-shadow: 0 4px 14px rgba(0, 120, 200, 0.15);
+    }
+
+    .password-btn:hover {
+      background: linear-gradient(135deg, #1a8ad4, #006fa8);
+      transform: scale(1.02);
+      box-shadow: 0 6px 22px rgba(0, 120, 200, 0.25);
+    }
+
+    .password-error {
+      color: #f28b82;
+      font-size: 0.85rem;
+      margin-top: 0.8rem;
+      display: none;
+      animation: shake 0.3s ease;
+    }
+
+    .password-error.show {
+      display: block;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-10px); }
+      75% { transform: translateX(10px); }
+    }
+
+    .password-hint {
+      margin-top: 1.5rem;
+      font-size: 0.75rem;
+      color: #6f9eb0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .password-hint i {
+      color: #4cc9ff;
+    }
+
+    /* Dashboard (hidden until password) */
+    .dashboard {
+      max-width: 820px;
+      width: 100%;
+      display: none;
+    }
+
+    .dashboard.show {
+      display: block;
+    }
+
+    .glass {
+      background: rgba(8, 32, 44, 0.55);
+      backdrop-filter: blur(16px) saturate(190%);
+      -webkit-backdrop-filter: blur(16px) saturate(190%);
+      border-radius: 3rem;
+      border: 1px solid rgba(60, 200, 255, 0.10);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(0, 180, 255, 0.05) inset;
+      padding: 2rem 2.2rem;
+      transition: all 0.2s;
+    }
+
+    .security-badge {
+      background: rgba(100, 200, 255, 0.08);
+      border: 1px solid rgba(100, 200, 255, 0.15);
+      border-radius: 12px;
+      padding: 8px 14px;
+      margin: 0 0 1.5rem 0;
+      color: #7fc9e8;
+      font-size: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .security-badge i {
+      font-size: 1rem;
+      color: #4cc9ff;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      gap: 0.8rem 1rem;
+    }
+
+    .header h1 {
+      font-size: 2rem;
+      font-weight: 500;
+      letter-spacing: -0.3px;
+      background: linear-gradient(135deg, #b0ecff, #4cc0ff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .header h1 i {
+      font-size: 2.1rem;
+      color: #4cc9ff;
+      filter: drop-shadow(0 0 6px #4cc9ff66);
+    }
+
+    .device-status-badge {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      background: rgba(0, 35, 50, 0.7);
+      padding: 0.5rem 1.5rem;
+      border-radius: 60px;
+      border: 1px solid rgba(0, 200, 255, 0.12);
+      font-weight: 500;
+      font-size: 0.95rem;
+      color: #b0d9ff;
+      backdrop-filter: blur(4px);
+    }
+
+    .status-online { color: #6fcf97; }
+    .status-offline { color: #f28b82; }
+
+    .grid-2col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: rgba(0, 30, 45, 0.20);
+      backdrop-filter: blur(6px);
+      border-radius: 2rem;
+      padding: 1.4rem 1.4rem;
+      border: 1px solid rgba(70, 180, 255, 0.06);
+      transition: 0.2s;
+    }
+
+    .stat-card:hover {
+      border-color: rgba(70, 200, 255, 0.20);
+      background: rgba(0, 45, 60, 0.25);
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: #8ab8d4;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.6rem;
+    }
+
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 500;
+      color: #e3f4ff;
+      line-height: 1.2;
+    }
+
+    .stat-value small {
+      font-size: 1rem;
+      font-weight: 300;
+      color: #8abedb;
+      margin-left: 0.2rem;
+    }
+
+    .pump-status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.8rem;
+      background: rgba(0, 20, 30, 0.4);
+      padding: 0.25rem 1.2rem 0.25rem 1rem;
+      border-radius: 60px;
+      font-size: 1.3rem;
+      font-weight: 500;
+      margin-top: 0.2rem;
+      border: 1px solid rgba(255,255,255,0.02);
+    }
+
+    .pump-on {
+      color: #6fcf97;
+      background: rgba(0, 200, 100, 0.08);
+      border-color: rgba(100, 255, 180, 0.10);
+    }
+
+    .pump-off {
+      color: #f28b82;
+      background: rgba(200, 80, 80, 0.05);
+    }
+
+    .motor-icon {
+      display: inline-block;
+      font-size: 1.6rem;
+      color: #6fcf97;
+      animation: motorRun 1.2s linear infinite;
+      filter: drop-shadow(0 0 6px #6fcf9766);
+      margin-left: 0.2rem;
+    }
+
+    @keyframes motorRun {
+      0% { transform: rotate(0deg) scale(1); }
+      50% { transform: rotate(180deg) scale(1.1); }
+      100% { transform: rotate(360deg) scale(1); }
+    }
+
+    .water-flow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.2rem;
+      margin-left: 0.5rem;
+    }
+
+    .drop {
+      color: #4fc3ff;
+      font-size: 0.9rem;
+      animation: dropFloat 1.4s infinite;
+    }
+    .drop:nth-child(2) { animation-delay: 0.25s; }
+    .drop:nth-child(3) { animation-delay: 0.5s; }
+    .drop:nth-child(4) { animation-delay: 0.75s; }
+
+    @keyframes dropFloat {
+      0% { transform: translateY(0px) scale(0.8); opacity: 0.3; }
+      50% { transform: translateY(-6px) scale(1.2); opacity: 1; }
+      100% { transform: translateY(0px) scale(0.8); opacity: 0.3; }
+    }
+
+    .fault-text {
+      color: #f6b26b;
+      font-size: 0.95rem;
+      background: rgba(200, 80, 0, 0.10);
+      padding: 0.15rem 1rem;
+      border-radius: 40px;
+      display: inline-block;
+      border-left: 3px solid #f6b26b;
+    }
+
+    .timer-display {
+      font-size: 2.4rem;
+      font-weight: 500;
+      color: #b3e4ff;
+      letter-spacing: 0.5px;
+    }
+    .timer-display i {
+      font-size: 1.8rem;
+      color: #5fc3ff;
+      margin-right: 0.4rem;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem 1.5rem;
+      margin: 1.2rem 0 1.8rem 0;
+      align-items: center;
+      background: rgba(0, 25, 35, 0.25);
+      backdrop-filter: blur(6px);
+      border-radius: 4rem;
+      padding: 0.8rem 2rem;
+      border: 1px solid rgba(50, 180, 255, 0.06);
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      border: none;
+      padding: 0.7rem 1.8rem;
+      border-radius: 60px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      letter-spacing: 0.3px;
+      background: rgba(20, 60, 80, 0.3);
+      color: #d4edff;
+      border: 1px solid rgba(0, 180, 255, 0.08);
+    }
+
+    .btn-success {
+      background: linear-gradient(135deg, #1b8a4a, #0f6a36);
+      color: white;
+      border: 1px solid #34b86a;
+      box-shadow: 0 4px 14px rgba(30, 200, 100, 0.15);
+    }
+    .btn-success:hover {
+      background: linear-gradient(135deg, #28a55a, #147a3e);
+      transform: scale(1.02);
+      box-shadow: 0 6px 22px rgba(30, 200, 100, 0.25);
+    }
+
+    .btn-danger {
+      background: linear-gradient(135deg, #b13e3e, #8f2a2a);
+      color: white;
+      border: 1px solid #d45a5a;
+      box-shadow: 0 4px 14px rgba(200, 60, 60, 0.15);
+    }
+    .btn-danger:hover {
+      background: linear-gradient(135deg, #c94a4a, #a03333);
+      transform: scale(1.02);
+      box-shadow: 0 6px 22px rgba(200, 60, 60, 0.25);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #0077be, #005f8a);
+      color: white;
+      border: 1px solid #3a9bdb;
+      box-shadow: 0 4px 14px rgba(0, 120, 200, 0.15);
+    }
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #1a8ad4, #006fa8);
+      transform: scale(1.02);
+      box-shadow: 0 6px 22px rgba(0, 120, 200, 0.25);
+    }
+
+    .switch-group {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-left: auto;
+      flex-wrap: wrap;
+    }
+
+    .switch-label {
+      color: #b0d0e0;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .switch {
+      position: relative;
+      width: 50px;
+      height: 26px;
+      background: #1a3b4b;
+      border-radius: 40px;
+      cursor: pointer;
+      transition: 0.2s;
+      border: 1px solid #2a6a7a;
+    }
+    .switch.active {
+      background: #1f8a5a;
+      border-color: #3bcb7a;
+      box-shadow: 0 0 18px #1f9a6a66;
+    }
+    .switch .knob {
+      width: 20px;
+      height: 20px;
+      background: #d0ecff;
+      border-radius: 50%;
+      position: relative;
+      top: 2px;
+      left: 2px;
+      transition: 0.2s;
+    }
+    .switch.active .knob {
+      left: 26px;
+      background: #ffffff;
+      box-shadow: 0 0 12px #b3f0ff;
+    }
+
+    .timer-input-group {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+      margin-top: 0.6rem;
+      width: 100%;
+    }
+    .timer-input-group input {
+      background: rgba(0, 30, 45, 0.5);
+      border: 1px solid #236480;
+      border-radius: 60px;
+      padding: 0.55rem 1.2rem;
+      width: 140px;
+      color: #d4f0ff;
+      font-size: 0.95rem;
+      outline: none;
+      backdrop-filter: blur(4px);
+    }
+    .timer-input-group input:focus {
+      border-color: #4bb0ff;
+      box-shadow: 0 0 16px #0077be44;
+    }
+
+    .last-updated {
+      text-align: right;
+      font-size: 0.75rem;
+      color: #6f9eb0;
+      margin-top: 0.5rem;
+      letter-spacing: 0.3px;
+      border-top: 1px solid rgba(60, 150, 200, 0.06);
+      padding-top: 0.9rem;
+    }
+    .last-updated i {
+      margin-right: 0.3rem;
+    }
+
+    @media (max-width: 600px) {
+      .glass { padding: 1.2rem; }
+      .grid-2col { grid-template-columns: 1fr; gap: 1rem; }
+      .controls { flex-direction: column; align-items: stretch; border-radius: 2rem; padding: 1.2rem; }
+      .btn-group { justify-content: center; }
+      .switch-group { margin-left: 0; justify-content: center; }
+      .header h1 { font-size: 1.5rem; }
+      .stat-value { font-size: 1.7rem; }
+      .timer-display { font-size: 2rem; }
+      .password-box { padding: 1.8rem; margin: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- PASSWORD OVERLAY -->
+<div class="password-overlay" id="passwordOverlay">
+  <div class="password-box">
+    <i class="fas fa-lock lock-icon"></i>
+    <h1>Smart Pump</h1>
+    <p class="subtitle">Enter password to access the dashboard</p>
+    
+    <div class="password-input-group">
+      <label><i class="fas fa-key"></i> Password</label>
+      <input type="password" id="passwordInput" placeholder="Enter password" autofocus>
+    </div>
+    
+    <button class="password-btn" id="unlockBtn">
+      <i class="fas fa-unlock"></i> Unlock Dashboard
+    </button>
+    
+    <div class="password-error" id="passwordError">
+      <i class="fas fa-exclamation-circle"></i> Incorrect password! Try again.
+    </div>
+    
+    <div class="password-hint">
+      <i class="fas fa-info-circle"></i> Default password: <strong>admin123</strong>
+    </div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div class="dashboard" id="dashboardContainer">
+  <div class="glass">
+    <!-- Security Badge -->
+    <div class="security-badge">
+      <i class="fas fa-shield-alt"></i>
+      <span>🔐 Secure Access — <span id="accessStatus">Authorized</span></span>
+    </div>
+
+    <!-- Header -->
+    <div class="header">
+      <h1><i class="fas fa-water-pump"></i> Smart Pump</h1>
+      <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+        <div class="device-status-badge" id="deviceStatusBadge">
+          <i class="fas fa-circle"></i>
+          <span id="deviceStatusText">—</span>
+        </div>
+        <button class="btn" style="background: rgba(200,80,80,0.15); border-color: rgba(200,80,80,0.2); color: #f28b82; padding: 0.4rem 1rem;" id="lockBtn">
+          <i class="fas fa-lock"></i> Lock
+        </button>
+      </div>
+    </div>
+
+    <!-- Grid -->
+    <div class="grid-2col">
+      <div class="stat-card">
+        <div class="stat-label"><i class="fas fa-power-off"></i> Pump Status</div>
+        <div class="stat-value">
+          <span class="pump-status-badge pump-off" id="pumpBadge">
+            <i class="fas fa-circle"></i> OFF
+          </span>
+          <span id="flowIndicator" style="display: none;" class="water-flow">
+            <i class="fas fa-tint drop"></i>
+            <i class="fas fa-tint drop"></i>
+            <i class="fas fa-tint drop"></i>
+            <i class="fas fa-tint drop"></i>
+            <i class="fas fa-sync-alt motor-icon"></i>
+          </span>
+        </div>
+        <div style="margin-top: 0.6rem;" id="faultDisplay">
+          <span class="fault-text" style="display: none;"><i class="fas fa-exclamation-triangle"></i> <span id="faultMessage">—</span></span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label"><i class="fas fa-clock"></i> Remaining Timer</div>
+        <div class="stat-value timer-display" id="remainingTimerDisplay">
+          <i class="fas fa-hourglass-half"></i> <span id="remainingMinutes">0</span> <small>min</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="controls">
+      <div class="btn-group">
+        <button class="btn btn-success" id="btnOn"><i class="fas fa-play"></i> ON</button>
+        <button class="btn btn-danger" id="btnOff"><i class="fas fa-stop"></i> OFF</button>
+      </div>
+      <div class="switch-group">
+        <span class="switch-label"><i class="fas fa-sync-alt"></i> Auto Restart</span>
+        <div class="switch" id="autoRestartSwitch"><div class="knob"></div></div>
+      </div>
+    </div>
+
+    <!-- Timer -->
+    <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 0.8rem; margin: 0.2rem 0 0.4rem;">
+      <div class="timer-input-group">
+        <i class="fas fa-hourglass-start" style="color: #6fc3ff;"></i>
+        <input type="number" id="timerInput" min="1" max="1000" value="10" step="1">
+        <span style="color: #98c7db; font-size: 0.9rem;">min</span>
+        <button class="btn btn-primary" id="btnSetTimer"><i class="fas fa-check"></i> Set Timer</button>
+      </div>
+    </div>
+
+    <!-- Last Updated -->
+    <div class="last-updated" id="lastUpdated">
+      <i class="far fa-clock"></i> Last updated: <span id="lastUpdatedTime">—</span>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function() {
+    // ===== PASSWORD PROTECTION =====
+    const CORRECT_PASSWORD = "admin123"; // Change this to your password
+    
+    const passwordOverlay = document.getElementById('passwordOverlay');
+    const dashboardContainer = document.getElementById('dashboardContainer');
+    const passwordInput = document.getElementById('passwordInput');
+    const unlockBtn = document.getElementById('unlockBtn');
+    const passwordError = document.getElementById('passwordError');
+    const lockBtn = document.getElementById('lockBtn');
+    const accessStatus = document.getElementById('accessStatus');
+
+    function unlockDashboard() {
+      const enteredPassword = passwordInput.value.trim();
+      
+      if (enteredPassword === CORRECT_PASSWORD) {
+        passwordOverlay.style.display = 'none';
+        dashboardContainer.classList.add('show');
+        passwordError.classList.remove('show');
+        accessStatus.textContent = 'Authorized ✓';
+        // Start data refresh
+        if (typeof startAutoRefresh === 'function') {
+          startAutoRefresh();
+        }
+        if (typeof refreshCycle === 'function') {
+          refreshCycle();
+        }
+        // Save to session
+        sessionStorage.setItem('pumpUnlocked', 'true');
+      } else {
+        passwordError.classList.add('show');
+        passwordInput.value = '';
+        passwordInput.focus();
+        // Shake animation via class
+        passwordError.style.animation = 'none';
+        setTimeout(() => {
+          passwordError.style.animation = 'shake 0.3s ease';
+        }, 10);
+      }
+    }
+
+    function lockDashboard() {
+      passwordOverlay.style.display = 'flex';
+      dashboardContainer.classList.remove('show');
+      passwordInput.value = '';
+      passwordError.classList.remove('show');
+      accessStatus.textContent = 'Locked';
+      // Stop refresh
+      if (window.refreshInterval) {
+        clearInterval(window.refreshInterval);
+      }
+      sessionStorage.removeItem('pumpUnlocked');
+      // Reset pump display
+      document.getElementById('pumpBadge').className = 'pump-status-badge pump-off';
+      document.getElementById('pumpBadge').innerHTML = '<i class="fas fa-circle"></i> OFF';
+      document.getElementById('flowIndicator').style.display = 'none';
+      document.getElementById('deviceStatusText').textContent = '—';
+    }
+
+    // Check session on load
+    if (sessionStorage.getItem('pumpUnlocked') === 'true') {
+      passwordOverlay.style.display = 'none';
+      dashboardContainer.classList.add('show');
+      accessStatus.textContent = 'Authorized ✓';
+    }
+
+    // Event listeners
+    unlockBtn.addEventListener('click', unlockDashboard);
+    passwordInput.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        unlockDashboard();
+      }
+    });
+    lockBtn.addEventListener('click', lockDashboard);
+
+    // ===== PUMP CONTROLLER =====
+    const SERVER = "https://blr1.blynk.cloud";
+    const TOKEN = "Ge3cwEz3nPc3K2Eq-aaoIYluyA8KUwik";
+
+    // DOM refs
+    const pumpBadge = document.getElementById('pumpBadge');
+    const flowIndicator = document.getElementById('flowIndicator');
+    const faultDisplay = document.getElementById('faultDisplay');
+    const faultMessage = document.getElementById('faultMessage');
+    const remainingMinutes = document.getElementById('remainingMinutes');
+    const deviceStatusText = document.getElementById('deviceStatusText');
+    const deviceStatusBadge = document.getElementById('deviceStatusBadge');
+    const lastUpdatedTime = document.getElementById('lastUpdatedTime');
+
+    const btnOn = document.getElementById('btnOn');
+    const btnOff = document.getElementById('btnOff');
+    const btnSetTimer = document.getElementById('btnSetTimer');
+    const timerInput = document.getElementById('timerInput');
+    const autoRestartSwitch = document.getElementById('autoRestartSwitch');
+
+    let pumpState = false;
+    let faultMsg = '';
+    let remaining = 0;
+    let autoRestart = false;
+
+    async function fetchPin(pin) {
+      const url = `${SERVER}/external/api/get?token=${TOKEN}&pin=${pin}`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return await res.text();
+    }
+
+    async function updatePin(pin, value) {
+      const url = `${SERVER}/external/api/update?token=${TOKEN}&pin=${pin}&value=${encodeURIComponent(value)}`;
+      const res = await fetch(url, { method: 'GET' });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return await res.text();
+    }
+
+    async function readAllPins() {
+      // Only fetch if dashboard is visible
+      if (!dashboardContainer.classList.contains('show')) return;
+      
+      try {
+        const [v0, v1, v3, v4, isConnected] = await Promise.all([
+          fetchPin('V0'),
+          fetchPin('V1'),
+          fetchPin('V3'),
+          fetchPin('V4'),
+          fetch(`${SERVER}/external/api/isHardwareConnected?token=${TOKEN}`).then(r => r.text())
+        ]);
+
+        pumpState = (v0.trim() === '1');
+        faultMsg = v1.trim();
+        remaining = parseInt(v3, 10) || 0;
+        autoRestart = (v4.trim() === '1');
+
+        const online = (isConnected.trim() === '1');
+        updateDeviceStatus(online);
+        updatePumpUI();
+        updateFaultUI();
+        updateRemainingUI();
+        updateAutoRestartUI();
+        updateLastUpdated();
+
+        if (faultMsg.length > 0) {
+          faultDisplay.querySelector('.fault-text').style.display = 'inline-block';
+          faultMessage.textContent = faultMsg;
+        } else {
+          faultDisplay.querySelector('.fault-text').style.display = 'none';
+        }
+
+      } catch (err) {
+        console.warn('Read error:', err);
+        deviceStatusText.textContent = '⚠️ error';
+        deviceStatusBadge.querySelector('i').className = 'fas fa-circle status-offline';
+      }
+    }
+
+    function updatePumpUI() {
+      const badge = pumpBadge;
+      if (pumpState) {
+        badge.className = 'pump-status-badge pump-on';
+        badge.innerHTML = '<i class="fas fa-circle"></i> ON';
+        flowIndicator.style.display = 'inline-flex';
+      } else {
+        badge.className = 'pump-status-badge pump-off';
+        badge.innerHTML = '<i class="fas fa-circle"></i> OFF';
+        flowIndicator.style.display = 'none';
+      }
+    }
+
+    function updateFaultUI() {
+      const container = faultDisplay.querySelector('.fault-text');
+      if (faultMsg && faultMsg.length > 0) {
+        container.style.display = 'inline-block';
+        faultMessage.textContent = faultMsg;
+      } else {
+        container.style.display = 'none';
+      }
+    }
+
+    function updateRemainingUI() {
+      remainingMinutes.textContent = remaining;
+    }
+
+    function updateAutoRestartUI() {
+      if (autoRestart) {
+        autoRestartSwitch.classList.add('active');
+      } else {
+        autoRestartSwitch.classList.remove('active');
+      }
+    }
+
+    function updateDeviceStatus(online) {
+      const icon = deviceStatusBadge.querySelector('i');
+      if (online) {
+        icon.className = 'fas fa-circle status-online';
+        deviceStatusText.textContent = 'Online';
+      } else {
+        icon.className = 'fas fa-circle status-offline';
+        deviceStatusText.textContent = 'Offline';
+      }
+    }
+
+    function updateLastUpdated() {
+      const d = new Date();
+      lastUpdatedTime.textContent = d.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    }
+
+    async function setPump(state) {
+      try {
+        await updatePin('V0', state ? '1' : '0');
+        pumpState = state;
+        updatePumpUI();
+      } catch (e) {
+        console.warn('setPump error', e);
+      }
+    }
+
+    async function setTimerMinutes(minutes) {
+      if (isNaN(minutes) || minutes < 1 || minutes > 1000) {
+        alert('Please enter a timer value between 1 and 1000 minutes.');
+        return;
+      }
+      try {
+        await updatePin('V2', String(minutes));
+      } catch (e) {
+        console.warn('setTimer error', e);
+      }
+    }
+
+    async function toggleAutoRestart() {
+      const newVal = !autoRestart;
+      try {
+        await updatePin('V4', newVal ? '1' : '0');
+        autoRestart = newVal;
+        updateAutoRestartUI();
+      } catch (e) {
+        console.warn('toggleAutoRestart error', e);
+      }
+    }
+
+    btnOn.addEventListener('click', () => setPump(true));
+    btnOff.addEventListener('click', () => setPump(false));
+
+    btnSetTimer.addEventListener('click', () => {
+      const val = parseInt(timerInput.value, 10);
+      if (!isNaN(val) && val >= 1 && val <= 1000) {
+        setTimerMinutes(val);
+      } else {
+        alert('Please enter a number between 1 and 1000.');
+      }
+    });
+
+    autoRestartSwitch.addEventListener('click', toggleAutoRestart);
+
+    let intervalId = null;
+
+    async function refreshCycle() {
+      if (dashboardContainer.classList.contains('show')) {
+        await readAllPins();
+      }
+    }
+
+    function startAutoRefresh() {
+      if (intervalId) clearInterval(intervalId);
+      intervalId = setInterval(refreshCycle, 1000);
+      window.refreshInterval = intervalId;
+    }
+
+    // If already unlocked, start refresh
+    if (sessionStorage.getItem('pumpUnlocked') === 'true') {
+      setTimeout(() => {
+        refreshCycle();
+        startAutoRefresh();
+      }, 500);
+    }
+
+    window.addEventListener('beforeunload', function() {
+      if (intervalId) clearInterval(intervalId);
+    });
+
+  })();
+</script>
+</body>
+</html>
