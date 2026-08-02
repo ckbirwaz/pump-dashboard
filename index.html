@@ -23,9 +23,118 @@
       padding: 1.5rem;
     }
 
+    /* Login Page Styles */
+    .login-container {
+      max-width: 420px;
+      width: 100%;
+    }
+
+    .login-box {
+      background: rgba(8, 32, 44, 0.55);
+      backdrop-filter: blur(16px) saturate(190%);
+      -webkit-backdrop-filter: blur(16px) saturate(190%);
+      border-radius: 3rem;
+      border: 1px solid rgba(60, 200, 255, 0.10);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(0, 180, 255, 0.05) inset;
+      padding: 2.5rem 2.2rem;
+      text-align: center;
+    }
+
+    .login-box h1 {
+      font-size: 2rem;
+      font-weight: 500;
+      letter-spacing: -0.3px;
+      background: linear-gradient(135deg, #b0ecff, #4cc0ff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 0.5rem;
+    }
+
+    .login-box .subtitle {
+      color: #8ab8d4;
+      font-size: 0.9rem;
+      margin-bottom: 2rem;
+    }
+
+    .login-box .lock-icon {
+      font-size: 3rem;
+      color: #4cc9ff;
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+    .login-input-group {
+      margin-bottom: 1.2rem;
+      text-align: left;
+    }
+
+    .login-input-group label {
+      color: #b0d0e0;
+      font-size: 0.85rem;
+      display: block;
+      margin-bottom: 0.4rem;
+    }
+
+    .login-input-group input {
+      width: 100%;
+      background: rgba(0, 30, 45, 0.5);
+      border: 1px solid #236480;
+      border-radius: 60px;
+      padding: 0.8rem 1.2rem;
+      color: #d4f0ff;
+      font-size: 1rem;
+      outline: none;
+      backdrop-filter: blur(4px);
+      transition: 0.2s;
+    }
+
+    .login-input-group input:focus {
+      border-color: #4bb0ff;
+      box-shadow: 0 0 16px #0077be44;
+    }
+
+    .login-btn {
+      width: 100%;
+      background: linear-gradient(135deg, #0077be, #005f8a);
+      color: white;
+      border: none;
+      padding: 0.8rem;
+      border-radius: 60px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+      border: 1px solid #3a9bdb;
+      box-shadow: 0 4px 14px rgba(0, 120, 200, 0.15);
+    }
+
+    .login-btn:hover {
+      background: linear-gradient(135deg, #1a8ad4, #006fa8);
+      transform: scale(1.02);
+      box-shadow: 0 6px 22px rgba(0, 120, 200, 0.25);
+    }
+
+    .login-error {
+      color: #f28b82;
+      font-size: 0.85rem;
+      margin-top: 0.8rem;
+      display: none;
+    }
+
+    .login-error.show {
+      display: block;
+    }
+
+    /* Dashboard Styles (hidden by default) */
     .dashboard {
       max-width: 820px;
       width: 100%;
+      display: none;
+    }
+
+    .dashboard.show {
+      display: block;
     }
 
     .glass {
@@ -39,7 +148,23 @@
       transition: all 0.2s;
     }
 
-    /* Security warning */
+    .logout-btn {
+      background: rgba(200, 80, 80, 0.2);
+      border: 1px solid rgba(200, 80, 80, 0.3);
+      color: #f28b82;
+      padding: 0.4rem 1.2rem;
+      border-radius: 60px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: 0.2s;
+      backdrop-filter: blur(4px);
+    }
+
+    .logout-btn:hover {
+      background: rgba(200, 80, 80, 0.3);
+      border-color: rgba(200, 80, 80, 0.5);
+    }
+
     .security-warning {
       background: rgba(255, 200, 0, 0.08);
       border: 1px solid rgba(255, 215, 0, 0.2);
@@ -396,20 +521,63 @@
       .header h1 { font-size: 1.5rem; }
       .stat-value { font-size: 1.7rem; }
       .timer-display { font-size: 2rem; }
+      .login-box { padding: 1.8rem; }
     }
   </style>
 </head>
 <body>
-<div class="dashboard">
+
+<!-- LOGIN PAGE -->
+<div class="login-container" id="loginContainer">
+  <div class="login-box">
+    <i class="fas fa-shield-alt lock-icon"></i>
+    <h1>Smart Pump</h1>
+    <p class="subtitle">Enter your credentials to access the dashboard</p>
+    
+    <div class="login-input-group">
+      <label><i class="fas fa-user"></i> Username</label>
+      <input type="text" id="usernameInput" placeholder="Enter username" value="admin">
+    </div>
+    
+    <div class="login-input-group">
+      <label><i class="fas fa-lock"></i> Password</label>
+      <input type="password" id="passwordInput" placeholder="Enter password" value="admin123">
+    </div>
+    
+    <button class="login-btn" id="loginBtn">
+      <i class="fas fa-sign-in-alt"></i> Login
+    </button>
+    
+    <div class="login-error" id="loginError">
+      <i class="fas fa-exclamation-circle"></i> Invalid username or password!
+    </div>
+    
+    <div style="margin-top: 1.5rem; font-size: 0.75rem; color: #6f9eb0;">
+      <i class="fas fa-info-circle"></i> Default: admin / admin123
+    </div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div class="dashboard" id="dashboardContainer">
   <div class="glass">
-   
+    <!-- Security Warning -->
+    <div class="security-warning">
+      <i class="fas fa-shield-alt"></i>
+      <span>🔐 Secure Dashboard — Only authorized users can control the pump</span>
+    </div>
 
     <!-- Header -->
     <div class="header">
       <h1><i class="fas fa-water-pump"></i> Smart Pump</h1>
-      <div class="device-status-badge" id="deviceStatusBadge">
-        <i class="fas fa-circle"></i>
-        <span id="deviceStatusText">—</span>
+      <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+        <div class="device-status-badge" id="deviceStatusBadge">
+          <i class="fas fa-circle"></i>
+          <span id="deviceStatusText">—</span>
+        </div>
+        <button class="logout-btn" id="logoutBtn">
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </button>
       </div>
     </div>
 
@@ -472,200 +640,85 @@
 
 <script>
   (function() {
-    const SERVER = "https://blr1.blynk.cloud";
-    const TOKEN = "Ge3cwEz3nPc3K2Eq-aaoIYluyA8KUwik";
+    // ===== LOGIN SYSTEM =====
+    const loginContainer = document.getElementById('loginContainer');
+    const dashboardContainer = document.getElementById('dashboardContainer');
+    const loginBtn = document.getElementById('loginBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const usernameInput = document.getElementById('usernameInput');
+    const passwordInput = document.getElementById('passwordInput');
+    const loginError = document.getElementById('loginError');
 
-    // DOM refs
-    const pumpBadge = document.getElementById('pumpBadge');
-    const flowIndicator = document.getElementById('flowIndicator');
-    const faultDisplay = document.getElementById('faultDisplay');
-    const faultMessage = document.getElementById('faultMessage');
-    const remainingMinutes = document.getElementById('remainingMinutes');
-    const deviceStatusText = document.getElementById('deviceStatusText');
-    const deviceStatusBadge = document.getElementById('deviceStatusBadge');
-    const lastUpdatedTime = document.getElementById('lastUpdatedTime');
+    // Default credentials - YOU CAN CHANGE THESE
+    const VALID_USERNAME = "admin";
+    const VALID_PASSWORD = "admin123";
 
-    const btnOn = document.getElementById('btnOn');
-    const btnOff = document.getElementById('btnOff');
-    const btnSetTimer = document.getElementById('btnSetTimer');
-    const timerInput = document.getElementById('timerInput');
-    const autoRestartSwitch = document.getElementById('autoRestartSwitch');
-
-    let pumpState = false;
-    let faultMsg = '';
-    let remaining = 0;
-    let autoRestart = false;
-
-    async function fetchPin(pin) {
-      const url = `${SERVER}/external/api/get?token=${TOKEN}&pin=${pin}`;
-      const res = await fetch(url);
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      return await res.text();
+    // Check if already logged in (session)
+    function checkSession() {
+      const loggedIn = sessionStorage.getItem('pumpLoggedIn');
+      if (loggedIn === 'true') {
+        showDashboard();
+      } else {
+        showLogin();
+      }
     }
 
-    async function updatePin(pin, value) {
-      const url = `${SERVER}/external/api/update?token=${TOKEN}&pin=${pin}&value=${encodeURIComponent(value)}`;
-      const res = await fetch(url, { method: 'GET' });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      return await res.text();
+    function showLogin() {
+      loginContainer.style.display = 'block';
+      dashboardContainer.classList.remove('show');
     }
 
-    async function readAllPins() {
-      try {
-        const [v0, v1, v3, v4, isConnected] = await Promise.all([
-          fetchPin('V0'),
-          fetchPin('V1'),
-          fetchPin('V3'),
-          fetchPin('V4'),
-          fetch(`${SERVER}/external/api/isHardwareConnected?token=${TOKEN}`).then(r => r.text())
-        ]);
+    function showDashboard() {
+      loginContainer.style.display = 'none';
+      dashboardContainer.classList.add('show');
+      // Start the pump data refresh
+      if (typeof startAutoRefresh === 'function') {
+        startAutoRefresh();
+      }
+    }
 
-        pumpState = (v0.trim() === '1');
-        faultMsg = v1.trim();
-        remaining = parseInt(v3, 10) || 0;
-        autoRestart = (v4.trim() === '1');
+    function handleLogin() {
+      const username = usernameInput.value.trim();
+      const password = passwordInput.value.trim();
 
-        const online = (isConnected.trim() === '1');
-        updateDeviceStatus(online);
-        updatePumpUI();
-        updateFaultUI();
-        updateRemainingUI();
-        updateAutoRestartUI();
-        updateLastUpdated();
-
-        if (faultMsg.length > 0) {
-          faultDisplay.querySelector('.fault-text').style.display = 'inline-block';
-          faultMessage.textContent = faultMsg;
-        } else {
-          faultDisplay.querySelector('.fault-text').style.display = 'none';
+      if (username === VALID_USERNAME && password === VALID_PASSWORD) {
+        sessionStorage.setItem('pumpLoggedIn', 'true');
+        loginError.classList.remove('show');
+        showDashboard();
+        // Reload data after login
+        if (typeof refreshCycle === 'function') {
+          refreshCycle();
         }
-
-      } catch (err) {
-        console.warn('Read error:', err);
-        deviceStatusText.textContent = '⚠️ error';
-        deviceStatusBadge.querySelector('i').className = 'fas fa-circle status-offline';
-      }
-    }
-
-    function updatePumpUI() {
-      const badge = pumpBadge;
-      if (pumpState) {
-        badge.className = 'pump-status-badge pump-on';
-        badge.innerHTML = '<i class="fas fa-circle"></i> ON';
-        flowIndicator.style.display = 'inline-flex';
       } else {
-        badge.className = 'pump-status-badge pump-off';
-        badge.innerHTML = '<i class="fas fa-circle"></i> OFF';
-        flowIndicator.style.display = 'none';
+        loginError.classList.add('show');
+        // Clear password field
+        passwordInput.value = '';
+        passwordInput.focus();
       }
     }
 
-    function updateFaultUI() {
-      const container = faultDisplay.querySelector('.fault-text');
-      if (faultMsg && faultMsg.length > 0) {
-        container.style.display = 'inline-block';
-        faultMessage.textContent = faultMsg;
-      } else {
-        container.style.display = 'none';
+    function handleLogout() {
+      sessionStorage.removeItem('pumpLoggedIn');
+      // Stop the refresh interval
+      if (window.refreshInterval) {
+        clearInterval(window.refreshInterval);
       }
+      showLogin();
+      // Reset pump status display
+      document.getElementById('pumpBadge').className = 'pump-status-badge pump-off';
+      document.getElementById('pumpBadge').innerHTML = '<i class="fas fa-circle"></i> OFF';
+      document.getElementById('flowIndicator').style.display = 'none';
+      document.getElementById('deviceStatusText').textContent = '—';
     }
 
-    function updateRemainingUI() {
-      remainingMinutes.textContent = remaining;
-    }
-
-    function updateAutoRestartUI() {
-      if (autoRestart) {
-        autoRestartSwitch.classList.add('active');
-      } else {
-        autoRestartSwitch.classList.remove('active');
-      }
-    }
-
-    function updateDeviceStatus(online) {
-      const icon = deviceStatusBadge.querySelector('i');
-      if (online) {
-        icon.className = 'fas fa-circle status-online';
-        deviceStatusText.textContent = 'Online';
-      } else {
-        icon.className = 'fas fa-circle status-offline';
-        deviceStatusText.textContent = 'Offline';
-      }
-    }
-
-    function updateLastUpdated() {
-      const d = new Date();
-      lastUpdatedTime.textContent = d.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
-    }
-
-    async function setPump(state) {
-      try {
-        await updatePin('V0', state ? '1' : '0');
-        pumpState = state;
-        updatePumpUI();
-      } catch (e) {
-        console.warn('setPump error', e);
-      }
-    }
-
-    async function setTimerMinutes(minutes) {
-      if (isNaN(minutes) || minutes < 1 || minutes > 1000) {
-        alert('Please enter a timer value between 1 and 1000 minutes.');
-        return;
-      }
-      try {
-        await updatePin('V2', String(minutes));
-      } catch (e) {
-        console.warn('setTimer error', e);
-      }
-    }
-
-    async function toggleAutoRestart() {
-      const newVal = !autoRestart;
-      try {
-        await updatePin('V4', newVal ? '1' : '0');
-        autoRestart = newVal;
-        updateAutoRestartUI();
-      } catch (e) {
-        console.warn('toggleAutoRestart error', e);
-      }
-    }
-
-    btnOn.addEventListener('click', () => setPump(true));
-    btnOff.addEventListener('click', () => setPump(false));
-
-    btnSetTimer.addEventListener('click', () => {
-      const val = parseInt(timerInput.value, 10);
-      if (!isNaN(val) && val >= 1 && val <= 1000) {
-        setTimerMinutes(val);
-      } else {
-        alert('Please enter a number between 1 and 1000.');
+    // Login event listeners
+    loginBtn.addEventListener('click', handleLogin);
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' && loginContainer.style.display !== 'none') {
+        handleLogin();
       }
     });
 
-    autoRestartSwitch.addEventListener('click', toggleAutoRestart);
+    logoutBtn.addEventListener('click', handleLogout);
 
-    let intervalId = null;
-
-    async function refreshCycle() {
-      await readAllPins();
-    }
-
-    function startAutoRefresh() {
-      if (intervalId) clearInterval(intervalId);
-      intervalId = setInterval(refreshCycle, 1000);
-    }
-
-    (async function init() {
-      await refreshCycle();
-      startAutoRefresh();
-    })();
-
-    window.addEventListener('beforeunload', function() {
-      if (intervalId) clearInterval(intervalId);
-    });
-
-  })();
-</script>
-</body>
-</html>
+    // ===== PUMP CONTROLLER =====
