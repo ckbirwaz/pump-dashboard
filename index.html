@@ -396,64 +396,79 @@
       margin-right: 0.4rem;
     }
 
+    /* BIG ON/OFF BUTTONS */
     .controls {
       display: flex;
       flex-wrap: wrap;
-      gap: 1rem 1.5rem;
+      gap: 1.5rem;
       margin: 1.2rem 0 1.8rem 0;
       align-items: center;
+      justify-content: center;
       background: rgba(0, 25, 35, 0.25);
       backdrop-filter: blur(6px);
       border-radius: 4rem;
-      padding: 0.8rem 2rem;
+      padding: 1.2rem 2rem;
       border: 1px solid rgba(50, 180, 255, 0.06);
     }
 
     .btn-group {
       display: flex;
-      gap: 1rem;
+      gap: 1.5rem;
       flex-wrap: wrap;
+      justify-content: center;
+      width: 100%;
     }
 
     .btn {
       border: none;
-      padding: 0.7rem 1.8rem;
+      padding: 1rem 2.5rem;
       border-radius: 60px;
-      font-weight: 600;
-      font-size: 0.95rem;
+      font-weight: 700;
+      font-size: 1.2rem;
       display: inline-flex;
       align-items: center;
-      gap: 0.6rem;
+      gap: 0.8rem;
       cursor: pointer;
-      transition: all 0.2s ease;
-      letter-spacing: 0.3px;
-      background: rgba(20, 60, 80, 0.3);
-      color: #d4edff;
-      border: 1px solid rgba(0, 180, 255, 0.08);
+      transition: all 0.3s ease;
+      letter-spacing: 0.5px;
+      min-width: 140px;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn i {
+      font-size: 1.6rem;
     }
 
     .btn-success {
       background: linear-gradient(135deg, #1b8a4a, #0f6a36);
       color: white;
       border: 1px solid #34b86a;
-      box-shadow: 0 4px 14px rgba(30, 200, 100, 0.15);
+      box-shadow: 0 4px 14px rgba(30, 200, 100, 0.2);
     }
     .btn-success:hover {
       background: linear-gradient(135deg, #28a55a, #147a3e);
-      transform: scale(1.02);
-      box-shadow: 0 6px 22px rgba(30, 200, 100, 0.25);
+      transform: scale(1.05);
+      box-shadow: 0 8px 28px rgba(30, 200, 100, 0.35);
+    }
+    .btn-success:active {
+      transform: scale(0.95);
     }
 
     .btn-danger {
       background: linear-gradient(135deg, #b13e3e, #8f2a2a);
       color: white;
       border: 1px solid #d45a5a;
-      box-shadow: 0 4px 14px rgba(200, 60, 60, 0.15);
+      box-shadow: 0 4px 14px rgba(200, 60, 60, 0.2);
     }
     .btn-danger:hover {
       background: linear-gradient(135deg, #c94a4a, #a03333);
-      transform: scale(1.02);
-      box-shadow: 0 6px 22px rgba(200, 60, 60, 0.25);
+      transform: scale(1.05);
+      box-shadow: 0 8px 28px rgba(200, 60, 60, 0.35);
+    }
+    .btn-danger:active {
+      transform: scale(0.95);
     }
 
     .btn-primary {
@@ -468,51 +483,121 @@
       box-shadow: 0 6px 22px rgba(0, 120, 200, 0.25);
     }
 
-    .switch-group {
+    /* Auto Restart - Separate Section Below */
+    .auto-section {
+      margin: 1.5rem 0 1rem 0;
+      padding: 1rem 1.5rem;
+      background: rgba(0, 25, 35, 0.2);
+      backdrop-filter: blur(6px);
+      border-radius: 2rem;
+      border: 1px solid rgba(50, 180, 255, 0.06);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .auto-section .label {
+      color: #b0d0e0;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .auto-section .label i {
+      color: #4cc9ff;
+      font-size: 1.2rem;
+    }
+
+    /* Animated Switch */
+    .switch-container {
       display: flex;
       align-items: center;
       gap: 1rem;
-      margin-left: auto;
-      flex-wrap: wrap;
     }
 
-    .switch-label {
-      color: #b0d0e0;
+    .switch-status {
       font-size: 0.9rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
+      font-weight: 600;
+      color: #6f9eb0;
+      transition: 0.3s;
+    }
+
+    .switch-status.active {
+      color: #6fcf97;
+    }
+
+    .switch-status.inactive {
+      color: #f28b82;
     }
 
     .switch {
       position: relative;
-      width: 50px;
-      height: 26px;
+      width: 60px;
+      height: 32px;
       background: #1a3b4b;
       border-radius: 40px;
       cursor: pointer;
-      transition: 0.2s;
+      transition: all 0.4s ease;
       border: 1px solid #2a6a7a;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
     }
+
     .switch.active {
       background: #1f8a5a;
       border-color: #3bcb7a;
-      box-shadow: 0 0 18px #1f9a6a66;
+      box-shadow: 0 0 20px #1f9a6a66, inset 0 2px 4px rgba(0,0,0,0.2);
     }
+
     .switch .knob {
-      width: 20px;
-      height: 20px;
+      width: 26px;
+      height: 26px;
       background: #d0ecff;
       border-radius: 50%;
       position: relative;
       top: 2px;
       left: 2px;
-      transition: 0.2s;
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
     }
+
     .switch.active .knob {
-      left: 26px;
+      left: 30px;
       background: #ffffff;
-      box-shadow: 0 0 12px #b3f0ff;
+      box-shadow: 0 0 16px #b3f0ff, 0 2px 8px rgba(0,0,0,0.2);
+    }
+
+    .switch .knob::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.1);
+      transition: 0.3s;
+    }
+
+    .switch.active .knob::after {
+      background: rgba(0,200,100,0.2);
+    }
+
+    /* Ripple effect on switch click */
+    .switch .ripple {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.3);
+      transform: scale(0);
+      animation: rippleAnim 0.6s ease-out;
+      pointer-events: none;
+    }
+
+    @keyframes rippleAnim {
+      to { transform: scale(4); opacity: 0; }
     }
 
     .timer-input-group {
@@ -556,8 +641,10 @@
       .glass { padding: 1.2rem; }
       .grid-2col { grid-template-columns: 1fr; gap: 1rem; }
       .controls { flex-direction: column; align-items: stretch; border-radius: 2rem; padding: 1.2rem; }
-      .btn-group { justify-content: center; }
-      .switch-group { margin-left: 0; justify-content: center; }
+      .btn-group { flex-direction: column; align-items: center; }
+      .btn { width: 100%; padding: 0.9rem; font-size: 1.1rem; }
+      .btn i { font-size: 1.4rem; }
+      .auto-section { flex-direction: column; align-items: center; text-align: center; }
       .header h1 { font-size: 1.5rem; }
       .stat-value { font-size: 1.7rem; }
       .timer-display { font-size: 2rem; }
@@ -642,15 +729,30 @@
       </div>
     </div>
 
-    <!-- Controls -->
+    <!-- BIG ON/OFF CONTROLS -->
     <div class="controls">
       <div class="btn-group">
-        <button class="btn btn-success" id="btnOn"><i class="fas fa-play"></i> ON</button>
-        <button class="btn btn-danger" id="btnOff"><i class="fas fa-stop"></i> OFF</button>
+        <button class="btn btn-success" id="btnOn">
+          <i class="fas fa-play"></i> TURN ON
+        </button>
+        <button class="btn btn-danger" id="btnOff">
+          <i class="fas fa-stop"></i> TURN OFF
+        </button>
       </div>
-      <div class="switch-group">
-        <span class="switch-label"><i class="fas fa-sync-alt"></i> Auto Restart</span>
-        <div class="switch" id="autoRestartSwitch"><div class="knob"></div></div>
+    </div>
+
+    <!-- AUTO RESTART - Separate Section Below -->
+    <div class="auto-section">
+      <div class="label">
+        <i class="fas fa-sync-alt"></i>
+        <span>Auto Restart</span>
+      </div>
+      <div class="switch-container">
+        <span class="switch-status inactive" id="autoStatusText">Off</span>
+        <div class="switch" id="autoRestartSwitch">
+          <div class="knob"></div>
+        </div>
+        <span class="switch-status active" id="autoStatusOn" style="display: none;">On</span>
       </div>
     </div>
 
@@ -664,7 +766,7 @@
       </div>
     </div>
 
-    <!-- Last Updated -->
+     <!-- Last Updated -->
     <div class="last-updated" id="lastUpdated">
       <i class="far fa-clock"></i> Last updated: <span id="lastUpdatedTime">—</span>
     </div>
@@ -674,7 +776,7 @@
 <script>
   (function() {
     // ===== PASSWORD PROTECTION =====
-    const CORRECT_PASSWORD = "admin123"; // 🔒 Change this to your password
+    const CORRECT_PASSWORD = "admin123";
     
     const passwordOverlay = document.getElementById('passwordOverlay');
     const dashboardContainer = document.getElementById('dashboardContainer');
@@ -686,7 +788,6 @@
 
     let attempts = 0;
 
-    // Check if this device is already authorized
     function isDeviceAuthorized() {
       return localStorage.getItem('pumpAuthorized') === 'true';
     }
@@ -707,25 +808,24 @@
         dashboardContainer.classList.add('show');
         passwordError.classList.remove('show');
         authorizeDevice();
-        // Start data refresh
         if (typeof startAutoRefresh === 'function') {
           startAutoRefresh();
         }
         if (typeof refreshCycle === 'function') {
           refreshCycle();
         }
+        attempts = 0;
+        attemptsInfo.textContent = '';
       } else {
         attempts++;
         passwordError.classList.add('show');
         passwordInput.value = '';
         passwordInput.focus();
-        // Shake animation
         passwordError.style.animation = 'none';
         setTimeout(() => {
           passwordError.style.animation = 'shake 0.3s ease';
         }, 10);
         
-        // Show attempts remaining
         const remaining = 5 - attempts;
         if (remaining > 0) {
           attemptsInfo.textContent = `${remaining} attempt${remaining > 1 ? 's' : ''} remaining`;
@@ -736,4 +836,252 @@
           unlockBtn.disabled = true;
           setTimeout(() => {
             attempts = 0;
-           
+            unlockBtn.disabled = false;
+            attemptsInfo.textContent = '';
+            passwordError.classList.remove('show');
+          }, 30000);
+        }
+      }
+    }
+
+    function lockDashboard() {
+      passwordOverlay.classList.remove('hidden');
+      dashboardContainer.classList.remove('show');
+      passwordInput.value = '';
+      passwordError.classList.remove('show');
+      deauthorizeDevice();
+      if (window.refreshInterval) {
+        clearInterval(window.refreshInterval);
+      }
+      document.getElementById('pumpBadge').className = 'pump-status-badge pump-off';
+      document.getElementById('pumpBadge').innerHTML = '<i class="fas fa-circle"></i> OFF';
+      document.getElementById('flowIndicator').style.display = 'none';
+      document.getElementById('deviceStatusText').textContent = '—';
+      attempts = 0;
+      attemptsInfo.textContent = '';
+      unlockBtn.disabled = false;
+    }
+
+    if (isDeviceAuthorized()) {
+      passwordOverlay.classList.add('hidden');
+      dashboardContainer.classList.add('show');
+    }
+
+    unlockBtn.addEventListener('click', unlockDashboard);
+    passwordInput.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        unlockDashboard();
+      }
+    });
+    lockBtn.addEventListener('click', lockDashboard);
+
+    // ===== PUMP CONTROLLER =====
+    const SERVER = "https://blr1.blynk.cloud";
+    const TOKEN = "Ge3cwEz3nPc3K2Eq-aaoIYluyA8KUwik";
+
+    const pumpBadge = document.getElementById('pumpBadge');
+    const flowIndicator = document.getElementById('flowIndicator');
+    const faultDisplay = document.getElementById('faultDisplay');
+    const faultMessage = document.getElementById('faultMessage');
+    const remainingMinutes = document.getElementById('remainingMinutes');
+    const deviceStatusText = document.getElementById('deviceStatusText');
+    const deviceStatusBadge = document.getElementById('deviceStatusBadge');
+    const lastUpdatedTime = document.getElementById('lastUpdatedTime');
+
+    const btnOn = document.getElementById('btnOn');
+    const btnOff = document.getElementById('btnOff');
+    const btnSetTimer = document.getElementById('btnSetTimer');
+    const timerInput = document.getElementById('timerInput');
+    const autoRestartSwitch = document.getElementById('autoRestartSwitch');
+    const autoStatusText = document.getElementById('autoStatusText');
+    const autoStatusOn = document.getElementById('autoStatusOn');
+
+    let pumpState = false;
+    let faultMsg = '';
+    let remaining = 0;
+    let autoRestart = false;
+
+    async function fetchPin(pin) {
+      const url = `${SERVER}/external/api/get?token=${TOKEN}&pin=${pin}`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return await res.text();
+    }
+
+    async function updatePin(pin, value) {
+      const url = `${SERVER}/external/api/update?token=${TOKEN}&pin=${pin}&value=${encodeURIComponent(value)}`;
+      const res = await fetch(url, { method: 'GET' });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return await res.text();
+    }
+
+    async function readAllPins() {
+      if (!dashboardContainer.classList.contains('show')) return;
+      
+      try {
+        const [v0, v1, v3, v4, isConnected] = await Promise.all([
+          fetchPin('V0'),
+          fetchPin('V1'),
+          fetchPin('V3'),
+          fetchPin('V4'),
+          fetch(`${SERVER}/external/api/isHardwareConnected?token=${TOKEN}`).then(r => r.text())
+        ]);
+
+        pumpState = (v0.trim() === '1');
+        faultMsg = v1.trim();
+        remaining = parseInt(v3, 10) || 0;
+        autoRestart = (v4.trim() === '1');
+
+        const online = (isConnected.trim() === '1');
+        updateDeviceStatus(online);
+        updatePumpUI();
+        updateFaultUI();
+        updateRemainingUI();
+        updateAutoRestartUI();
+        updateLastUpdated();
+
+        if (faultMsg.length > 0) {
+          faultDisplay.querySelector('.fault-text').style.display = 'inline-block';
+          faultMessage.textContent = faultMsg;
+        } else {
+          faultDisplay.querySelector('.fault-text').style.display = 'none';
+        }
+
+      } catch (err) {
+        console.warn('Read error:', err);
+        deviceStatusText.textContent = '⚠️ error';
+        deviceStatusBadge.querySelector('i').className = 'fas fa-circle status-offline';
+      }
+    }
+
+    function updatePumpUI() {
+      const badge = pumpBadge;
+      if (pumpState) {
+        badge.className = 'pump-status-badge pump-on';
+        badge.innerHTML = '<i class="fas fa-circle"></i> ON';
+        flowIndicator.style.display = 'inline-flex';
+      } else {
+        badge.className = 'pump-status-badge pump-off';
+        badge.innerHTML = '<i class="fas fa-circle"></i> OFF';
+        flowIndicator.style.display = 'none';
+      }
+    }
+
+    function updateFaultUI() {
+      const container = faultDisplay.querySelector('.fault-text');
+      if (faultMsg && faultMsg.length > 0) {
+        container.style.display = 'inline-block';
+        faultMessage.textContent = faultMsg;
+      } else {
+        container.style.display = 'none';
+      }
+    }
+
+    function updateRemainingUI() {
+      remainingMinutes.textContent = remaining;
+    }
+
+    function updateAutoRestartUI() {
+      if (autoRestart) {
+        autoRestartSwitch.classList.add('active');
+        autoStatusText.style.display = 'none';
+        autoStatusOn.style.display = 'inline';
+      } else {
+        autoRestartSwitch.classList.remove('active');
+        autoStatusText.style.display = 'inline';
+        autoStatusOn.style.display = 'none';
+      }
+    }
+
+    function updateDeviceStatus(online) {
+      const icon = deviceStatusBadge.querySelector('i');
+      if (online) {
+        icon.className = 'fas fa-circle status-online';
+        deviceStatusText.textContent = 'Online';
+      } else {
+        icon.className = 'fas fa-circle status-offline';
+        deviceStatusText.textContent = 'Offline';
+      }
+    }
+
+    function updateLastUpdated() {
+      const d = new Date();
+      lastUpdatedTime.textContent = d.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    }
+
+    async function setPump(state) {
+      try {
+        await updatePin('V0', state ? '1' : '0');
+        pumpState = state;
+        updatePumpUI();
+      } catch (e) {
+        console.warn('setPump error', e);
+      }
+    }
+
+    async function setTimerMinutes(minutes) {
+      if (isNaN(minutes) || minutes < 1 || minutes > 1000) {
+        alert('Please enter a timer value between 1 and 1000 minutes.');
+        return;
+      }
+      try {
+        await updatePin('V2', String(minutes));
+      } catch (e) {
+        console.warn('setTimer error', e);
+      }
+    }
+
+    async function toggleAutoRestart() {
+      const newVal = !autoRestart;
+      try {
+        await updatePin('V4', newVal ? '1' : '0');
+        autoRestart = newVal;
+        updateAutoRestartUI();
+      } catch (e) {
+        console.warn('toggleAutoRestart error', e);
+      }
+    }
+
+    btnOn.addEventListener('click', () => setPump(true));
+    btnOff.addEventListener('click', () => setPump(false));
+
+    btnSetTimer.addEventListener('click', () => {
+      const val = parseInt(timerInput.value, 10);
+      if (!isNaN(val) && val >= 1 && val <= 1000) {
+        setTimerMinutes(val);
+      } else {
+        alert('Please enter a number between 1 and 1000.');
+      }
+    });
+
+    autoRestartSwitch.addEventListener('click', toggleAutoRestart);
+
+    let intervalId = null;
+
+    async function refreshCycle() {
+      if (dashboardContainer.classList.contains('show')) {
+        await readAllPins();
+      }
+    }
+
+    function startAutoRefresh() {
+      if (intervalId) clearInterval(intervalId);
+      intervalId = setInterval(refreshCycle, 1000);
+      window.refreshInterval = intervalId;
+    }
+
+    if (isDeviceAuthorized()) {
+      setTimeout(() => {
+        refreshCycle();
+        startAutoRefresh();
+      }, 500);
+    }
+
+    window.addEventListener('beforeunload', function() {
+      if (intervalId) clearInterval(intervalId);
+    });
+
+  })();
+</script>
+</body>
+</html>
