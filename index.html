@@ -250,6 +250,7 @@
       filter: drop-shadow(0 0 6px #4cc9ff66);
     }
 
+    /* Device Status - Fixed */
     .device-status-badge {
       display: flex;
       align-items: center;
@@ -264,8 +265,45 @@
       backdrop-filter: blur(4px);
     }
 
-    .status-online { color: #6fcf97; }
-    .status-offline { color: #f28b82; }
+    .status-online {
+      color: #6fcf97;
+      animation: pulseOnline 2s infinite;
+    }
+
+    .status-offline {
+      color: #f28b82;
+      animation: pulseOffline 2s infinite;
+    }
+
+    @keyframes pulseOnline {
+      0% { opacity: 0.7; }
+      50% { opacity: 1; text-shadow: 0 0 10px #6fcf9766; }
+      100% { opacity: 0.7; }
+    }
+
+    @keyframes pulseOffline {
+      0% { opacity: 0.5; }
+      50% { opacity: 1; }
+      100% { opacity: 0.5; }
+    }
+
+    .device-status-badge .status-dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-right: 4px;
+    }
+
+    .status-dot.online {
+      background: #6fcf97;
+      box-shadow: 0 0 12px #6fcf9766;
+    }
+
+    .status-dot.offline {
+      background: #f28b82;
+      box-shadow: 0 0 12px #f28b8266;
+    }
 
     .grid-2col {
       display: grid;
@@ -330,6 +368,13 @@
       color: #6fcf97;
       background: rgba(0, 200, 100, 0.08);
       border-color: rgba(100, 255, 180, 0.10);
+      animation: glowGreen 2s infinite;
+    }
+
+    @keyframes glowGreen {
+      0% { text-shadow: 0 0 4px #6fcf9744; }
+      50% { text-shadow: 0 0 18px #6fcf97aa; }
+      100% { text-shadow: 0 0 4px #6fcf9744; }
     }
 
     .pump-off {
@@ -396,7 +441,7 @@
       margin-right: 0.4rem;
     }
 
-    /* BIG ON/OFF BUTTONS */
+    /* Controls */
     .controls {
       display: flex;
       flex-wrap: wrap;
@@ -483,7 +528,7 @@
       box-shadow: 0 6px 22px rgba(0, 120, 200, 0.25);
     }
 
-    /* Auto Restart - Separate Section Below */
+    /* Auto Restart Section */
     .auto-section {
       margin: 1.5rem 0 1rem 0;
       padding: 1rem 1.5rem;
@@ -511,7 +556,6 @@
       font-size: 1.2rem;
     }
 
-    /* Animated Switch */
     .switch-container {
       display: flex;
       align-items: center;
@@ -567,37 +611,6 @@
       left: 30px;
       background: #ffffff;
       box-shadow: 0 0 16px #b3f0ff, 0 2px 8px rgba(0,0,0,0.2);
-    }
-
-    .switch .knob::after {
-      content: '';
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: rgba(0,0,0,0.1);
-      transition: 0.3s;
-    }
-
-    .switch.active .knob::after {
-      background: rgba(0,200,100,0.2);
-    }
-
-    /* Ripple effect on switch click */
-    .switch .ripple {
-      position: absolute;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.3);
-      transform: scale(0);
-      animation: rippleAnim 0.6s ease-out;
-      pointer-events: none;
-    }
-
-    @keyframes rippleAnim {
-      to { transform: scale(4); opacity: 0; }
     }
 
     .timer-input-group {
@@ -696,8 +709,8 @@
     <div class="header">
       <h1><i class="fas fa-water-pump"></i> Smart Pump</h1>
       <div class="device-status-badge" id="deviceStatusBadge">
-        <i class="fas fa-circle"></i>
-        <span id="deviceStatusText">—</span>
+        <span class="status-dot offline" id="statusDot"></span>
+        <span id="deviceStatusText">Checking...</span>
       </div>
     </div>
 
@@ -741,7 +754,7 @@
       </div>
     </div>
 
-    <!-- AUTO RESTART - Separate Section Below -->
+    <!-- AUTO RESTART -->
     <div class="auto-section">
       <div class="label">
         <i class="fas fa-sync-alt"></i>
@@ -766,7 +779,7 @@
       </div>
     </div>
 
-     <!-- Last Updated -->
+    <!-- Last Updated -->
     <div class="last-updated" id="lastUpdated">
       <i class="far fa-clock"></i> Last updated: <span id="lastUpdatedTime">—</span>
     </div>
@@ -885,7 +898,7 @@
     const faultMessage = document.getElementById('faultMessage');
     const remainingMinutes = document.getElementById('remainingMinutes');
     const deviceStatusText = document.getElementById('deviceStatusText');
-    const deviceStatusBadge = document.getElementById('deviceStatusBadge');
+    const statusDot = document.getElementById('statusDot');
     const lastUpdatedTime = document.getElementById('lastUpdatedTime');
 
     const btnOn = document.getElementById('btnOn');
@@ -949,8 +962,8 @@
 
       } catch (err) {
         console.warn('Read error:', err);
-        deviceStatusText.textContent = '⚠️ error';
-        deviceStatusBadge.querySelector('i').className = 'fas fa-circle status-offline';
+        updateDeviceStatus(false);
+        deviceStatusText.textContent = 'Error';
       }
     }
 
@@ -994,13 +1007,14 @@
     }
 
     function updateDeviceStatus(online) {
-      const icon = deviceStatusBadge.querySelector('i');
       if (online) {
-        icon.className = 'fas fa-circle status-online';
+        statusDot.className = 'status-dot online';
         deviceStatusText.textContent = 'Online';
+        deviceStatusText.style.color = '#6fcf97';
       } else {
-        icon.className = 'fas fa-circle status-offline';
+        statusDot.className = 'status-dot offline';
         deviceStatusText.textContent = 'Offline';
+        deviceStatusText.style.color = '#f28b82';
       }
     }
 
@@ -1016,6 +1030,7 @@
         updatePumpUI();
       } catch (e) {
         console.warn('setPump error', e);
+        alert('Failed to control pump. Please check your connection.');
       }
     }
 
@@ -1028,6 +1043,7 @@
         await updatePin('V2', String(minutes));
       } catch (e) {
         console.warn('setTimer error', e);
+        alert('Failed to set timer. Please check your connection.');
       }
     }
 
@@ -1039,6 +1055,7 @@
         updateAutoRestartUI();
       } catch (e) {
         console.warn('toggleAutoRestart error', e);
+        alert('Failed to toggle auto restart. Please check your connection.');
       }
     }
 
