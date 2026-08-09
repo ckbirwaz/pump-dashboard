@@ -6,7 +6,6 @@
   <title>Smart Pump Controller</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
-    /* ===== ALL YOUR EXISTING STYLES HERE (same as before) ===== */
     * {
       margin: 0;
       padding: 0;
@@ -258,7 +257,6 @@
     .status-text.online { color: #6fcf97; }
     .status-text.offline { color: #f28b82; }
 
-    /* OFFLINE BANNER */
     .offline-banner {
       display: none;
       background: rgba(242, 139, 130, 0.15);
@@ -284,7 +282,6 @@
       100% { opacity: 0.7; }
     }
 
-    /* DISABLED BUTTONS */
     .btn.disabled {
       opacity: 0.5;
       cursor: not-allowed;
@@ -699,7 +696,6 @@
       </div>
     </div>
 
-    <!-- OFFLINE BANNER -->
     <div class="offline-banner" id="offlineBanner">
       <i class="fas fa-wifi"></i>
       <span>⚠️ Device is Offline — Controls are disabled</span>
@@ -1008,17 +1004,34 @@
       return await res.text();
     }
 
-    // ===== FIXED: Direct API call with proper response handling =====
+    // ===== FIXED: More robust hardware status check =====
     async function checkHardwareStatus() {
       try {
         const url = `${SERVER}/external/api/isHardwareConnected?token=${TOKEN}`;
+        console.log('Checking hardware status:', url);
         const res = await fetch(url);
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        console.log('Response status:', res.status);
+        if (!res.ok) {
+          console.warn('Hardware status API returned:', res.status);
+          return false;
+        }
         const text = await res.text();
+        console.log('Hardware status response:', text);
         // The API returns "1" for true, "0" for false
-        // Trim and check if it's exactly "1"
-        const trimmed = text.trim();
-        return trimmed === '1';
+        // Also handle cases where it might return "true" or "false" or empty
+        const trimmed = text.trim().toLowerCase();
+        if (trimmed === '1' || trimmed === 'true') {
+          return true;
+        } else if (trimmed === '0' || trimmed === 'false' || trimmed === '') {
+          return false;
+        } else {
+          // If we got something unexpected, try to parse as number
+          const num = parseInt(trimmed);
+          if (!isNaN(num)) {
+            return num === 1;
+          }
+          return false;
+        }
       } catch (e) {
         console.warn('Hardware status check failed:', e);
         return false;
@@ -1033,32 +1046,39 @@
         btnOff.classList.remove('disabled');
         autoRestartSwitch.classList.remove('disabled');
         btnSetTimer.classList.remove('disabled');
+        console.log('Controls ENABLED - Device Online');
       } else {
         offlineBanner.classList.add('show');
         btnOn.classList.add('disabled');
         btnOff.classList.add('disabled');
         autoRestartSwitch.classList.add('disabled');
         btnSetTimer.classList.add('disabled');
+        console.log('Controls DISABLED - Device Offline');
       }
     }
 
     async function readAllPins() {
       if (!dashboardContainer.classList.contains('show')) return;
       try {
+        console.log('Reading all pins...');
         // First check hardware status
         const isConnected = await checkHardwareStatus();
+        console.log('Hardware connected:', isConnected);
         isOnline = isConnected;
         updateDeviceStatus(isConnected);
         updateControlsState(isConnected);
 
         // Only fetch pins if online
         if (isConnected) {
+          console.log('Device online, fetching pin data...');
           const [v0, v1, v3, v4] = await Promise.all([
             fetchPin('V0'),
             fetchPin('V1'),
             fetchPin('V3'),
             fetchPin('V4')
           ]);
+
+          console.log('V0:', v0, 'V1:', v1, 'V3:', v3, 'V4:', v4);
 
           const newPumpState = (v0.trim() === '1');
           pumpState = newPumpState;
@@ -1071,11 +1091,13 @@
           updateRemainingUI();
           updateAutoRestartUI();
         } else {
-          // When offline, show pump as OFF but keep last known state indicator
+          console.log('Device offline, skipping pin fetch');
+          // When offline, show pump as OFF
           pumpBadge.className = 'pump-status-badge pump-off';
           pumpBadge.innerHTML = '<i class="fas fa-circle"></i> OFF';
           flowIndicator.style.display = 'none';
           faultDisplay.querySelector('.fault-text').style.display = 'none';
+          // Keep last known remaining time display
         }
 
         updateLastUpdated();
@@ -1132,10 +1154,12 @@
         statusDot.className = 'status-dot online';
         deviceStatusText.className = 'status-text online';
         deviceStatusText.textContent = 'Online';
+        console.log('Status set to: Online');
       } else {
         statusDot.className = 'status-dot offline';
         deviceStatusText.className = 'status-text offline';
         deviceStatusText.textContent = 'Offline';
+        console.log('Status set to: Offline');
       }
     }
 
