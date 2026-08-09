@@ -478,8 +478,10 @@
       transform: scale(1.02);
       box-shadow: 0 6px 22px rgba(0, 120, 200, 0.25);
     }
+
+    /* Auto Restart */
     .auto-section {
-      margin: 0 0 1rem 0;
+      margin: 0 0 0.5rem 0;
       padding: 0.8rem 1.5rem;
       background: rgba(0, 25, 35, 0.2);
       backdrop-filter: blur(6px);
@@ -544,6 +546,42 @@
       background: #ffffff;
       box-shadow: 0 0 16px #b3f0ff, 0 2px 8px rgba(0,0,0,0.2);
     }
+
+    /* Remaining Timer - Below Auto Restart */
+    .remaining-section {
+      margin: 0.5rem 0 1rem 0;
+      padding: 0.8rem 1.5rem;
+      background: rgba(0, 25, 35, 0.15);
+      backdrop-filter: blur(6px);
+      border-radius: 2rem;
+      border: 1px solid rgba(50, 180, 255, 0.04);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+    }
+    .remaining-section .label {
+      color: #b0d0e0;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+    .remaining-section .label i { color: #5fc3ff; }
+    .remaining-value {
+      font-size: 2rem;
+      font-weight: 600;
+      color: #b3e4ff;
+      letter-spacing: 0.5px;
+    }
+    .remaining-value small {
+      font-size: 1rem;
+      font-weight: 300;
+      color: #8abedb;
+      margin-left: 0.2rem;
+    }
+
     .timer-input-group {
       display: flex;
       align-items: center;
@@ -567,6 +605,8 @@
       border-color: #4bb0ff;
       box-shadow: 0 0 16px #0077be44;
     }
+
+    /* History Page */
     .history-list {
       max-height: 380px;
       overflow-y: auto;
@@ -600,9 +640,15 @@
     .history-item .action {
       font-weight: 600;
       font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
     .history-item .action.on { color: #6fcf97; }
     .history-item .action.off { color: #f28b82; }
+    .history-item .action .icon {
+      font-size: 1rem;
+    }
     .history-item .time {
       color: #8ab8d4;
       font-size: 0.8rem;
@@ -618,6 +664,7 @@
       padding: 2rem;
       font-size: 0.9rem;
     }
+
     .last-updated {
       text-align: right;
       font-size: 0.75rem;
@@ -628,6 +675,8 @@
       padding-top: 0.8rem;
     }
     .last-updated i { margin-right: 0.3rem; }
+
+    /* Lock button at bottom */
     .footer-actions {
       display: flex;
       justify-content: flex-end;
@@ -649,6 +698,7 @@
       background: rgba(200, 80, 80, 0.25);
       border-color: rgba(200, 80, 80, 0.3);
     }
+
     @media (max-width: 600px) {
       .glass { padding: 1.2rem; }
       .grid-2col { grid-template-columns: 1fr; gap: 1rem; }
@@ -657,12 +707,14 @@
       .btn { width: 100%; padding: 0.9rem; font-size: 1rem; }
       .btn i { font-size: 1.3rem; }
       .auto-section { flex-direction: column; align-items: center; text-align: center; }
+      .remaining-section { flex-direction: column; align-items: center; text-align: center; }
       .header h1 { font-size: 1.5rem; }
       .stat-value { font-size: 1.7rem; }
       .timer-display { font-size: 2rem; }
       .password-box { padding: 1.8rem; margin: 1rem; }
       .nav-tabs { flex-direction: row; }
       .nav-tab { font-size: 0.8rem; padding: 0.5rem; }
+      .remaining-value { font-size: 1.6rem; }
     }
   </style>
 </head>
@@ -688,27 +740,36 @@
 <div class="dashboard" id="dashboardContainer">
   <div class="glass">
 
+    <!-- Header with Time at Top -->
     <div class="header">
       <h1><i class="fas fa-water-pump"></i> Smart Pump</h1>
-      <div class="device-status-badge" id="deviceStatusBadge">
-        <span class="status-dot offline" id="statusDot"></span>
-        <span class="status-text offline" id="deviceStatusText">Checking...</span>
+      <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+        <div class="device-status-badge" id="deviceStatusBadge">
+          <span class="status-dot offline" id="statusDot"></span>
+          <span class="status-text offline" id="deviceStatusText">Checking...</span>
+        </div>
+        <span style="color: #8ab8d4; font-size: 0.85rem; background: rgba(0,35,50,0.5); padding: 0.3rem 1rem; border-radius: 60px; border: 1px solid rgba(0,200,255,0.08);">
+          <i class="far fa-clock"></i> <span id="headerTime">--:--:--</span>
+        </span>
       </div>
     </div>
 
+    <!-- Offline Banner -->
     <div class="offline-banner" id="offlineBanner">
       <i class="fas fa-wifi"></i>
       <span>⚠️ Device is Offline — Controls are disabled</span>
     </div>
 
+    <!-- Navigation Tabs -->
     <div class="nav-tabs">
       <button class="nav-tab active" data-page="dashboard-page"><i class="fas fa-tachometer-alt"></i> Dashboard</button>
       <button class="nav-tab" data-page="history-page"><i class="fas fa-history"></i> History</button>
     </div>
 
-    <!-- DASHBOARD PAGE -->
+    <!-- ===== DASHBOARD PAGE ===== -->
     <div class="page active" id="dashboard-page">
 
+      <!-- Grid: Pump Status + (Removed Timer from here) -->
       <div class="grid-2col">
         <div class="stat-card">
           <div class="stat-label"><i class="fas fa-power-off"></i> Pump Status</div>
@@ -729,13 +790,14 @@
           </div>
         </div>
         <div class="stat-card">
-          <div class="stat-label"><i class="fas fa-clock"></i> Remaining Timer</div>
-          <div class="stat-value timer-display" id="remainingTimerDisplay">
-            <i class="fas fa-hourglass-half"></i> <span id="remainingMinutes">0</span> <small>min</small>
+          <div class="stat-label"><i class="fas fa-history"></i> Last Action</div>
+          <div class="stat-value" style="font-size: 1.2rem; color: #8ab8d4;" id="lastActionDisplay">
+            <i class="fas fa-minus-circle"></i> No action yet
           </div>
         </div>
       </div>
 
+      <!-- ON/OFF Controls -->
       <div class="controls">
         <div class="btn-group">
           <button class="btn btn-success" id="btnOn"><i class="fas fa-play"></i> TURN ON</button>
@@ -743,6 +805,7 @@
         </div>
       </div>
 
+      <!-- Auto Restart -->
       <div class="auto-section">
         <div class="label">
           <i class="fas fa-sync-alt"></i>
@@ -757,6 +820,18 @@
         </div>
       </div>
 
+      <!-- Remaining Timer - Below Auto Restart -->
+      <div class="remaining-section">
+        <div class="label">
+          <i class="fas fa-hourglass-half"></i>
+          <span>Remaining Timer</span>
+        </div>
+        <div class="remaining-value">
+          <span id="remainingMinutes">0</span> <small>min</small>
+        </div>
+      </div>
+
+      <!-- Timer Input -->
       <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 0.8rem;">
         <div class="timer-input-group">
           <i class="fas fa-hourglass-start" style="color: #6fc3ff;"></i>
@@ -766,12 +841,13 @@
         </div>
       </div>
 
+      <!-- Last Updated -->
       <div class="last-updated" id="lastUpdated">
         <i class="far fa-clock"></i> Last updated: <span id="lastUpdatedTime">—</span>
       </div>
     </div>
 
-    <!-- HISTORY PAGE -->
+    <!-- ===== HISTORY PAGE ===== -->
     <div class="page" id="history-page">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem; flex-wrap: wrap; gap: 0.5rem;">
         <span style="color: #8ab8d4; font-size: 0.9rem;"><i class="fas fa-list"></i> Pump Activity Log (Last 7 Days)</span>
@@ -787,6 +863,7 @@
       </div>
     </div>
 
+    <!-- Lock Button at Bottom -->
     <div class="footer-actions">
       <button class="lock-btn-bottom" id="lockBtnBottom">
         <i class="fas fa-lock"></i> Lock Dashboard
@@ -906,6 +983,8 @@
     const deviceStatusText = document.getElementById('deviceStatusText');
     const statusDot = document.getElementById('statusDot');
     const lastUpdatedTime = document.getElementById('lastUpdatedTime');
+    const headerTime = document.getElementById('headerTime');
+    const lastActionDisplay = document.getElementById('lastActionDisplay');
     const historyList = document.getElementById('historyList');
     const offlineBanner = document.getElementById('offlineBanner');
     const btnOn = document.getElementById('btnOn');
@@ -922,6 +1001,15 @@
     let autoRestart = false;
     let history = [];
     let isOnline = false;
+    let lastAction = '';
+
+    // Update header time every second
+    function updateHeaderTime() {
+      const d = new Date();
+      headerTime.textContent = d.toLocaleTimeString('en-US', { hour12: true, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    }
+    setInterval(updateHeaderTime, 1000);
+    updateHeaderTime();
 
     // Load history
     function loadHistory() {
@@ -944,13 +1032,15 @@
 
     function addHistoryEntry(action, status) {
       const now = new Date();
-      history.unshift({
+      const entry = {
         action: action,
         status: status,
         timestamp: now.getTime(),
         date: now.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-        time: now.toLocaleTimeString('en-US', { hour12: true, hour: '2-digit', minute: '2-digit' })
-      });
+        time: now.toLocaleTimeString('en-US', { hour12: true, hour: '2-digit', minute: '2-digit' }),
+        fullDate: now.toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour12: true, hour: '2-digit', minute: '2-digit', second: '2-digit' })
+      };
+      history.unshift(entry);
       const sevenDaysAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
       history = history.filter(entry => entry.timestamp > sevenDaysAgo);
       if (history.length > 50) history = history.slice(0, 50);
@@ -966,11 +1056,13 @@
       let html = '';
       history.forEach(entry => {
         const actionClass = entry.action === 'ON' ? 'on' : 'off';
+        const icon = entry.action === 'ON' ? 'fa-play' : 'fa-stop';
         html += `
           <div class="history-item">
             <span class="action ${actionClass}">
-              <i class="fas fa-${entry.action === 'ON' ? 'play' : 'stop'}"></i>
+              <i class="fas ${icon} icon"></i>
               ${entry.action === 'ON' ? 'Pump Turned ON' : 'Pump Turned OFF'}
+              <span style="font-size:0.7rem; color: #6f9eb0; font-weight:400; margin-left:0.3rem;">${entry.status || ''}</span>
             </span>
             <span>
               <span class="time">${entry.time}</span>
@@ -1004,41 +1096,23 @@
       return await res.text();
     }
 
-    // ===== FIXED: More robust hardware status check =====
     async function checkHardwareStatus() {
       try {
         const url = `${SERVER}/external/api/isHardwareConnected?token=${TOKEN}`;
-        console.log('Checking hardware status:', url);
         const res = await fetch(url);
-        console.log('Response status:', res.status);
-        if (!res.ok) {
-          console.warn('Hardware status API returned:', res.status);
-          return false;
-        }
+        if (!res.ok) return false;
         const text = await res.text();
-        console.log('Hardware status response:', text);
-        // The API returns "1" for true, "0" for false
-        // Also handle cases where it might return "true" or "false" or empty
         const trimmed = text.trim().toLowerCase();
-        if (trimmed === '1' || trimmed === 'true') {
-          return true;
-        } else if (trimmed === '0' || trimmed === 'false' || trimmed === '') {
-          return false;
-        } else {
-          // If we got something unexpected, try to parse as number
-          const num = parseInt(trimmed);
-          if (!isNaN(num)) {
-            return num === 1;
-          }
-          return false;
-        }
+        if (trimmed === '1' || trimmed === 'true') return true;
+        if (trimmed === '0' || trimmed === 'false' || trimmed === '') return false;
+        const num = parseInt(trimmed);
+        if (!isNaN(num)) return num === 1;
+        return false;
       } catch (e) {
-        console.warn('Hardware status check failed:', e);
         return false;
       }
     }
 
-    // ===== UPDATE UI BASED ON ONLINE STATUS =====
     function updateControlsState(online) {
       if (online) {
         offlineBanner.classList.remove('show');
@@ -1046,31 +1120,24 @@
         btnOff.classList.remove('disabled');
         autoRestartSwitch.classList.remove('disabled');
         btnSetTimer.classList.remove('disabled');
-        console.log('Controls ENABLED - Device Online');
       } else {
         offlineBanner.classList.add('show');
         btnOn.classList.add('disabled');
         btnOff.classList.add('disabled');
         autoRestartSwitch.classList.add('disabled');
         btnSetTimer.classList.add('disabled');
-        console.log('Controls DISABLED - Device Offline');
       }
     }
 
     async function readAllPins() {
       if (!dashboardContainer.classList.contains('show')) return;
       try {
-        console.log('Reading all pins...');
-        // First check hardware status
         const isConnected = await checkHardwareStatus();
-        console.log('Hardware connected:', isConnected);
         isOnline = isConnected;
         updateDeviceStatus(isConnected);
         updateControlsState(isConnected);
 
-        // Only fetch pins if online
         if (isConnected) {
-          console.log('Device online, fetching pin data...');
           const [v0, v1, v3, v4] = await Promise.all([
             fetchPin('V0'),
             fetchPin('V1'),
@@ -1078,9 +1145,17 @@
             fetchPin('V4')
           ]);
 
-          console.log('V0:', v0, 'V1:', v1, 'V3:', v3, 'V4:', v4);
-
           const newPumpState = (v0.trim() === '1');
+          
+          // Check if pump state changed
+          if (newPumpState !== pumpState) {
+            const action = newPumpState ? 'ON' : 'OFF';
+            const status = newPumpState ? 'Running' : 'Stopped';
+            addHistoryEntry(action, status);
+            lastAction = `${action} at ${new Date().toLocaleTimeString('en-US', { hour12: true, hour: '2-digit', minute: '2-digit' })}`;
+            updateLastActionDisplay();
+          }
+          
           pumpState = newPumpState;
           faultMsg = v1.trim();
           remaining = parseInt(v3, 10) || 0;
@@ -1091,13 +1166,10 @@
           updateRemainingUI();
           updateAutoRestartUI();
         } else {
-          console.log('Device offline, skipping pin fetch');
-          // When offline, show pump as OFF
           pumpBadge.className = 'pump-status-badge pump-off';
           pumpBadge.innerHTML = '<i class="fas fa-circle"></i> OFF';
           flowIndicator.style.display = 'none';
           faultDisplay.querySelector('.fault-text').style.display = 'none';
-          // Keep last known remaining time display
         }
 
         updateLastUpdated();
@@ -1107,6 +1179,12 @@
         updateDeviceStatus(false);
         updateControlsState(false);
         deviceStatusText.textContent = 'Error';
+      }
+    }
+
+    function updateLastActionDisplay() {
+      if (lastAction) {
+        lastActionDisplay.innerHTML = `<i class="fas fa-check-circle" style="color: #6fcf97;"></i> ${lastAction}`;
       }
     }
 
@@ -1154,12 +1232,10 @@
         statusDot.className = 'status-dot online';
         deviceStatusText.className = 'status-text online';
         deviceStatusText.textContent = 'Online';
-        console.log('Status set to: Online');
       } else {
         statusDot.className = 'status-dot offline';
         deviceStatusText.className = 'status-text offline';
         deviceStatusText.textContent = 'Offline';
-        console.log('Status set to: Offline');
       }
     }
 
@@ -1177,7 +1253,11 @@
         await updatePin('V0', state ? '1' : '0');
         pumpState = state;
         updatePumpUI();
-        addHistoryEntry(state ? 'ON' : 'OFF', state ? 'Running' : 'Stopped');
+        const action = state ? 'ON' : 'OFF';
+        const status = state ? 'Running' : 'Stopped';
+        addHistoryEntry(action, status);
+        lastAction = `${action} at ${new Date().toLocaleTimeString('en-US', { hour12: true, hour: '2-digit', minute: '2-digit' })}`;
+        updateLastActionDisplay();
       } catch (e) {
         console.warn('setPump error', e);
         alert('Failed to control pump. Please check your connection.');
