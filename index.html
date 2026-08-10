@@ -723,6 +723,23 @@
       color: #f28b82;
       border: 1px solid rgba(200, 80, 80, 0.2);
     }
+    .schedule-item .action-btns {
+      display: flex;
+      gap: 0.4rem;
+    }
+    .schedule-item .edit-btn {
+      background: rgba(100, 200, 255, 0.1);
+      border: 1px solid rgba(100, 200, 255, 0.15);
+      color: #b0d9ff;
+      padding: 0.2rem 0.6rem;
+      border-radius: 30px;
+      cursor: pointer;
+      font-size: 0.7rem;
+      transition: 0.2s;
+    }
+    .schedule-item .edit-btn:hover {
+      background: rgba(100, 200, 255, 0.2);
+    }
     .schedule-item .delete-btn {
       background: rgba(200, 80, 80, 0.1);
       border: none;
@@ -744,7 +761,7 @@
       font-size: 0.9rem;
     }
 
-    /* Add Schedule Form */
+    /* Add/Edit Schedule Form */
     .schedule-form {
       display: none;
       background: rgba(0, 30, 45, 0.2);
@@ -1099,7 +1116,7 @@
         <!-- Schedule items will be rendered here -->
       </div>
 
-      <!-- Add Schedule Form -->
+      <!-- Add/Edit Schedule Form -->
       <div class="schedule-form" id="scheduleForm">
         <div class="schedule-form-row">
           <div class="schedule-form-group">
@@ -1313,7 +1330,7 @@
     let lastAction = '';
     let scheduleEnabled = false;
     let scheduleItems = [];
-    let selectedDays = [];
+    let editingIndex = -1;
     let scheduleCheckInterval = null;
     let lastScheduleCheck = '';
 
@@ -1381,9 +1398,14 @@
                   </span>`;
                 }).join('')}
               </div>
-              <button class="delete-btn" onclick="deleteScheduleItem(${index})">
-                <i class="fas fa-trash"></i> Remove
-              </button>
+              <div class="action-btns">
+                <button class="edit-btn" onclick="editScheduleItem(${index})">
+                  <i class="fas fa-edit"></i> Edit
+                </button>
+                <button class="delete-btn" onclick="deleteScheduleItem(${index})">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </div>
             </div>
           </div>
         `;
@@ -1391,7 +1413,7 @@
       scheduleList.innerHTML = html;
     }
 
-    // Make delete function globally accessible
+    // Make functions globally accessible
     window.deleteScheduleItem = function(index) {
       if (confirm('Remove this scheduled operation?')) {
         scheduleItems.splice(index, 1);
@@ -1399,6 +1421,30 @@
         renderSchedule();
         updateScheduleUI();
       }
+    };
+
+    window.editScheduleItem = function(index) {
+      const item = scheduleItems[index];
+      editingIndex = index;
+      
+      // Fill form with item data
+      scheduleOperation.value = item.operation;
+      scheduleTime.value = item.time;
+      
+      // Select days
+      document.querySelectorAll('.day-select-btn').forEach(btn => {
+        btn.classList.toggle('selected', item.days.includes(btn.dataset.day));
+      });
+      
+      // Show form
+      scheduleForm.classList.add('show');
+      addScheduleBtn.innerHTML = '<i class="fas fa-times"></i> Cancel';
+      
+      // Change save button text
+      saveScheduleFormBtn.innerHTML = '<i class="fas fa-edit"></i> Update';
+      
+      // Scroll to form
+      scheduleForm.scrollIntoView({ behavior: 'smooth', block: 'center' });
     };
 
     function formatTime12(timeStr) {
@@ -1432,18 +1478,30 @@
 
     // Add schedule form
     addScheduleBtn.addEventListener('click', function() {
-      scheduleForm.classList.toggle('show');
       if (scheduleForm.classList.contains('show')) {
-        this.textContent = 'Cancel';
-        this.innerHTML = '<i class="fas fa-times"></i> Cancel';
-      } else {
+        // Cancel - close form
+        scheduleForm.classList.remove('show');
+        editingIndex = -1;
         this.innerHTML = '<i class="fas fa-plus"></i> New Scheduled Operation';
+        saveScheduleFormBtn.innerHTML = '<i class="fas fa-save"></i> Save';
+        // Clear day selections
+        document.querySelectorAll('.day-select-btn.selected').forEach(btn => btn.classList.remove('selected'));
+      } else {
+        scheduleForm.classList.add('show');
+        this.innerHTML = '<i class="fas fa-times"></i> Cancel';
+        // Reset form
+        editingIndex = -1;
+        saveScheduleFormBtn.innerHTML = '<i class="fas fa-save"></i> Save';
+        document.querySelectorAll('.day-select-btn.selected').forEach(btn => btn.classList.remove('selected'));
       }
     });
 
     cancelScheduleFormBtn.addEventListener('click', function() {
       scheduleForm.classList.remove('show');
       addScheduleBtn.innerHTML = '<i class="fas fa-plus"></i> New Scheduled Operation';
+      editingIndex = -1;
+      saveScheduleFormBtn.innerHTML = '<i class="fas fa-save"></i> Save';
+      document.querySelectorAll('.day-select-btn.selected').forEach(btn => btn.classList.remove('selected'));
     });
 
     saveScheduleFormBtn.addEventListener('click', function() {
@@ -1459,12 +1517,25 @@
         return;
       }
 
-      scheduleItems.push({
-        id: Date.now(),
-        operation: operation,
-        time: time,
-        days: selectedDays
-      });
+      if (editingIndex >= 0) {
+        // Update existing schedule
+        scheduleItems[editingIndex] = {
+          ...scheduleItems[editingIndex],
+          operation: operation,
+          time: time,
+          days: selectedDays
+        };
+        editingIndex = -1;
+        saveScheduleFormBtn.innerHTML = '<i class="fas fa-save"></i> Save';
+      } else {
+        // Add new schedule
+        scheduleItems.push({
+          id: Date.now(),
+          operation: operation,
+          time: time,
+          days: selectedDays
+        });
+      }
 
       saveSchedule();
       renderSchedule();
@@ -1474,7 +1545,8 @@
       scheduleForm.classList.remove('show');
       addScheduleBtn.innerHTML = '<i class="fas fa-plus"></i> New Scheduled Operation';
       document.querySelectorAll('.day-select-btn.selected').forEach(btn => btn.classList.remove('selected'));
-      alert('Schedule added successfully!');
+      
+      alert(editingIndex >= 0 ? 'Schedule updated successfully!' : 'Schedule added successfully!');
     });
 
     // Schedule enable toggle
