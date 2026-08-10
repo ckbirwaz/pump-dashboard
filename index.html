@@ -657,6 +657,14 @@
       color: #6f9eb0;
       margin-left: 0.3rem;
     }
+    .history-item .day-badge {
+      font-size: 0.6rem;
+      background: rgba(0, 30, 45, 0.3);
+      padding: 0.1rem 0.5rem;
+      border-radius: 20px;
+      color: #6f9eb0;
+      margin-left: 0.3rem;
+    }
     .history-empty {
       text-align: center;
       color: #6f9eb0;
@@ -998,6 +1006,7 @@
     let lastAction = '';
     let previousPumpState = false;
     let previousFaultMsg = '';
+    let historyTriggered = false; // Prevent duplicate history entries
 
     // Update header time
     function updateHeaderTime() {
@@ -1026,11 +1035,11 @@
       localStorage.setItem('pumpHistory', JSON.stringify(history));
     }
 
-    // ===== FIXED: History based on V1 feedback =====
+    // ===== FIXED: History only for ON/OFF based on V1 =====
     function addHistoryEntry(action, status, faultMsgText) {
       const now = new Date();
       const entry = {
-        action: action, // 'ON', 'OFF', 'FAULT'
+        action: action, // 'ON', 'OFF'
         status: status || '',
         fault: faultMsgText || '',
         timestamp: now.getTime(),
@@ -1083,7 +1092,7 @@
               <i class="fas ${icon} icon"></i>
               ${label}
               <span class="status-msg">${statusText}</span>
-              <span class="day-badge" style="font-size:0.6rem; background:rgba(0,30,45,0.3); padding:0.1rem 0.5rem; border-radius:20px; color:#6f9eb0; margin-left:0.3rem;">${entry.day || ''}</span>
+              <span class="day-badge">${entry.day || ''}</span>
             </span>
             <span>
               <span class="time">${entry.time}</span>
@@ -1169,16 +1178,16 @@
           const newPumpState = (v0.trim() === '1');
           const newFaultMsg = v1.trim();
 
-          // ===== FIXED: History based on V1 feedback =====
-          // Check if pump state changed OR fault message changed
-          if (newPumpState !== previousPumpState || newFaultMsg !== previousFaultMsg) {
+          // ===== FIXED: History only for ON/OFF based on V1 =====
+          // Only log when pump state changes (ON → OFF or OFF → ON)
+          if (newPumpState !== previousPumpState) {
             
             if (newPumpState === true && previousPumpState === false) {
               // Pump turned ON
               if (newFaultMsg && newFaultMsg.length > 0) {
-                // Motor failed to start - log as FAULT
-                addHistoryEntry('FAULT', 'Motor Failed to Start', newFaultMsg);
-                lastAction = `⚠️ Fault: ${newFaultMsg}`;
+                // Motor failed to start - log as OFF with fault
+                addHistoryEntry('OFF', 'Motor Failed to Start', newFaultMsg);
+                lastAction = `⚠️ Failed: ${newFaultMsg}`;
                 updateLastActionDisplay();
               } else {
                 // Pump started successfully
@@ -1191,7 +1200,7 @@
               // Pump turned OFF
               if (newFaultMsg && newFaultMsg.length > 0) {
                 // Pump stopped with fault
-                addHistoryEntry('FAULT', 'Motor Stopped with Fault', newFaultMsg);
+                addHistoryEntry('OFF', 'Stopped with Fault', newFaultMsg);
                 lastAction = `⚠️ Fault: ${newFaultMsg}`;
                 updateLastActionDisplay();
               } else {
@@ -1200,12 +1209,6 @@
                 lastAction = `⏹️ Stopped at ${new Date().toLocaleTimeString('en-US', { hour12: true, hour: '2-digit', minute: '2-digit' })}`;
                 updateLastActionDisplay();
               }
-            }
-            else if (newPumpState === true && newFaultMsg !== previousFaultMsg && newFaultMsg.length > 0) {
-              // Pump is ON but fault appeared
-              addHistoryEntry('FAULT', 'Motor Fault Detected', newFaultMsg);
-              lastAction = `⚠️ Fault: ${newFaultMsg}`;
-              updateLastActionDisplay();
             }
 
             // Update previous state
