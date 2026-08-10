@@ -6,7 +6,6 @@
   <title>Smart Pump Controller</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
-    /* ===== All existing styles from previous version ===== */
     * {
       margin: 0;
       padding: 0;
@@ -143,7 +142,7 @@
       color: #6f9eb0;
     }
     .dashboard {
-      max-width: 860px;
+      max-width: 820px;
       width: 100%;
       display: none;
     }
@@ -172,68 +171,6 @@
       gap: 10px;
     }
     .security-badge i { font-size: 1rem; color: #4cc9ff; }
-
-    /* Notification Banner - FIXED */
-    .notification-banner {
-      background: rgba(100, 200, 255, 0.08);
-      border: 1px solid rgba(100, 200, 255, 0.15);
-      border-radius: 12px;
-      padding: 10px 16px;
-      margin: 0 0 1.5rem 0;
-      color: #7fc9e8;
-      font-size: 0.8rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      cursor: pointer;
-      transition: 0.3s;
-      flex-wrap: wrap;
-    }
-    .notification-banner:hover {
-      background: rgba(100, 200, 255, 0.15);
-      border-color: rgba(100, 200, 255, 0.3);
-    }
-    .notification-banner .left {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .notification-banner i { font-size: 1.2rem; color: #4cc9ff; }
-    .notification-banner .status-badge { 
-      padding: 0.2rem 0.8rem;
-      border-radius: 20px;
-      font-size: 0.7rem;
-      font-weight: 600;
-    }
-    .notification-banner .status-badge.granted {
-      background: rgba(100, 200, 100, 0.2);
-      color: #6fcf97;
-      border: 1px solid rgba(100, 200, 100, 0.2);
-    }
-    .notification-banner .status-badge.denied {
-      background: rgba(200, 80, 80, 0.2);
-      color: #f28b82;
-      border: 1px solid rgba(200, 80, 80, 0.2);
-    }
-    .notification-banner .status-badge.default {
-      background: rgba(255, 215, 0, 0.15);
-      color: #ffd700;
-      border: 1px solid rgba(255, 215, 0, 0.15);
-    }
-    .notification-banner .enable-btn {
-      background: rgba(100, 200, 255, 0.15);
-      border: 1px solid rgba(100, 200, 255, 0.2);
-      color: #b3e4ff;
-      padding: 0.2rem 1rem;
-      border-radius: 20px;
-      font-size: 0.7rem;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-    .notification-banner .enable-btn:hover {
-      background: rgba(100, 200, 255, 0.25);
-    }
 
     .nav-tabs {
       display: flex;
@@ -538,33 +475,6 @@
       transform: scale(1.02);
       box-shadow: 0 6px 22px rgba(0, 120, 200, 0.25);
     }
-    .btn-schedule {
-      background: linear-gradient(135deg, #7b4a9e, #5a2d7a);
-      color: white;
-      border: 1px solid #9b6abe;
-      box-shadow: 0 4px 14px rgba(120, 70, 180, 0.2);
-    }
-    .btn-schedule:hover {
-      transform: scale(1.05);
-      box-shadow: 0 8px 28px rgba(120, 70, 180, 0.35);
-    }
-    .btn-add {
-      background: rgba(100, 200, 255, 0.1);
-      border: 1px dashed rgba(100, 200, 255, 0.2);
-      color: #b0d9ff;
-      padding: 0.6rem 1.2rem;
-      border-radius: 60px;
-      cursor: pointer;
-      font-size: 0.85rem;
-      transition: 0.2s;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    .btn-add:hover {
-      background: rgba(100, 200, 255, 0.2);
-      border-color: rgba(100, 200, 255, 0.3);
-    }
 
     .auto-section {
       margin: 0 0 0.5rem 0;
@@ -691,227 +601,6 @@
       box-shadow: 0 0 16px #0077be44;
     }
 
-    /* Schedule Styles - condensed */
-    .schedule-section {
-      margin: 0.5rem 0 0.8rem 0;
-      padding: 1rem 1.5rem;
-      background: rgba(100, 70, 150, 0.08);
-      backdrop-filter: blur(6px);
-      border-radius: 2rem;
-      border: 1px solid rgba(150, 100, 200, 0.08);
-    }
-    .schedule-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 0.8rem;
-      margin-bottom: 1rem;
-    }
-    .schedule-title {
-      color: #c4a0e0;
-      font-size: 1rem;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-    }
-    .schedule-title i { color: #9b6abe; }
-
-    .schedule-item {
-      background: rgba(0, 30, 45, 0.3);
-      border-radius: 1.5rem;
-      padding: 1rem 1.2rem;
-      margin-bottom: 0.8rem;
-      border: 1px solid rgba(100, 70, 150, 0.08);
-      transition: 0.2s;
-    }
-    .schedule-item:hover {
-      border-color: rgba(100, 70, 150, 0.2);
-      background: rgba(0, 30, 45, 0.4);
-    }
-    .schedule-item-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 0.8rem;
-    }
-    .schedule-item .days-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.3rem;
-    }
-    .schedule-item .day-badge {
-      background: rgba(100, 200, 255, 0.08);
-      border: 1px solid rgba(100, 200, 255, 0.1);
-      padding: 0.15rem 0.6rem;
-      border-radius: 20px;
-      font-size: 0.7rem;
-      color: #8ab8d4;
-    }
-    .schedule-item .day-badge.active {
-      background: rgba(100, 200, 255, 0.15);
-      border-color: rgba(100, 200, 255, 0.3);
-      color: #b3e4ff;
-    }
-    .schedule-item .time-display {
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-    }
-    .schedule-item .time-display .time-label {
-      color: #6f9eb0;
-      font-size: 0.7rem;
-    }
-    .schedule-item .time-display .time-value {
-      color: #d4edff;
-      font-size: 1.1rem;
-      font-weight: 600;
-    }
-    .schedule-item .time-display .time-value.on { color: #6fcf97; }
-    .schedule-item .time-display .time-value.off { color: #f28b82; }
-    .schedule-item .operation-badge {
-      padding: 0.15rem 0.8rem;
-      border-radius: 20px;
-      font-size: 0.7rem;
-      font-weight: 600;
-    }
-    .schedule-item .operation-badge.on {
-      background: rgba(100, 200, 100, 0.15);
-      color: #6fcf97;
-      border: 1px solid rgba(100, 200, 100, 0.2);
-    }
-    .schedule-item .operation-badge.off {
-      background: rgba(200, 80, 80, 0.15);
-      color: #f28b82;
-      border: 1px solid rgba(200, 80, 80, 0.2);
-    }
-    .schedule-item .action-btns {
-      display: flex;
-      gap: 0.4rem;
-    }
-    .schedule-item .edit-btn {
-      background: rgba(100, 200, 255, 0.1);
-      border: 1px solid rgba(100, 200, 255, 0.15);
-      color: #b0d9ff;
-      padding: 0.2rem 0.6rem;
-      border-radius: 30px;
-      cursor: pointer;
-      font-size: 0.7rem;
-      transition: 0.2s;
-    }
-    .schedule-item .edit-btn:hover {
-      background: rgba(100, 200, 255, 0.2);
-    }
-    .schedule-item .delete-btn {
-      background: rgba(200, 80, 80, 0.1);
-      border: none;
-      color: #f28b82;
-      padding: 0.2rem 0.6rem;
-      border-radius: 30px;
-      cursor: pointer;
-      font-size: 0.7rem;
-      transition: 0.2s;
-    }
-    .schedule-item .delete-btn:hover {
-      background: rgba(200, 80, 80, 0.25);
-    }
-
-    .schedule-empty {
-      text-align: center;
-      color: #6f9eb0;
-      padding: 1.5rem;
-      font-size: 0.9rem;
-    }
-
-    .schedule-form {
-      display: none;
-      background: rgba(0, 30, 45, 0.2);
-      border-radius: 1.5rem;
-      padding: 1rem 1.2rem;
-      margin-top: 0.5rem;
-      border: 1px solid rgba(100, 70, 150, 0.1);
-    }
-    .schedule-form.show { display: block; }
-    .schedule-form-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-      align-items: center;
-    }
-    .schedule-form-group {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    .schedule-form-group label {
-      color: #8ab8d4;
-      font-size: 0.8rem;
-    }
-    .schedule-form-group select,
-    .schedule-form-group input[type="time"] {
-      background: rgba(0, 30, 45, 0.5);
-      border: 1px solid #236480;
-      border-radius: 40px;
-      padding: 0.4rem 0.8rem;
-      color: #d4f0ff;
-      font-size: 0.85rem;
-      outline: none;
-    }
-    .schedule-form-group select:focus,
-    .schedule-form-group input[type="time"]:focus {
-      border-color: #9b6abe;
-      box-shadow: 0 0 16px rgba(120, 70, 180, 0.15);
-    }
-    .schedule-form-group select option {
-      background: #0d2b3e;
-      color: #d4f0ff;
-    }
-
-    .day-select-grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.3rem;
-    }
-    .day-select-btn {
-      background: rgba(0, 30, 45, 0.3);
-      border: 1px solid rgba(100, 200, 255, 0.08);
-      padding: 0.2rem 0.6rem;
-      border-radius: 20px;
-      cursor: pointer;
-      font-size: 0.7rem;
-      color: #6f9eb0;
-      transition: 0.2s;
-    }
-    .day-select-btn:hover {
-      border-color: rgba(100, 200, 255, 0.2);
-    }
-    .day-select-btn.selected {
-      background: rgba(100, 200, 255, 0.15);
-      border-color: rgba(100, 200, 255, 0.3);
-      color: #b3e4ff;
-    }
-
-    .schedule-status-text {
-      font-size: 0.8rem;
-      padding: 0.3rem 1rem;
-      border-radius: 60px;
-      background: rgba(0, 30, 45, 0.3);
-    }
-    .schedule-status-text.active { color: #6fcf97; border: 1px solid rgba(100, 200, 100, 0.2); }
-    .schedule-status-text.inactive { color: #f28b82; border: 1px solid rgba(200, 80, 80, 0.2); }
-
-    .schedule-global-toggle {
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-    }
-    .schedule-global-toggle label {
-      color: #b0d0e0;
-      font-size: 0.8rem;
-    }
-
     /* History Page */
     .history-list {
       max-height: 380px;
@@ -952,7 +641,7 @@
     }
     .history-item .action.on { color: #6fcf97; }
     .history-item .action.off { color: #f28b82; }
-    .history-item .action.schedule { color: #ffd700; }
+    .history-item .action.fault { color: #f6b26b; }
     .history-item .action .icon { font-size: 1rem; }
     .history-item .time {
       color: #8ab8d4;
@@ -963,11 +652,8 @@
       font-size: 0.7rem;
       margin-left: 0.5rem;
     }
-    .history-item .day-badge {
-      font-size: 0.6rem;
-      background: rgba(0, 30, 45, 0.3);
-      padding: 0.1rem 0.5rem;
-      border-radius: 20px;
+    .history-item .status-msg {
+      font-size: 0.7rem;
       color: #6f9eb0;
       margin-left: 0.3rem;
     }
@@ -1011,7 +697,7 @@
       border-color: rgba(200, 80, 80, 0.3);
     }
 
-    @media (max-width: 700px) {
+    @media (max-width: 600px) {
       .glass { padding: 1.2rem; }
       .grid-2col { grid-template-columns: 1fr; gap: 1rem; }
       .controls { flex-direction: column; align-items: stretch; border-radius: 2rem; padding: 1.2rem; }
@@ -1020,8 +706,6 @@
       .btn i { font-size: 1.3rem; }
       .auto-section { flex-direction: column; align-items: center; text-align: center; }
       .remaining-section { flex-direction: column; align-items: center; text-align: center; }
-      .schedule-section { padding: 0.8rem 1rem; }
-      .schedule-item-top { flex-direction: column; align-items: stretch; }
       .header h1 { font-size: 1.5rem; }
       .stat-value { font-size: 1.7rem; }
       .timer-display { font-size: 2rem; }
@@ -1029,9 +713,6 @@
       .nav-tabs { flex-direction: row; }
       .nav-tab { font-size: 0.8rem; padding: 0.5rem; }
       .remaining-value { font-size: 1.6rem; }
-      .schedule-form-row { flex-direction: column; align-items: stretch; }
-      .schedule-form-group { flex-wrap: wrap; }
-      .notification-banner { flex-direction: column; align-items: stretch; text-align: center; }
     }
   </style>
 </head>
@@ -1071,18 +752,6 @@
       </div>
     </div>
 
-    <!-- NOTIFICATION BANNER - FIXED -->
-    <div class="notification-banner" id="notificationBanner">
-      <div class="left">
-        <i class="fas fa-bell"></i>
-        <span id="notificationText">🔔 Click to enable notifications</span>
-        <span class="status-badge default" id="notificationStatus">Off</span>
-      </div>
-      <button class="enable-btn" id="enableNotificationsBtn">
-        <i class="fas fa-toggle-on"></i> Enable
-      </button>
-    </div>
-
     <!-- Offline Banner -->
     <div class="offline-banner" id="offlineBanner">
       <i class="fas fa-wifi"></i>
@@ -1092,7 +761,6 @@
     <!-- Navigation Tabs -->
     <div class="nav-tabs">
       <button class="nav-tab active" data-page="dashboard-page"><i class="fas fa-tachometer-alt"></i> Dashboard</button>
-      <button class="nav-tab" data-page="schedule-page"><i class="fas fa-calendar-alt"></i> Schedule</button>
       <button class="nav-tab" data-page="history-page"><i class="fas fa-history"></i> History</button>
     </div>
 
@@ -1171,72 +839,10 @@
       </div>
     </div>
 
-    <!-- ===== SCHEDULE PAGE ===== -->
-    <div class="page" id="schedule-page">
-      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.8rem; margin-bottom: 1rem;">
-        <div style="display: flex; align-items: center; gap: 0.8rem;">
-          <span style="color: #c4a0e0; font-size: 1rem; font-weight: 600;">
-            <i class="fas fa-calendar-alt"></i> Schedule
-          </span>
-          <span class="schedule-status-text inactive" id="scheduleStatusText">Disabled</span>
-        </div>
-        <div class="schedule-global-toggle">
-          <label>Enable Schedule</label>
-          <div class="switch" id="scheduleEnableSwitch" style="width: 50px; height: 28px;">
-            <div class="knob" style="width: 22px; height: 22px;"></div>
-          </div>
-        </div>
-      </div>
-
-      <div id="scheduleList">
-        <!-- Schedule items rendered by JS -->
-      </div>
-
-      <div class="schedule-form" id="scheduleForm">
-        <div class="schedule-form-row">
-          <div class="schedule-form-group">
-            <label>Operation</label>
-            <select id="scheduleOperation">
-              <option value="ON">ON</option>
-              <option value="OFF">OFF</option>
-            </select>
-          </div>
-          <div class="schedule-form-group">
-            <label>Time</label>
-            <input type="time" id="scheduleTime" value="06:00">
-          </div>
-          <div class="schedule-form-group">
-            <label>Days</label>
-            <div class="day-select-grid" id="daySelectGrid">
-              <button class="day-select-btn" data-day="Sunday">Sun</button>
-              <button class="day-select-btn" data-day="Monday">Mon</button>
-              <button class="day-select-btn" data-day="Tuesday">Tue</button>
-              <button class="day-select-btn" data-day="Wednesday">Wed</button>
-              <button class="day-select-btn" data-day="Thursday">Thu</button>
-              <button class="day-select-btn" data-day="Friday">Fri</button>
-              <button class="day-select-btn" data-day="Saturday">Sat</button>
-            </div>
-          </div>
-          <div style="display: flex; gap: 0.5rem;">
-            <button class="btn btn-schedule" id="saveScheduleFormBtn" style="padding: 0.4rem 1.2rem; font-size: 0.85rem; min-width: auto;">
-              <i class="fas fa-save"></i> Save
-            </button>
-            <button class="btn" id="cancelScheduleFormBtn" style="padding: 0.4rem 1.2rem; font-size: 0.85rem; min-width: auto; background: rgba(200,80,80,0.1); color: #f28b82;">
-              <i class="fas fa-times"></i> Cancel
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <button class="btn-add" id="addScheduleBtn" style="margin-top: 0.5rem;">
-        <i class="fas fa-plus"></i> New Scheduled Operation
-      </button>
-    </div>
-
     <!-- ===== HISTORY PAGE ===== -->
     <div class="page" id="history-page">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem; flex-wrap: wrap; gap: 0.5rem;">
-        <span style="color: #8ab8d4; font-size: 0.9rem;"><i class="fas fa-list"></i> Pump Activity Log (Last 7 Days)</span>
+        <span style="color: #8ab8d4; font-size: 0.9rem;"><i class="fas fa-list"></i> Pump Activity Log</span>
         <button class="btn" style="padding: 0.3rem 1rem; font-size: 0.75rem; background: rgba(200, 80, 80, 0.1); border: 1px solid rgba(200, 80, 80, 0.15); color: #f28b82;" id="clearHistoryBtn">
           <i class="fas fa-trash"></i> Clear
         </button>
@@ -1245,7 +851,7 @@
         <div class="history-empty"><i class="fas fa-inbox"></i> No history yet</div>
       </div>
       <div style="margin-top: 0.5rem; font-size: 0.7rem; color: #6f9eb0;">
-        <i class="fas fa-info-circle"></i> Shows last 50 events
+        <i class="fas fa-info-circle"></i> Shows pump start/stop events with status feedback
       </div>
     </div>
 
@@ -1357,150 +963,6 @@
       });
     });
 
-    // ===== NOTIFICATIONS - FIXED =====
-    const notificationBanner = document.getElementById('notificationBanner');
-    const enableBtn = document.getElementById('enableNotificationsBtn');
-    const notificationStatus = document.getElementById('notificationStatus');
-    const notificationText = document.getElementById('notificationText');
-    let notificationsEnabled = false;
-
-    function updateNotificationUI() {
-      if (!('Notification' in window)) {
-        notificationStatus.className = 'status-badge denied';
-        notificationStatus.textContent = 'Unsupported';
-        notificationText.textContent = '❌ Notifications not supported';
-        enableBtn.style.display = 'none';
-        return;
-      }
-
-      const permission = Notification.permission;
-      
-      if (permission === 'granted') {
-        notificationStatus.className = 'status-badge granted';
-        notificationStatus.textContent = '✅ Enabled';
-        notificationText.textContent = '🔔 Notifications active - You will get pump alerts!';
-        enableBtn.innerHTML = '<i class="fas fa-check"></i> Active';
-        enableBtn.style.background = 'rgba(100,200,100,0.15)';
-        enableBtn.style.borderColor = 'rgba(100,200,100,0.2)';
-        enableBtn.style.color = '#6fcf97';
-        notificationsEnabled = true;
-      } else if (permission === 'denied') {
-        notificationStatus.className = 'status-badge denied';
-        notificationStatus.textContent = '❌ Blocked';
-        notificationText.textContent = '🔕 Notifications blocked. Enable in browser settings.';
-        enableBtn.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Settings';
-        enableBtn.style.background = 'rgba(200,80,80,0.15)';
-        enableBtn.style.borderColor = 'rgba(200,80,80,0.2)';
-        enableBtn.style.color = '#f28b82';
-        notificationsEnabled = false;
-      } else {
-        notificationStatus.className = 'status-badge default';
-        notificationStatus.textContent = '⏸️ Off';
-        notificationText.textContent = '🔔 Click "Enable" to receive pump alerts';
-        enableBtn.innerHTML = '<i class="fas fa-bell"></i> Enable';
-        enableBtn.style.background = 'rgba(100,200,255,0.15)';
-        enableBtn.style.borderColor = 'rgba(100,200,255,0.2)';
-        enableBtn.style.color = '#b3e4ff';
-        notificationsEnabled = false;
-      }
-    }
-
-    function requestNotificationPermission() {
-      if (!('Notification' in window)) {
-        alert('Notifications are not supported in this browser.');
-        return;
-      }
-
-      if (Notification.permission === 'granted') {
-        notificationsEnabled = true;
-        updateNotificationUI();
-        sendTestNotification();
-        return;
-      }
-
-      if (Notification.permission === 'denied') {
-        alert('🔕 Notifications are blocked.\n\nPlease enable them in your browser settings:\n• Chrome/Edge: Click the lock icon → Notifications → Allow\n• Firefox: Click the shield icon → Disable blocking\n• Safari: Safari → Preferences → Websites → Notifications');
-        return;
-      }
-
-      // Request permission
-      Notification.requestPermission().then(permission => {
-        if (permission === 'granted') {
-          notificationsEnabled = true;
-          updateNotificationUI();
-          sendTestNotification();
-        } else {
-          notificationsEnabled = false;
-          updateNotificationUI();
-        }
-      });
-    }
-
-    function sendTestNotification() {
-      if (!notificationsEnabled || Notification.permission !== 'granted') return;
-      
-      try {
-        new Notification('🔔 Smart Pump', {
-          body: '✅ Notifications enabled! You will receive pump alerts.',
-          icon: '💧'
-        });
-      } catch (e) {
-        console.log('Test notification sent (silent)');
-      }
-    }
-
-    function sendNotification(title, message, type = 'info') {
-      if (!notificationsEnabled || Notification.permission !== 'granted') {
-        console.log('Notification not sent - disabled or no permission');
-        return;
-      }
-
-      try {
-        const iconMap = {
-          'on': '✅',
-          'off': '⏹️',
-          'info': 'ℹ️',
-          'fault': '⚠️'
-        };
-        const icon = iconMap[type] || '🔔';
-        
-        const notif = new Notification(`🔔 Smart Pump`, {
-          body: `${title}\n${message}`,
-          icon: '💧',
-          silent: false,
-          requireInteraction: true,
-          tag: 'pump-notification'
-        });
-
-        notif.onclick = function() {
-          window.focus();
-          this.close();
-        };
-
-        setTimeout(() => notif.close(), 15000);
-        console.log('Notification sent:', title, message);
-        
-      } catch (e) {
-        console.warn('Notification error:', e);
-      }
-    }
-
-    // Enable button click
-    enableBtn.addEventListener('click', function(e) {
-      e.stopPropagation();
-      requestNotificationPermission();
-    });
-
-    // Banner click also triggers
-    notificationBanner.addEventListener('click', function(e) {
-      if (e.target.closest('.enable-btn')) return;
-      if (Notification.permission === 'granted') {
-        sendTestNotification();
-      } else {
-        requestNotificationPermission();
-      }
-    });
-
     // ===== PUMP CONTROLLER =====
     const SERVER = "https://blr1.blynk.cloud";
     const TOKEN = "Ge3cwEz3nPc3K2Eq-aaoIYluyA8KUwik";
@@ -1525,20 +987,7 @@
     const autoStatusText = document.getElementById('autoStatusText');
     const autoStatusOn = document.getElementById('autoStatusOn');
 
-    // Schedule elements
-    const scheduleEnableSwitch = document.getElementById('scheduleEnableSwitch');
-    const scheduleList = document.getElementById('scheduleList');
-    const scheduleForm = document.getElementById('scheduleForm');
-    const addScheduleBtn = document.getElementById('addScheduleBtn');
-    const saveScheduleFormBtn = document.getElementById('saveScheduleFormBtn');
-    const cancelScheduleFormBtn = document.getElementById('cancelScheduleFormBtn');
-    const scheduleOperation = document.getElementById('scheduleOperation');
-    const scheduleTime = document.getElementById('scheduleTime');
-    const daySelectGrid = document.getElementById('daySelectGrid');
-    const scheduleStatusText = document.getElementById('scheduleStatusText');
-
     const DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    const DAYS_SHORT = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
     let pumpState = false;
     let faultMsg = '';
@@ -1547,258 +996,8 @@
     let history = [];
     let isOnline = false;
     let lastAction = '';
-    let scheduleEnabled = false;
-    let scheduleItems = [];
-    let editingIndex = -1;
-    let scheduleCheckInterval = null;
-    let lastScheduleCheck = '';
-
-    // Initialize schedule with default
-    function initSchedule() {
-      scheduleItems = [
-        { id: 1, operation: 'ON', time: '06:00', days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'] },
-        { id: 2, operation: 'OFF', time: '22:00', days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'] }
-      ];
-    }
-
-    // Load schedule from localStorage
-    function loadSchedule() {
-      try {
-        const saved = localStorage.getItem('pumpScheduleItems');
-        if (saved) {
-          scheduleItems = JSON.parse(saved);
-        } else {
-          initSchedule();
-        }
-        const enabled = localStorage.getItem('pumpScheduleEnabled');
-        scheduleEnabled = enabled === 'true';
-      } catch (e) {
-        initSchedule();
-        scheduleEnabled = false;
-      }
-      renderSchedule();
-      updateScheduleUI();
-    }
-
-    function saveSchedule() {
-      localStorage.setItem('pumpScheduleItems', JSON.stringify(scheduleItems));
-      localStorage.setItem('pumpScheduleEnabled', String(scheduleEnabled));
-    }
-
-    function renderSchedule() {
-      if (scheduleItems.length === 0) {
-        scheduleList.innerHTML = '<div class="schedule-empty"><i class="fas fa-calendar-plus"></i> No schedules set. Click "New Scheduled Operation" to add one.</div>';
-        return;
-      }
-
-      let html = '';
-      scheduleItems.forEach((item, index) => {
-        const opClass = item.operation === 'ON' ? 'on' : 'off';
-        const opLabel = item.operation === 'ON' ? 'Turn ON' : 'Turn OFF';
-        const today = new Date().getDay();
-        const todayName = DAYS[today];
-
-        html += `
-          <div class="schedule-item" data-index="${index}">
-            <div class="schedule-item-top">
-              <div class="time-display">
-                <span class="time-label">
-                  <i class="fas fa-${item.operation === 'ON' ? 'play' : 'stop'}" style="color: ${item.operation === 'ON' ? '#6fcf97' : '#f28b82'};"></i>
-                </span>
-                <span class="time-value ${opClass}">${formatTime12(item.time)}</span>
-                <span class="operation-badge ${opClass}">${opLabel}</span>
-              </div>
-              <div class="days-row">
-                ${DAYS.map(day => {
-                  const isActive = item.days.includes(day);
-                  const isToday = day === todayName;
-                  return `<span class="day-badge ${isActive ? 'active' : ''}" style="${isToday && isActive ? 'border-color: #4cc9ff;' : ''}">
-                    ${isToday && isActive ? '📍' : ''} ${DAYS_SHORT[DAYS.indexOf(day)]}
-                  </span>`;
-                }).join('')}
-              </div>
-              <div class="action-btns">
-                <button class="edit-btn" onclick="editScheduleItem(${index})">
-                  <i class="fas fa-edit"></i> Edit
-                </button>
-                <button class="delete-btn" onclick="deleteScheduleItem(${index})">
-                  <i class="fas fa-trash"></i>
-                </button>
-              </div>
-            </div>
-          </div>
-        `;
-      });
-      scheduleList.innerHTML = html;
-    }
-
-    window.deleteScheduleItem = function(index) {
-      if (confirm('Remove this scheduled operation?')) {
-        scheduleItems.splice(index, 1);
-        saveSchedule();
-        renderSchedule();
-        updateScheduleUI();
-      }
-    };
-
-    window.editScheduleItem = function(index) {
-      const item = scheduleItems[index];
-      editingIndex = index;
-      
-      scheduleOperation.value = item.operation;
-      scheduleTime.value = item.time;
-      
-      document.querySelectorAll('.day-select-btn').forEach(btn => {
-        btn.classList.toggle('selected', item.days.includes(btn.dataset.day));
-      });
-      
-      scheduleForm.classList.add('show');
-      addScheduleBtn.innerHTML = '<i class="fas fa-times"></i> Cancel';
-      saveScheduleFormBtn.innerHTML = '<i class="fas fa-edit"></i> Update';
-      scheduleForm.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    };
-
-    function formatTime12(timeStr) {
-      const parts = timeStr.split(':');
-      let hours = parseInt(parts[0]);
-      const minutes = parts[1];
-      const ampm = hours >= 12 ? 'PM' : 'AM';
-      hours = hours % 12 || 12;
-      return `${hours}:${minutes} ${ampm}`;
-    }
-
-    function updateScheduleUI() {
-      if (scheduleEnabled) {
-        scheduleEnableSwitch.classList.add('active');
-        scheduleStatusText.className = 'schedule-status-text active';
-        scheduleStatusText.textContent = 'Enabled';
-      } else {
-        scheduleEnableSwitch.classList.remove('active');
-        scheduleStatusText.className = 'schedule-status-text inactive';
-        scheduleStatusText.textContent = 'Disabled';
-      }
-      saveSchedule();
-    }
-
-    // Day selection for form
-    document.querySelectorAll('.day-select-btn').forEach(btn => {
-      btn.addEventListener('click', function() {
-        this.classList.toggle('selected');
-      });
-    });
-
-    addScheduleBtn.addEventListener('click', function() {
-      if (scheduleForm.classList.contains('show')) {
-        scheduleForm.classList.remove('show');
-        editingIndex = -1;
-        this.innerHTML = '<i class="fas fa-plus"></i> New Scheduled Operation';
-        saveScheduleFormBtn.innerHTML = '<i class="fas fa-save"></i> Save';
-        document.querySelectorAll('.day-select-btn.selected').forEach(btn => btn.classList.remove('selected'));
-      } else {
-        scheduleForm.classList.add('show');
-        this.innerHTML = '<i class="fas fa-times"></i> Cancel';
-        editingIndex = -1;
-        saveScheduleFormBtn.innerHTML = '<i class="fas fa-save"></i> Save';
-        document.querySelectorAll('.day-select-btn.selected').forEach(btn => btn.classList.remove('selected'));
-      }
-    });
-
-    cancelScheduleFormBtn.addEventListener('click', function() {
-      scheduleForm.classList.remove('show');
-      addScheduleBtn.innerHTML = '<i class="fas fa-plus"></i> New Scheduled Operation';
-      editingIndex = -1;
-      saveScheduleFormBtn.innerHTML = '<i class="fas fa-save"></i> Save';
-      document.querySelectorAll('.day-select-btn.selected').forEach(btn => btn.classList.remove('selected'));
-    });
-
-    saveScheduleFormBtn.addEventListener('click', function() {
-      const operation = scheduleOperation.value;
-      const time = scheduleTime.value;
-      const selectedDays = [];
-      document.querySelectorAll('.day-select-btn.selected').forEach(btn => {
-        selectedDays.push(btn.dataset.day);
-      });
-
-      if (selectedDays.length === 0) {
-        alert('Please select at least one day.');
-        return;
-      }
-
-      if (editingIndex >= 0) {
-        scheduleItems[editingIndex] = {
-          ...scheduleItems[editingIndex],
-          operation: operation,
-          time: time,
-          days: selectedDays
-        };
-        editingIndex = -1;
-        saveScheduleFormBtn.innerHTML = '<i class="fas fa-save"></i> Save';
-      } else {
-        scheduleItems.push({
-          id: Date.now(),
-          operation: operation,
-          time: time,
-          days: selectedDays
-        });
-      }
-
-      saveSchedule();
-      renderSchedule();
-      updateScheduleUI();
-
-      scheduleForm.classList.remove('show');
-      addScheduleBtn.innerHTML = '<i class="fas fa-plus"></i> New Scheduled Operation';
-      document.querySelectorAll('.day-select-btn.selected').forEach(btn => btn.classList.remove('selected'));
-      
-      alert(editingIndex >= 0 ? 'Schedule updated successfully!' : 'Schedule added successfully!');
-    });
-
-    scheduleEnableSwitch.addEventListener('click', function() {
-      scheduleEnabled = !scheduleEnabled;
-      updateScheduleUI();
-      if (scheduleEnabled) {
-        checkSchedule();
-      }
-    });
-
-    function timeToMinutes(timeStr) {
-      const parts = timeStr.split(':');
-      return parseInt(parts[0]) * 60 + parseInt(parts[1]);
-    }
-
-    function checkSchedule() {
-      if (!scheduleEnabled || !isOnline || scheduleItems.length === 0) return;
-
-      const now = new Date();
-      const currentDay = now.getDay();
-      const currentMinutes = now.getHours() * 60 + now.getMinutes();
-      const currentCheck = `${now.getHours()}:${now.getMinutes()}`;
-
-      if (currentCheck === lastScheduleCheck) return;
-      lastScheduleCheck = currentCheck;
-
-      const dayName = DAYS[currentDay];
-
-      scheduleItems.forEach(item => {
-        if (!item.days.includes(dayName)) return;
-
-        const itemMinutes = timeToMinutes(item.time);
-
-        if (currentMinutes === itemMinutes) {
-          if (item.operation === 'ON' && !pumpState) {
-            console.log(`Schedule: Turning ON at ${item.time} (${dayName})`);
-            setPump(true, true);
-            addHistoryEntry('SCHEDULE_ON', `Auto ON (${dayName})`);
-            sendNotification('📅 Schedule ON', `Pump turned ON at ${formatTime12(item.time)} (${dayName})`, 'on');
-          } else if (item.operation === 'OFF' && pumpState) {
-            console.log(`Schedule: Turning OFF at ${item.time} (${dayName})`);
-            setPump(false, true);
-            addHistoryEntry('SCHEDULE_OFF', `Auto OFF (${dayName})`);
-            sendNotification('📅 Schedule OFF', `Pump turned OFF at ${formatTime12(item.time)} (${dayName})`, 'off');
-          }
-        }
-      });
-    }
+    let previousPumpState = false;
+    let previousFaultMsg = '';
 
     // Update header time
     function updateHeaderTime() {
@@ -1816,7 +1015,7 @@
           history = JSON.parse(saved);
           const sevenDaysAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
           history = history.filter(entry => entry.timestamp > sevenDaysAgo);
-          if (history.length > 50) history = history.slice(0, 50);
+          if (history.length > 100) history = history.slice(0, 100);
           saveHistory();
         }
       } catch (e) { history = []; }
@@ -1827,11 +1026,13 @@
       localStorage.setItem('pumpHistory', JSON.stringify(history));
     }
 
-    function addHistoryEntry(action, status) {
+    // ===== FIXED: History based on V1 feedback =====
+    function addHistoryEntry(action, status, faultMsgText) {
       const now = new Date();
       const entry = {
-        action: action,
+        action: action, // 'ON', 'OFF', 'FAULT'
         status: status || '',
+        fault: faultMsgText || '',
         timestamp: now.getTime(),
         date: now.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
         time: now.toLocaleTimeString('en-US', { hour12: true, hour: '2-digit', minute: '2-digit' }),
@@ -1840,7 +1041,7 @@
       history.unshift(entry);
       const sevenDaysAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
       history = history.filter(entry => entry.timestamp > sevenDaysAgo);
-      if (history.length > 50) history = history.slice(0, 50);
+      if (history.length > 100) history = history.slice(0, 100);
       saveHistory();
       renderHistory();
     }
@@ -1859,32 +1060,30 @@
         if (entry.action === 'ON') {
           actionClass = 'on';
           icon = 'fa-play';
-          label = 'Pump Turned ON';
+          label = '✅ Pump Started';
         } else if (entry.action === 'OFF') {
           actionClass = 'off';
           icon = 'fa-stop';
-          label = 'Pump Turned OFF';
-        } else if (entry.action === 'SCHEDULE_ON') {
-          actionClass = 'schedule';
-          icon = 'fa-calendar-check';
-          label = '📅 Schedule ON';
-        } else if (entry.action === 'SCHEDULE_OFF') {
-          actionClass = 'schedule';
-          icon = 'fa-calendar-times';
-          label = '📅 Schedule OFF';
+          label = '⏹️ Pump Stopped';
+        } else if (entry.action === 'FAULT') {
+          actionClass = 'fault';
+          icon = 'fa-exclamation-triangle';
+          label = '⚠️ Fault Detected';
         } else {
-          actionClass = 'schedule';
-          icon = 'fa-clock';
+          actionClass = 'off';
+          icon = 'fa-circle';
           label = entry.action || 'Event';
         }
+
+        const statusText = entry.fault ? ` ${entry.fault}` : (entry.status ? ` ${entry.status}` : '');
 
         html += `
           <div class="history-item">
             <span class="action ${actionClass}">
               <i class="fas ${icon} icon"></i>
               ${label}
-              <span style="font-size:0.7rem; color: #6f9eb0; font-weight:400; margin-left:0.3rem;">${entry.status || ''}</span>
-              <span class="day-badge">${entry.day || ''}</span>
+              <span class="status-msg">${statusText}</span>
+              <span class="day-badge" style="font-size:0.6rem; background:rgba(0,30,45,0.3); padding:0.1rem 0.5rem; border-radius:20px; color:#6f9eb0; margin-left:0.3rem;">${entry.day || ''}</span>
             </span>
             <span>
               <span class="time">${entry.time}</span>
@@ -1968,26 +1167,54 @@
           ]);
 
           const newPumpState = (v0.trim() === '1');
+          const newFaultMsg = v1.trim();
 
-          if (newPumpState !== pumpState) {
-            const action = newPumpState ? 'ON' : 'OFF';
-            const status = newPumpState ? 'Running' : 'Stopped';
-            if (!lastScheduleCheck || !scheduleEnabled) {
-              addHistoryEntry(action, status);
-              lastAction = `${action} at ${new Date().toLocaleTimeString('en-US', { hour12: true, hour: '2-digit', minute: '2-digit' })}`;
-              updateLastActionDisplay();
-              
-              // Send notification for manual actions
-              if (action === 'ON') {
-                sendNotification('⚡ Pump Turned ON', 'Pump started manually', 'on');
+          // ===== FIXED: History based on V1 feedback =====
+          // Check if pump state changed OR fault message changed
+          if (newPumpState !== previousPumpState || newFaultMsg !== previousFaultMsg) {
+            
+            if (newPumpState === true && previousPumpState === false) {
+              // Pump turned ON
+              if (newFaultMsg && newFaultMsg.length > 0) {
+                // Motor failed to start - log as FAULT
+                addHistoryEntry('FAULT', 'Motor Failed to Start', newFaultMsg);
+                lastAction = `⚠️ Fault: ${newFaultMsg}`;
+                updateLastActionDisplay();
               } else {
-                sendNotification('⏹️ Pump Turned OFF', 'Pump stopped manually', 'off');
+                // Pump started successfully
+                addHistoryEntry('ON', 'Running', '');
+                lastAction = `✅ Started at ${new Date().toLocaleTimeString('en-US', { hour12: true, hour: '2-digit', minute: '2-digit' })}`;
+                updateLastActionDisplay();
+              }
+            } 
+            else if (newPumpState === false && previousPumpState === true) {
+              // Pump turned OFF
+              if (newFaultMsg && newFaultMsg.length > 0) {
+                // Pump stopped with fault
+                addHistoryEntry('FAULT', 'Motor Stopped with Fault', newFaultMsg);
+                lastAction = `⚠️ Fault: ${newFaultMsg}`;
+                updateLastActionDisplay();
+              } else {
+                // Pump stopped normally
+                addHistoryEntry('OFF', 'Stopped', '');
+                lastAction = `⏹️ Stopped at ${new Date().toLocaleTimeString('en-US', { hour12: true, hour: '2-digit', minute: '2-digit' })}`;
+                updateLastActionDisplay();
               }
             }
+            else if (newPumpState === true && newFaultMsg !== previousFaultMsg && newFaultMsg.length > 0) {
+              // Pump is ON but fault appeared
+              addHistoryEntry('FAULT', 'Motor Fault Detected', newFaultMsg);
+              lastAction = `⚠️ Fault: ${newFaultMsg}`;
+              updateLastActionDisplay();
+            }
+
+            // Update previous state
+            previousPumpState = newPumpState;
+            previousFaultMsg = newFaultMsg;
           }
 
           pumpState = newPumpState;
-          faultMsg = v1.trim();
+          faultMsg = newFaultMsg;
           remaining = parseInt(v3, 10) || 0;
           autoRestart = (v4.trim() === '1');
 
@@ -2036,8 +1263,6 @@
       if (faultMsg && faultMsg.length > 0 && isOnline) {
         container.style.display = 'inline-block';
         faultMessage.textContent = faultMsg;
-        // Send fault notification
-        sendNotification('⚠️ Fault Detected', `Pump fault: ${faultMsg}`, 'fault');
       } else {
         container.style.display = 'none';
       }
@@ -2076,35 +1301,20 @@
       lastUpdatedTime.textContent = d.toLocaleTimeString('en-US', { hour12: true, hour: '2-digit', minute: '2-digit', second: '2-digit' });
     }
 
-    async function setPump(state, fromSchedule = false) {
-      if (!isOnline && !fromSchedule) {
+    async function setPump(state) {
+      if (!isOnline) {
         alert('Device is offline. Please check your connection.');
         return;
       }
       try {
         await updatePin('V0', state ? '1' : '0');
-        pumpState = state;
-        updatePumpUI();
-        if (!fromSchedule) {
-          const action = state ? 'ON' : 'OFF';
-          const status = state ? 'Running' : 'Stopped';
-          addHistoryEntry(action, status);
-          lastAction = `${action} at ${new Date().toLocaleTimeString('en-US', { hour12: true, hour: '2-digit', minute: '2-digit' })}`;
-          updateLastActionDisplay();
-          
-          // Send notification for manual actions
-          if (state) {
-            sendNotification('✅ Pump Turned ON', 'Pump started successfully', 'on');
-          } else {
-            sendNotification('⏹️ Pump Turned OFF', 'Pump stopped successfully', 'off');
-          }
-        }
+        // Force a refresh to check V1 feedback
+        setTimeout(() => {
+          readAllPins();
+        }, 500);
       } catch (e) {
         console.warn('setPump error', e);
-        if (!fromSchedule) {
-          alert('Failed to control pump. Please check your connection.');
-          sendNotification('❌ Action Failed', 'Failed to control pump', 'fault');
-        }
+        alert('Failed to control pump. Please check your connection.');
       }
     }
 
@@ -2119,7 +1329,6 @@
       }
       try {
         await updatePin('V2', String(minutes));
-        sendNotification('⏱️ Timer Set', `Timer set to ${minutes} minutes`, 'info');
       } catch (e) {
         console.warn('setTimer error', e);
         alert('Failed to set timer. Please check your connection.');
@@ -2136,15 +1345,14 @@
         await updatePin('V4', newVal ? '1' : '0');
         autoRestart = newVal;
         updateAutoRestartUI();
-        sendNotification('🔄 Auto Restart', `Auto restart ${newVal ? 'Enabled' : 'Disabled'}`, 'info');
       } catch (e) {
         console.warn('toggleAutoRestart error', e);
         alert('Failed to toggle auto restart. Please check your connection.');
       }
     }
 
-    btnOn.addEventListener('click', () => setPump(true, false));
-    btnOff.addEventListener('click', () => setPump(false, false));
+    btnOn.addEventListener('click', () => setPump(true));
+    btnOff.addEventListener('click', () => setPump(false));
 
     btnSetTimer.addEventListener('click', () => {
       const val = parseInt(timerInput.value, 10);
@@ -2156,12 +1364,6 @@
     });
 
     autoRestartSwitch.addEventListener('click', toggleAutoRestart);
-
-    // Start schedule checking
-    function startScheduleChecking() {
-      if (scheduleCheckInterval) clearInterval(scheduleCheckInterval);
-      scheduleCheckInterval = setInterval(checkSchedule, 30000);
-    }
 
     let intervalId = null;
 
@@ -2177,31 +1379,23 @@
       window.refreshInterval = intervalId;
     }
 
-    // Check notification permission on load
-    updateNotificationUI();
-
-    // Load schedule and start
-    loadSchedule();
+    // Initialize
     loadHistory();
+    
+    // Set initial previous state
+    previousPumpState = false;
+    previousFaultMsg = '';
 
     if (isDeviceAuthorized()) {
       setTimeout(() => {
         refreshCycle();
         startAutoRefresh();
-        startScheduleChecking();
-        setTimeout(checkSchedule, 2000);
       }, 500);
     }
 
     window.addEventListener('beforeunload', function() {
       if (intervalId) clearInterval(intervalId);
-      if (scheduleCheckInterval) clearInterval(scheduleCheckInterval);
     });
-
-    // Expose sendNotification for debugging
-    window.sendTestNotif = function() {
-      sendNotification('Test Notification', 'This is a test message', 'info');
-    };
 
   })();
 </script>
