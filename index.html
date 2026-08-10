@@ -270,12 +270,8 @@
       gap: 10px;
       animation: pulseBanner 2s infinite;
     }
-    .offline-banner.show {
-      display: flex;
-    }
-    .offline-banner i {
-      font-size: 1.2rem;
-    }
+    .offline-banner.show { display: flex; }
+    .offline-banner i { font-size: 1.2rem; }
     @keyframes pulseBanner {
       0% { opacity: 0.7; }
       50% { opacity: 1; }
@@ -478,8 +474,17 @@
       transform: scale(1.02);
       box-shadow: 0 6px 22px rgba(0, 120, 200, 0.25);
     }
+    .btn-schedule {
+      background: linear-gradient(135deg, #7b4a9e, #5a2d7a);
+      color: white;
+      border: 1px solid #9b6abe;
+      box-shadow: 0 4px 14px rgba(120, 70, 180, 0.2);
+    }
+    .btn-schedule:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 28px rgba(120, 70, 180, 0.35);
+    }
 
-    /* Auto Restart */
     .auto-section {
       margin: 0 0 0.5rem 0;
       padding: 0.8rem 1.5rem;
@@ -547,7 +552,6 @@
       box-shadow: 0 0 16px #b3f0ff, 0 2px 8px rgba(0,0,0,0.2);
     }
 
-    /* Remaining Timer - Below Auto Restart */
     .remaining-section {
       margin: 0.5rem 0 1rem 0;
       padding: 0.8rem 1.5rem;
@@ -606,6 +610,74 @@
       box-shadow: 0 0 16px #0077be44;
     }
 
+    /* SCHEDULE SECTION */
+    .schedule-section {
+      margin: 0.5rem 0 0.8rem 0;
+      padding: 1rem 1.5rem;
+      background: rgba(100, 70, 150, 0.12);
+      backdrop-filter: blur(6px);
+      border-radius: 2rem;
+      border: 1px solid rgba(150, 100, 200, 0.15);
+    }
+    .schedule-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      margin-bottom: 0.8rem;
+    }
+    .schedule-title {
+      color: #c4a0e0;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+    .schedule-title i { color: #9b6abe; }
+    .schedule-row {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .schedule-time-group {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(0, 30, 45, 0.3);
+      padding: 0.4rem 1rem;
+      border-radius: 60px;
+      border: 1px solid rgba(100, 70, 150, 0.15);
+    }
+    .schedule-time-group label {
+      color: #b0d0e0;
+      font-size: 0.8rem;
+    }
+    .schedule-time-group input[type="time"] {
+      background: rgba(0, 30, 45, 0.5);
+      border: 1px solid #236480;
+      border-radius: 40px;
+      padding: 0.4rem 0.8rem;
+      color: #d4f0ff;
+      font-size: 0.9rem;
+      outline: none;
+      width: 110px;
+    }
+    .schedule-time-group input[type="time"]:focus {
+      border-color: #9b6abe;
+      box-shadow: 0 0 16px rgba(120, 70, 180, 0.2);
+    }
+    .schedule-status {
+      font-size: 0.85rem;
+      padding: 0.3rem 1rem;
+      border-radius: 60px;
+      background: rgba(0, 30, 45, 0.3);
+    }
+    .schedule-status.active { color: #6fcf97; border: 1px solid rgba(100, 200, 100, 0.2); }
+    .schedule-status.inactive { color: #f28b82; border: 1px solid rgba(200, 80, 80, 0.2); }
+    .schedule-status.next { color: #ffd700; border: 1px solid rgba(255, 215, 0, 0.2); }
+
     /* History Page */
     .history-list {
       max-height: 380px;
@@ -646,9 +718,8 @@
     }
     .history-item .action.on { color: #6fcf97; }
     .history-item .action.off { color: #f28b82; }
-    .history-item .action .icon {
-      font-size: 1rem;
-    }
+    .history-item .action.schedule { color: #ffd700; }
+    .history-item .action .icon { font-size: 1rem; }
     .history-item .time {
       color: #8ab8d4;
       font-size: 0.8rem;
@@ -676,7 +747,6 @@
     }
     .last-updated i { margin-right: 0.3rem; }
 
-    /* Lock button at bottom */
     .footer-actions {
       display: flex;
       justify-content: flex-end;
@@ -708,6 +778,10 @@
       .btn i { font-size: 1.3rem; }
       .auto-section { flex-direction: column; align-items: center; text-align: center; }
       .remaining-section { flex-direction: column; align-items: center; text-align: center; }
+      .schedule-section { padding: 0.8rem 1rem; }
+      .schedule-row { flex-direction: column; width: 100%; }
+      .schedule-time-group { width: 100%; justify-content: center; }
+      .schedule-time-group input[type="time"] { width: 100%; }
       .header h1 { font-size: 1.5rem; }
       .stat-value { font-size: 1.7rem; }
       .timer-display { font-size: 2rem; }
@@ -769,7 +843,7 @@
     <!-- ===== DASHBOARD PAGE ===== -->
     <div class="page active" id="dashboard-page">
 
-      <!-- Grid: Pump Status + (Removed Timer from here) -->
+      <!-- Grid: Pump Status + Last Action -->
       <div class="grid-2col">
         <div class="stat-card">
           <div class="stat-label"><i class="fas fa-power-off"></i> Pump Status</div>
@@ -820,7 +894,46 @@
         </div>
       </div>
 
-      <!-- Remaining Timer - Below Auto Restart -->
+      <!-- ===== SCHEDULE SECTION ===== -->
+      <div class="schedule-section">
+        <div class="schedule-header">
+          <div class="schedule-title">
+            <i class="fas fa-calendar-clock"></i>
+            <span>Schedule ON/OFF</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+            <span class="schedule-status inactive" id="scheduleStatusText">Disabled</span>
+            <div class="switch" id="scheduleEnableSwitch" style="width: 50px; height: 28px;">
+              <div class="knob" style="width: 22px; height: 22px;"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="schedule-row">
+          <div class="schedule-time-group">
+            <label><i class="fas fa-play" style="color: #6fcf97;"></i> ON</label>
+            <input type="time" id="scheduleOnTime" value="06:00">
+          </div>
+          <div class="schedule-time-group">
+            <label><i class="fas fa-stop" style="color: #f28b82;"></i> OFF</label>
+            <input type="time" id="scheduleOffTime" value="22:00">
+          </div>
+          <button class="btn btn-schedule" id="saveScheduleBtn" style="padding: 0.5rem 1.5rem; font-size: 0.9rem; min-width: auto;">
+            <i class="fas fa-save"></i> Save Schedule
+          </button>
+        </div>
+
+        <div style="margin-top: 0.5rem; display: flex; gap: 1rem; flex-wrap: wrap; font-size: 0.8rem;">
+          <span style="color: #8ab8d4;" id="nextScheduleInfo">
+            <i class="fas fa-clock"></i> Next: <span id="nextScheduledAction">Not scheduled</span>
+          </span>
+          <span style="color: #6f9eb0;">
+            <i class="fas fa-info-circle"></i> Schedule runs daily
+          </span>
+        </div>
+      </div>
+
+      <!-- Remaining Timer -->
       <div class="remaining-section">
         <div class="label">
           <i class="fas fa-hourglass-half"></i>
@@ -995,6 +1108,14 @@
     const autoStatusText = document.getElementById('autoStatusText');
     const autoStatusOn = document.getElementById('autoStatusOn');
 
+    // Schedule elements
+    const scheduleEnableSwitch = document.getElementById('scheduleEnableSwitch');
+    const scheduleOnTime = document.getElementById('scheduleOnTime');
+    const scheduleOffTime = document.getElementById('scheduleOffTime');
+    const saveScheduleBtn = document.getElementById('saveScheduleBtn');
+    const scheduleStatusText = document.getElementById('scheduleStatusText');
+    const nextScheduledAction = document.getElementById('nextScheduledAction');
+
     let pumpState = false;
     let faultMsg = '';
     let remaining = 0;
@@ -1002,6 +1123,129 @@
     let history = [];
     let isOnline = false;
     let lastAction = '';
+    let scheduleEnabled = false;
+    let scheduleOn = '06:00';
+    let scheduleOff = '22:00';
+    let scheduleCheckInterval = null;
+    let lastScheduleCheck = '';
+
+    // Load schedule from localStorage
+    function loadSchedule() {
+      try {
+        const saved = localStorage.getItem('pumpSchedule');
+        if (saved) {
+          const data = JSON.parse(saved);
+          scheduleEnabled = data.enabled || false;
+          scheduleOn = data.onTime || '06:00';
+          scheduleOff = data.offTime || '22:00';
+          scheduleOnTime.value = scheduleOn;
+          scheduleOffTime.value = scheduleOff;
+          updateScheduleUI();
+        }
+      } catch (e) {}
+    }
+
+    function saveSchedule() {
+      localStorage.setItem('pumpSchedule', JSON.stringify({
+        enabled: scheduleEnabled,
+        onTime: scheduleOn,
+        offTime: scheduleOff
+      }));
+    }
+
+    function updateScheduleUI() {
+      if (scheduleEnabled) {
+        scheduleEnableSwitch.classList.add('active');
+        scheduleStatusText.className = 'schedule-status active';
+        scheduleStatusText.textContent = 'Enabled';
+        scheduleOnTime.disabled = false;
+        scheduleOffTime.disabled = false;
+      } else {
+        scheduleEnableSwitch.classList.remove('active');
+        scheduleStatusText.className = 'schedule-status inactive';
+        scheduleStatusText.textContent = 'Disabled';
+        scheduleOnTime.disabled = true;
+        scheduleOffTime.disabled = true;
+      }
+      updateNextScheduleInfo();
+      saveSchedule();
+    }
+
+    function updateNextScheduleInfo() {
+      if (!scheduleEnabled) {
+        nextScheduledAction.textContent = 'Schedule disabled';
+        return;
+      }
+      const now = new Date();
+      const currentTime = now.getHours() * 60 + now.getMinutes();
+      const onMinutes = timeToMinutes(scheduleOn);
+      const offMinutes = timeToMinutes(scheduleOff);
+
+      let nextTime, nextAction;
+
+      if (onMinutes < offMinutes) {
+        if (currentTime < onMinutes) {
+          nextTime = scheduleOn;
+          nextAction = 'ON';
+        } else if (currentTime < offMinutes) {
+          nextTime = scheduleOff;
+          nextAction = 'OFF';
+        } else {
+          nextTime = scheduleOn;
+          nextAction = 'ON (tomorrow)';
+        }
+      } else {
+        if (currentTime < offMinutes) {
+          nextTime = scheduleOff;
+          nextAction = 'OFF';
+        } else if (currentTime < onMinutes) {
+          nextTime = scheduleOn;
+          nextAction = 'ON';
+        } else {
+          nextTime = scheduleOff;
+          nextAction = 'OFF (tomorrow)';
+        }
+      }
+
+      nextScheduledAction.textContent = `${nextAction} at ${nextTime}`;
+    }
+
+    function timeToMinutes(timeStr) {
+      const parts = timeStr.split(':');
+      return parseInt(parts[0]) * 60 + parseInt(parts[1]);
+    }
+
+    // Schedule check function - runs every minute
+    function checkSchedule() {
+      if (!scheduleEnabled || !isOnline) return;
+
+      const now = new Date();
+      const currentTime = now.getHours() * 60 + now.getMinutes();
+      const currentCheck = `${now.getHours()}:${now.getMinutes()}`;
+
+      // Avoid duplicate triggers
+      if (currentCheck === lastScheduleCheck) return;
+      lastScheduleCheck = currentCheck;
+
+      const onMinutes = timeToMinutes(scheduleOn);
+      const offMinutes = timeToMinutes(scheduleOff);
+
+      // Check if we should turn ON
+      if (currentTime === onMinutes && !pumpState) {
+        console.log('Schedule: Turning ON');
+        setPump(true, true);
+        addHistoryEntry('SCHEDULE_ON', 'Auto ON by schedule');
+        return;
+      }
+
+      // Check if we should turn OFF
+      if (currentTime === offMinutes && pumpState) {
+        console.log('Schedule: Turning OFF');
+        setPump(false, true);
+        addHistoryEntry('SCHEDULE_OFF', 'Auto OFF by schedule');
+        return;
+      }
+    }
 
     // Update header time every second
     function updateHeaderTime() {
@@ -1034,7 +1278,7 @@
       const now = new Date();
       const entry = {
         action: action,
-        status: status,
+        status: status || '',
         timestamp: now.getTime(),
         date: now.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
         time: now.toLocaleTimeString('en-US', { hour12: true, hour: '2-digit', minute: '2-digit' }),
@@ -1055,13 +1299,37 @@
       }
       let html = '';
       history.forEach(entry => {
-        const actionClass = entry.action === 'ON' ? 'on' : 'off';
-        const icon = entry.action === 'ON' ? 'fa-play' : 'fa-stop';
+        let actionClass = '';
+        let icon = '';
+        let label = '';
+
+        if (entry.action === 'ON') {
+          actionClass = 'on';
+          icon = 'fa-play';
+          label = 'Pump Turned ON';
+        } else if (entry.action === 'OFF') {
+          actionClass = 'off';
+          icon = 'fa-stop';
+          label = 'Pump Turned OFF';
+        } else if (entry.action === 'SCHEDULE_ON') {
+          actionClass = 'schedule';
+          icon = 'fa-calendar-check';
+          label = '📅 Schedule ON';
+        } else if (entry.action === 'SCHEDULE_OFF') {
+          actionClass = 'schedule';
+          icon = 'fa-calendar-times';
+          label = '📅 Schedule OFF';
+        } else {
+          actionClass = 'schedule';
+          icon = 'fa-clock';
+          label = entry.action || 'Event';
+        }
+
         html += `
           <div class="history-item">
             <span class="action ${actionClass}">
               <i class="fas ${icon} icon"></i>
-              ${entry.action === 'ON' ? 'Pump Turned ON' : 'Pump Turned OFF'}
+              ${label}
               <span style="font-size:0.7rem; color: #6f9eb0; font-weight:400; margin-left:0.3rem;">${entry.status || ''}</span>
             </span>
             <span>
@@ -1146,16 +1414,18 @@
           ]);
 
           const newPumpState = (v0.trim() === '1');
-          
-          // Check if pump state changed
+
           if (newPumpState !== pumpState) {
             const action = newPumpState ? 'ON' : 'OFF';
             const status = newPumpState ? 'Running' : 'Stopped';
-            addHistoryEntry(action, status);
-            lastAction = `${action} at ${new Date().toLocaleTimeString('en-US', { hour12: true, hour: '2-digit', minute: '2-digit' })}`;
-            updateLastActionDisplay();
+            // Don't log if it was a schedule action (already logged)
+            if (!lastScheduleCheck || !scheduleEnabled) {
+              addHistoryEntry(action, status);
+              lastAction = `${action} at ${new Date().toLocaleTimeString('en-US', { hour12: true, hour: '2-digit', minute: '2-digit' })}`;
+              updateLastActionDisplay();
+            }
           }
-          
+
           pumpState = newPumpState;
           faultMsg = v1.trim();
           remaining = parseInt(v3, 10) || 0;
@@ -1244,8 +1514,8 @@
       lastUpdatedTime.textContent = d.toLocaleTimeString('en-US', { hour12: true, hour: '2-digit', minute: '2-digit', second: '2-digit' });
     }
 
-    async function setPump(state) {
-      if (!isOnline) {
+    async function setPump(state, fromSchedule = false) {
+      if (!isOnline && !fromSchedule) {
         alert('Device is offline. Please check your connection.');
         return;
       }
@@ -1253,14 +1523,18 @@
         await updatePin('V0', state ? '1' : '0');
         pumpState = state;
         updatePumpUI();
-        const action = state ? 'ON' : 'OFF';
-        const status = state ? 'Running' : 'Stopped';
-        addHistoryEntry(action, status);
-        lastAction = `${action} at ${new Date().toLocaleTimeString('en-US', { hour12: true, hour: '2-digit', minute: '2-digit' })}`;
-        updateLastActionDisplay();
+        if (!fromSchedule) {
+          const action = state ? 'ON' : 'OFF';
+          const status = state ? 'Running' : 'Stopped';
+          addHistoryEntry(action, status);
+          lastAction = `${action} at ${new Date().toLocaleTimeString('en-US', { hour12: true, hour: '2-digit', minute: '2-digit' })}`;
+          updateLastActionDisplay();
+        }
       } catch (e) {
         console.warn('setPump error', e);
-        alert('Failed to control pump. Please check your connection.');
+        if (!fromSchedule) {
+          alert('Failed to control pump. Please check your connection.');
+        }
       }
     }
 
@@ -1297,8 +1571,8 @@
       }
     }
 
-    btnOn.addEventListener('click', () => setPump(true));
-    btnOff.addEventListener('click', () => setPump(false));
+    btnOn.addEventListener('click', () => setPump(true, false));
+    btnOff.addEventListener('click', () => setPump(false, false));
 
     btnSetTimer.addEventListener('click', () => {
       const val = parseInt(timerInput.value, 10);
@@ -1311,11 +1585,51 @@
 
     autoRestartSwitch.addEventListener('click', toggleAutoRestart);
 
+    // Schedule event listeners
+    scheduleEnableSwitch.addEventListener('click', function() {
+      scheduleEnabled = !scheduleEnabled;
+      updateScheduleUI();
+      if (scheduleEnabled) {
+        // Check schedule immediately
+        checkSchedule();
+      }
+    });
+
+    saveScheduleBtn.addEventListener('click', function() {
+      scheduleOn = scheduleOnTime.value;
+      scheduleOff = scheduleOffTime.value;
+      updateScheduleUI();
+      // Check schedule after saving
+      if (scheduleEnabled) {
+        checkSchedule();
+      }
+      alert('Schedule saved!');
+    });
+
+    // Also update when time inputs change
+    scheduleOnTime.addEventListener('change', function() {
+      scheduleOn = this.value;
+      updateNextScheduleInfo();
+    });
+    scheduleOffTime.addEventListener('change', function() {
+      scheduleOff = this.value;
+      updateNextScheduleInfo();
+    });
+
+    // Start schedule checking
+    function startScheduleChecking() {
+      if (scheduleCheckInterval) clearInterval(scheduleCheckInterval);
+      scheduleCheckInterval = setInterval(checkSchedule, 30000); // Check every 30 seconds
+    }
+
     let intervalId = null;
 
     async function refreshCycle() {
       if (dashboardContainer.classList.contains('show')) {
         await readAllPins();
+        if (scheduleEnabled) {
+          updateNextScheduleInfo();
+        }
       }
     }
 
@@ -1325,17 +1639,23 @@
       window.refreshInterval = intervalId;
     }
 
+    // Load schedule and start
+    loadSchedule();
     loadHistory();
 
     if (isDeviceAuthorized()) {
       setTimeout(() => {
         refreshCycle();
         startAutoRefresh();
+        startScheduleChecking();
+        // Check schedule immediately on startup
+        setTimeout(checkSchedule, 1000);
       }, 500);
     }
 
     window.addEventListener('beforeunload', function() {
       if (intervalId) clearInterval(intervalId);
+      if (scheduleCheckInterval) clearInterval(scheduleCheckInterval);
     });
 
   })();
