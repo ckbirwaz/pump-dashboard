@@ -484,6 +484,23 @@
       transform: scale(1.05);
       box-shadow: 0 8px 28px rgba(120, 70, 180, 0.35);
     }
+    .btn-add {
+      background: rgba(100, 200, 255, 0.1);
+      border: 1px dashed rgba(100, 200, 255, 0.2);
+      color: #b0d9ff;
+      padding: 0.6rem 1.2rem;
+      border-radius: 60px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .btn-add:hover {
+      background: rgba(100, 200, 255, 0.2);
+      border-color: rgba(100, 200, 255, 0.3);
+    }
 
     .auto-section {
       margin: 0 0 0.5rem 0;
@@ -610,14 +627,14 @@
       box-shadow: 0 0 16px #0077be44;
     }
 
-    /* ===== 7-DAY SCHEDULE ===== */
+    /* ===== SCHEDULE STYLES ===== */
     .schedule-section {
       margin: 0.5rem 0 0.8rem 0;
       padding: 1rem 1.5rem;
-      background: rgba(100, 70, 150, 0.12);
+      background: rgba(100, 70, 150, 0.08);
       backdrop-filter: blur(6px);
       border-radius: 2rem;
-      border: 1px solid rgba(150, 100, 200, 0.15);
+      border: 1px solid rgba(150, 100, 200, 0.08);
     }
     .schedule-header {
       display: flex;
@@ -625,101 +642,177 @@
       justify-content: space-between;
       flex-wrap: wrap;
       gap: 0.8rem;
-      margin-bottom: 0.8rem;
+      margin-bottom: 1rem;
     }
     .schedule-title {
       color: #c4a0e0;
-      font-size: 0.95rem;
+      font-size: 1rem;
+      font-weight: 600;
       display: flex;
       align-items: center;
       gap: 0.8rem;
     }
     .schedule-title i { color: #9b6abe; }
-    .schedule-grid {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 0.4rem;
-      margin: 0.5rem 0;
-    }
-    .day-schedule {
-      background: rgba(0, 30, 45, 0.25);
-      border-radius: 1rem;
-      padding: 0.5rem;
-      text-align: center;
+
+    .schedule-item {
+      background: rgba(0, 30, 45, 0.3);
+      border-radius: 1.5rem;
+      padding: 1rem 1.2rem;
+      margin-bottom: 0.8rem;
       border: 1px solid rgba(100, 70, 150, 0.08);
       transition: 0.2s;
     }
-    .day-schedule.active {
-      border-color: rgba(100, 200, 255, 0.2);
+    .schedule-item:hover {
+      border-color: rgba(100, 70, 150, 0.2);
       background: rgba(0, 30, 45, 0.4);
     }
-    .day-schedule .day-label {
-      color: #8ab8d4;
-      font-size: 0.65rem;
-      text-transform: uppercase;
-      font-weight: 600;
-      display: block;
-      margin-bottom: 0.3rem;
-    }
-    .day-schedule .day-label.today {
-      color: #4cc9ff;
-    }
-    .day-schedule .time-input-group {
+    .schedule-item-top {
       display: flex;
-      flex-direction: column;
-      gap: 0.2rem;
-      align-items: center;
-    }
-    .day-schedule .time-input-group label {
-      color: #6f9eb0;
-      font-size: 0.5rem;
-      display: flex;
-      align-items: center;
-      gap: 0.2rem;
-    }
-    .day-schedule .time-input-group label i { font-size: 0.5rem; }
-    .day-schedule .time-input-group input[type="time"] {
-      background: rgba(0, 30, 45, 0.5);
-      border: 1px solid #236480;
-      border-radius: 30px;
-      padding: 0.15rem 0.3rem;
-      color: #d4f0ff;
-      font-size: 0.55rem;
-      outline: none;
-      width: 70px;
-      text-align: center;
-    }
-    .day-schedule .time-input-group input[type="time"]:focus {
-      border-color: #9b6abe;
-      box-shadow: 0 0 10px rgba(120, 70, 180, 0.15);
-    }
-    .day-schedule .day-enabled {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.2rem;
-      margin-top: 0.2rem;
-    }
-    .day-schedule .day-enabled input[type="checkbox"] {
-      accent-color: #6fcf97;
-      width: 12px;
-      height: 12px;
-      cursor: pointer;
-    }
-    .day-schedule .day-enabled label {
-      color: #6f9eb0;
-      font-size: 0.5rem;
-      cursor: pointer;
-    }
-
-    .schedule-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.8rem;
-      margin-top: 0.8rem;
       align-items: center;
       justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.8rem;
     }
+    .schedule-item .days-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.3rem;
+    }
+    .schedule-item .day-badge {
+      background: rgba(100, 200, 255, 0.08);
+      border: 1px solid rgba(100, 200, 255, 0.1);
+      padding: 0.15rem 0.6rem;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      color: #8ab8d4;
+    }
+    .schedule-item .day-badge.active {
+      background: rgba(100, 200, 255, 0.15);
+      border-color: rgba(100, 200, 255, 0.3);
+      color: #b3e4ff;
+    }
+    .schedule-item .time-display {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+    .schedule-item .time-display .time-label {
+      color: #6f9eb0;
+      font-size: 0.7rem;
+    }
+    .schedule-item .time-display .time-value {
+      color: #d4edff;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+    .schedule-item .time-display .time-value.on { color: #6fcf97; }
+    .schedule-item .time-display .time-value.off { color: #f28b82; }
+    .schedule-item .operation-badge {
+      padding: 0.15rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+    .schedule-item .operation-badge.on {
+      background: rgba(100, 200, 100, 0.15);
+      color: #6fcf97;
+      border: 1px solid rgba(100, 200, 100, 0.2);
+    }
+    .schedule-item .operation-badge.off {
+      background: rgba(200, 80, 80, 0.15);
+      color: #f28b82;
+      border: 1px solid rgba(200, 80, 80, 0.2);
+    }
+    .schedule-item .delete-btn {
+      background: rgba(200, 80, 80, 0.1);
+      border: none;
+      color: #f28b82;
+      padding: 0.2rem 0.6rem;
+      border-radius: 30px;
+      cursor: pointer;
+      font-size: 0.7rem;
+      transition: 0.2s;
+    }
+    .schedule-item .delete-btn:hover {
+      background: rgba(200, 80, 80, 0.25);
+    }
+
+    .schedule-empty {
+      text-align: center;
+      color: #6f9eb0;
+      padding: 1.5rem;
+      font-size: 0.9rem;
+    }
+
+    /* Add Schedule Form */
+    .schedule-form {
+      display: none;
+      background: rgba(0, 30, 45, 0.2);
+      border-radius: 1.5rem;
+      padding: 1rem 1.2rem;
+      margin-top: 0.5rem;
+      border: 1px solid rgba(100, 70, 150, 0.1);
+    }
+    .schedule-form.show { display: block; }
+    .schedule-form-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: center;
+    }
+    .schedule-form-group {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .schedule-form-group label {
+      color: #8ab8d4;
+      font-size: 0.8rem;
+    }
+    .schedule-form-group select,
+    .schedule-form-group input[type="time"] {
+      background: rgba(0, 30, 45, 0.5);
+      border: 1px solid #236480;
+      border-radius: 40px;
+      padding: 0.4rem 0.8rem;
+      color: #d4f0ff;
+      font-size: 0.85rem;
+      outline: none;
+    }
+    .schedule-form-group select:focus,
+    .schedule-form-group input[type="time"]:focus {
+      border-color: #9b6abe;
+      box-shadow: 0 0 16px rgba(120, 70, 180, 0.15);
+    }
+    .schedule-form-group select option {
+      background: #0d2b3e;
+      color: #d4f0ff;
+    }
+
+    .day-select-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.3rem;
+    }
+    .day-select-btn {
+      background: rgba(0, 30, 45, 0.3);
+      border: 1px solid rgba(100, 200, 255, 0.08);
+      padding: 0.2rem 0.6rem;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.7rem;
+      color: #6f9eb0;
+      transition: 0.2s;
+    }
+    .day-select-btn:hover {
+      border-color: rgba(100, 200, 255, 0.2);
+    }
+    .day-select-btn.selected {
+      background: rgba(100, 200, 255, 0.15);
+      border-color: rgba(100, 200, 255, 0.3);
+      color: #b3e4ff;
+    }
+
     .schedule-status-text {
       font-size: 0.8rem;
       padding: 0.3rem 1rem;
@@ -728,7 +821,6 @@
     }
     .schedule-status-text.active { color: #6fcf97; border: 1px solid rgba(100, 200, 100, 0.2); }
     .schedule-status-text.inactive { color: #f28b82; border: 1px solid rgba(200, 80, 80, 0.2); }
-    .schedule-status-text.next { color: #ffd700; border: 1px solid rgba(255, 215, 0, 0.2); }
 
     .schedule-global-toggle {
       display: flex;
@@ -849,11 +941,7 @@
       .auto-section { flex-direction: column; align-items: center; text-align: center; }
       .remaining-section { flex-direction: column; align-items: center; text-align: center; }
       .schedule-section { padding: 0.8rem 1rem; }
-      .schedule-grid {
-        grid-template-columns: repeat(4, 1fr);
-        gap: 0.3rem;
-      }
-      .day-schedule .time-input-group input[type="time"] { width: 60px; font-size: 0.5rem; }
+      .schedule-item-top { flex-direction: column; align-items: stretch; }
       .header h1 { font-size: 1.5rem; }
       .stat-value { font-size: 1.7rem; }
       .timer-display { font-size: 2rem; }
@@ -861,13 +949,8 @@
       .nav-tabs { flex-direction: row; }
       .nav-tab { font-size: 0.8rem; padding: 0.5rem; }
       .remaining-value { font-size: 1.6rem; }
-      .schedule-actions { flex-direction: column; align-items: stretch; }
-      .schedule-global-toggle { justify-content: center; }
-    }
-    @media (max-width: 500px) {
-      .schedule-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
+      .schedule-form-row { flex-direction: column; align-items: stretch; }
+      .schedule-form-group { flex-wrap: wrap; }
     }
   </style>
 </head>
@@ -893,7 +976,7 @@
 <div class="dashboard" id="dashboardContainer">
   <div class="glass">
 
-    <!-- Header with Time at Top -->
+    <!-- Header -->
     <div class="header">
       <h1><i class="fas fa-water-pump"></i> Smart Pump</h1>
       <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
@@ -916,13 +999,13 @@
     <!-- Navigation Tabs -->
     <div class="nav-tabs">
       <button class="nav-tab active" data-page="dashboard-page"><i class="fas fa-tachometer-alt"></i> Dashboard</button>
+      <button class="nav-tab" data-page="schedule-page"><i class="fas fa-calendar-alt"></i> Schedule</button>
       <button class="nav-tab" data-page="history-page"><i class="fas fa-history"></i> History</button>
     </div>
 
     <!-- ===== DASHBOARD PAGE ===== -->
     <div class="page active" id="dashboard-page">
 
-      <!-- Grid: Pump Status + Last Action -->
       <div class="grid-2col">
         <div class="stat-card">
           <div class="stat-label"><i class="fas fa-power-off"></i> Pump Status</div>
@@ -950,7 +1033,6 @@
         </div>
       </div>
 
-      <!-- ON/OFF Controls -->
       <div class="controls">
         <div class="btn-group">
           <button class="btn btn-success" id="btnOn"><i class="fas fa-play"></i> TURN ON</button>
@@ -958,7 +1040,6 @@
         </div>
       </div>
 
-      <!-- Auto Restart -->
       <div class="auto-section">
         <div class="label">
           <i class="fas fa-sync-alt"></i>
@@ -973,40 +1054,6 @@
         </div>
       </div>
 
-      <!-- ===== 7-DAY SCHEDULE SECTION ===== -->
-      <div class="schedule-section">
-        <div class="schedule-header">
-          <div class="schedule-title">
-            <i class="fas fa-calendar-week"></i>
-            <span>Weekly Schedule</span>
-          </div>
-          <div class="schedule-global-toggle">
-            <label>Enable Schedule</label>
-            <div class="switch" id="scheduleEnableSwitch" style="width: 50px; height: 28px;">
-              <div class="knob" style="width: 22px; height: 22px;"></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 7 Days Grid -->
-        <div class="schedule-grid" id="scheduleGrid">
-          <!-- Days will be generated by JavaScript -->
-        </div>
-
-        <div class="schedule-actions">
-          <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center;">
-            <span class="schedule-status-text inactive" id="scheduleStatusText">Disabled</span>
-            <span style="color: #6f9eb0; font-size: 0.8rem;" id="nextScheduleInfo">
-              <i class="fas fa-clock"></i> Next: <span id="nextScheduledAction">Not scheduled</span>
-            </span>
-          </div>
-          <button class="btn btn-schedule" id="saveScheduleBtn" style="padding: 0.4rem 1.5rem; font-size: 0.85rem; min-width: auto;">
-            <i class="fas fa-save"></i> Save Schedule
-          </button>
-        </div>
-      </div>
-
-      <!-- Remaining Timer -->
       <div class="remaining-section">
         <div class="label">
           <i class="fas fa-hourglass-half"></i>
@@ -1017,7 +1064,6 @@
         </div>
       </div>
 
-      <!-- Timer Input -->
       <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 0.8rem;">
         <div class="timer-input-group">
           <i class="fas fa-hourglass-start" style="color: #6fc3ff;"></i>
@@ -1027,10 +1073,72 @@
         </div>
       </div>
 
-      <!-- Last Updated -->
       <div class="last-updated" id="lastUpdated">
         <i class="far fa-clock"></i> Last updated: <span id="lastUpdatedTime">—</span>
       </div>
+    </div>
+
+    <!-- ===== SCHEDULE PAGE ===== -->
+    <div class="page" id="schedule-page">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.8rem; margin-bottom: 1rem;">
+        <div style="display: flex; align-items: center; gap: 0.8rem;">
+          <span style="color: #c4a0e0; font-size: 1rem; font-weight: 600;">
+            <i class="fas fa-calendar-alt"></i> Schedule
+          </span>
+          <span class="schedule-status-text inactive" id="scheduleStatusText">Disabled</span>
+        </div>
+        <div class="schedule-global-toggle">
+          <label>Enable Schedule</label>
+          <div class="switch" id="scheduleEnableSwitch" style="width: 50px; height: 28px;">
+            <div class="knob" style="width: 22px; height: 22px;"></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="scheduleList">
+        <!-- Schedule items will be rendered here -->
+      </div>
+
+      <!-- Add Schedule Form -->
+      <div class="schedule-form" id="scheduleForm">
+        <div class="schedule-form-row">
+          <div class="schedule-form-group">
+            <label>Operation</label>
+            <select id="scheduleOperation">
+              <option value="ON">ON</option>
+              <option value="OFF">OFF</option>
+            </select>
+          </div>
+          <div class="schedule-form-group">
+            <label>Time</label>
+            <input type="time" id="scheduleTime" value="06:00">
+          </div>
+          <div class="schedule-form-group">
+            <label>Days</label>
+            <div class="day-select-grid" id="daySelectGrid">
+              <button class="day-select-btn" data-day="Sunday">Sun</button>
+              <button class="day-select-btn" data-day="Monday">Mon</button>
+              <button class="day-select-btn" data-day="Tuesday">Tue</button>
+              <button class="day-select-btn" data-day="Wednesday">Wed</button>
+              <button class="day-select-btn" data-day="Thursday">Thu</button>
+              <button class="day-select-btn" data-day="Friday">Fri</button>
+              <button class="day-select-btn" data-day="Saturday">Sat</button>
+            </div>
+          </div>
+          <div style="display: flex; gap: 0.5rem;">
+            <button class="btn btn-schedule" id="saveScheduleFormBtn" style="padding: 0.4rem 1.2rem; font-size: 0.85rem; min-width: auto;">
+              <i class="fas fa-save"></i> Save
+            </button>
+            <button class="btn" id="cancelScheduleFormBtn" style="padding: 0.4rem 1.2rem; font-size: 0.85rem; min-width: auto; background: rgba(200,80,80,0.1); color: #f28b82;">
+              <i class="fas fa-times"></i> Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-add" id="addScheduleBtn" style="margin-top: 0.5rem;">
+        <i class="fas fa-plus"></i> New Scheduled Operation
+      </button>
     </div>
 
     <!-- ===== HISTORY PAGE ===== -->
@@ -1183,10 +1291,15 @@
 
     // Schedule elements
     const scheduleEnableSwitch = document.getElementById('scheduleEnableSwitch');
-    const scheduleGrid = document.getElementById('scheduleGrid');
-    const saveScheduleBtn = document.getElementById('saveScheduleBtn');
+    const scheduleList = document.getElementById('scheduleList');
+    const scheduleForm = document.getElementById('scheduleForm');
+    const addScheduleBtn = document.getElementById('addScheduleBtn');
+    const saveScheduleFormBtn = document.getElementById('saveScheduleFormBtn');
+    const cancelScheduleFormBtn = document.getElementById('cancelScheduleFormBtn');
+    const scheduleOperation = document.getElementById('scheduleOperation');
+    const scheduleTime = document.getElementById('scheduleTime');
+    const daySelectGrid = document.getElementById('daySelectGrid');
     const scheduleStatusText = document.getElementById('scheduleStatusText');
-    const nextScheduledAction = document.getElementById('nextScheduledAction');
 
     const DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     const DAYS_SHORT = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -1199,145 +1312,94 @@
     let isOnline = false;
     let lastAction = '';
     let scheduleEnabled = false;
-    let scheduleData = {};
+    let scheduleItems = [];
+    let selectedDays = [];
     let scheduleCheckInterval = null;
     let lastScheduleCheck = '';
 
-    // Initialize schedule data with defaults
-    function initScheduleData() {
-      const now = new Date();
-      const today = now.getDay();
-      DAYS.forEach((day, index) => {
-        if (!scheduleData[day]) {
-          // Default: Weekdays ON at 6:00 AM, OFF at 10:00 PM
-          // Weekends: OFF all day
-          const isWeekday = index >= 1 && index <= 5;
-          scheduleData[day] = {
-            enabled: isWeekday,
-            onTime: isWeekday ? '06:00' : '06:00',
-            offTime: isWeekday ? '22:00' : '22:00'
-          };
-        }
-      });
+    // Initialize schedule with default
+    function initSchedule() {
+      scheduleItems = [
+        { id: 1, operation: 'ON', time: '06:00', days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'] },
+        { id: 2, operation: 'OFF', time: '22:00', days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'] }
+      ];
     }
 
     // Load schedule from localStorage
     function loadSchedule() {
       try {
-        const saved = localStorage.getItem('pumpSchedule7Day');
+        const saved = localStorage.getItem('pumpScheduleItems');
         if (saved) {
-          const data = JSON.parse(saved);
-          scheduleEnabled = data.enabled || false;
-          scheduleData = data.days || {};
-          initScheduleData();
-          // Merge saved data
-          Object.keys(scheduleData).forEach(day => {
-            if (data.days && data.days[day]) {
-              scheduleData[day] = data.days[day];
-            }
-          });
+          scheduleItems = JSON.parse(saved);
         } else {
-          initScheduleData();
+          initSchedule();
         }
+        const enabled = localStorage.getItem('pumpScheduleEnabled');
+        scheduleEnabled = enabled === 'true';
       } catch (e) {
-        initScheduleData();
+        initSchedule();
+        scheduleEnabled = false;
       }
-      renderScheduleGrid();
+      renderSchedule();
       updateScheduleUI();
     }
 
     function saveSchedule() {
-      localStorage.setItem('pumpSchedule7Day', JSON.stringify({
-        enabled: scheduleEnabled,
-        days: scheduleData
-      }));
+      localStorage.setItem('pumpScheduleItems', JSON.stringify(scheduleItems));
+      localStorage.setItem('pumpScheduleEnabled', String(scheduleEnabled));
     }
 
-    function renderScheduleGrid() {
-      const today = new Date().getDay();
+    function renderSchedule() {
+      if (scheduleItems.length === 0) {
+        scheduleList.innerHTML = '<div class="schedule-empty"><i class="fas fa-calendar-plus"></i> No schedules set. Click "New Scheduled Operation" to add one.</div>';
+        return;
+      }
+
       let html = '';
-      DAYS.forEach((day, index) => {
-        const data = scheduleData[day] || { enabled: false, onTime: '06:00', offTime: '22:00' };
-        const isToday = index === today;
+      scheduleItems.forEach((item, index) => {
+        const opClass = item.operation === 'ON' ? 'on' : 'off';
+        const opLabel = item.operation === 'ON' ? 'Turn ON' : 'Turn OFF';
+        const today = new Date().getDay();
+        const todayName = DAYS[today];
+
         html += `
-          <div class="day-schedule ${data.enabled ? 'active' : ''}" data-day="${day}">
-            <span class="day-label ${isToday ? 'today' : ''}">${isToday ? '📌 ' : ''}${DAYS_SHORT[index]}</span>
-            <div class="time-input-group">
-              <label><i class="fas fa-play" style="color: #6fcf97;"></i></label>
-              <input type="time" class="schedule-on-time" value="${data.onTime}" ${!data.enabled ? 'disabled' : ''}>
-            </div>
-            <div class="time-input-group">
-              <label><i class="fas fa-stop" style="color: #f28b82;"></i></label>
-              <input type="time" class="schedule-off-time" value="${data.offTime}" ${!data.enabled ? 'disabled' : ''}>
-            </div>
-            <div class="day-enabled">
-              <input type="checkbox" class="day-enable-checkbox" ${data.enabled ? 'checked' : ''}>
-              <label>Enable</label>
+          <div class="schedule-item" data-index="${index}">
+            <div class="schedule-item-top">
+              <div class="time-display">
+                <span class="time-label">
+                  <i class="fas fa-${item.operation === 'ON' ? 'play' : 'stop'}" style="color: ${item.operation === 'ON' ? '#6fcf97' : '#f28b82'};"></i>
+                </span>
+                <span class="time-value ${opClass}">${formatTime12(item.time)}</span>
+                <span class="operation-badge ${opClass}">${opLabel}</span>
+              </div>
+              <div class="days-row">
+                ${DAYS.map(day => {
+                  const isActive = item.days.includes(day);
+                  const isToday = day === todayName;
+                  return `<span class="day-badge ${isActive ? 'active' : ''}" style="${isToday && isActive ? 'border-color: #4cc9ff;' : ''}">
+                    ${isToday && isActive ? '📍' : ''} ${DAYS_SHORT[DAYS.indexOf(day)]}
+                  </span>`;
+                }).join('')}
+              </div>
+              <button class="delete-btn" onclick="deleteScheduleItem(${index})">
+                <i class="fas fa-trash"></i> Remove
+              </button>
             </div>
           </div>
         `;
       });
-      scheduleGrid.innerHTML = html;
-
-      // Add event listeners to day controls
-      document.querySelectorAll('.day-enable-checkbox').forEach((checkbox, index) => {
-        checkbox.addEventListener('change', function() {
-          const day = DAYS[index];
-          scheduleData[day].enabled = this.checked;
-          const dayDiv = this.closest('.day-schedule');
-          dayDiv.classList.toggle('active', this.checked);
-          const timeInputs = dayDiv.querySelectorAll('input[type="time"]');
-          timeInputs.forEach(input => input.disabled = !this.checked);
-          updateNextScheduleInfo();
-        });
-      });
-
-      document.querySelectorAll('.schedule-on-time').forEach((input, index) => {
-        input.addEventListener('change', function() {
-          const day = DAYS[index];
-          scheduleData[day].onTime = this.value;
-          updateNextScheduleInfo();
-        });
-      });
-
-      document.querySelectorAll('.schedule-off-time').forEach((input, index) => {
-        input.addEventListener('change', function() {
-          const day = DAYS[index];
-          scheduleData[day].offTime = this.value;
-          updateNextScheduleInfo();
-        });
-      });
+      scheduleList.innerHTML = html;
     }
 
-    function updateScheduleUI() {
-      if (scheduleEnabled) {
-        scheduleEnableSwitch.classList.add('active');
-        scheduleStatusText.className = 'schedule-status-text active';
-        scheduleStatusText.textContent = 'Schedule Enabled';
-        document.querySelectorAll('.day-enable-checkbox').forEach(cb => cb.disabled = false);
-        document.querySelectorAll('.schedule-on-time, .schedule-off-time').forEach((input, index) => {
-          const day = DAYS[index % 7];
-          input.disabled = !scheduleData[day].enabled;
-        });
-      } else {
-        scheduleEnableSwitch.classList.remove('active');
-        scheduleStatusText.className = 'schedule-status-text inactive';
-        scheduleStatusText.textContent = 'Schedule Disabled';
-        document.querySelectorAll('.day-enable-checkbox').forEach(cb => cb.disabled = true);
-        document.querySelectorAll('.schedule-on-time, .schedule-off-time').forEach(input => input.disabled = true);
+    // Make delete function globally accessible
+    window.deleteScheduleItem = function(index) {
+      if (confirm('Remove this scheduled operation?')) {
+        scheduleItems.splice(index, 1);
+        saveSchedule();
+        renderSchedule();
+        updateScheduleUI();
       }
-      updateNextScheduleInfo();
-      saveSchedule();
-    }
-
-    function getDaySchedule(day) {
-      return scheduleData[day] || { enabled: false, onTime: '06:00', offTime: '22:00' };
-    }
-
-    function timeToMinutes(timeStr) {
-      const parts = timeStr.split(':');
-      return parseInt(parts[0]) * 60 + parseInt(parts[1]);
-    }
+    };
 
     function formatTime12(timeStr) {
       const parts = timeStr.split(':');
@@ -1348,84 +1410,90 @@
       return `${hours}:${minutes} ${ampm}`;
     }
 
-    function updateNextScheduleInfo() {
-      if (!scheduleEnabled) {
-        nextScheduledAction.textContent = 'Schedule disabled';
+    function updateScheduleUI() {
+      if (scheduleEnabled) {
+        scheduleEnableSwitch.classList.add('active');
+        scheduleStatusText.className = 'schedule-status-text active';
+        scheduleStatusText.textContent = 'Enabled';
+      } else {
+        scheduleEnableSwitch.classList.remove('active');
+        scheduleStatusText.className = 'schedule-status-text inactive';
+        scheduleStatusText.textContent = 'Disabled';
+      }
+      saveSchedule();
+    }
+
+    // Day selection for form
+    document.querySelectorAll('.day-select-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        this.classList.toggle('selected');
+      });
+    });
+
+    // Add schedule form
+    addScheduleBtn.addEventListener('click', function() {
+      scheduleForm.classList.toggle('show');
+      if (scheduleForm.classList.contains('show')) {
+        this.textContent = 'Cancel';
+        this.innerHTML = '<i class="fas fa-times"></i> Cancel';
+      } else {
+        this.innerHTML = '<i class="fas fa-plus"></i> New Scheduled Operation';
+      }
+    });
+
+    cancelScheduleFormBtn.addEventListener('click', function() {
+      scheduleForm.classList.remove('show');
+      addScheduleBtn.innerHTML = '<i class="fas fa-plus"></i> New Scheduled Operation';
+    });
+
+    saveScheduleFormBtn.addEventListener('click', function() {
+      const operation = scheduleOperation.value;
+      const time = scheduleTime.value;
+      const selectedDays = [];
+      document.querySelectorAll('.day-select-btn.selected').forEach(btn => {
+        selectedDays.push(btn.dataset.day);
+      });
+
+      if (selectedDays.length === 0) {
+        alert('Please select at least one day.');
         return;
       }
 
-      const now = new Date();
-      const currentDay = now.getDay();
-      const currentMinutes = now.getHours() * 60 + now.getMinutes();
+      scheduleItems.push({
+        id: Date.now(),
+        operation: operation,
+        time: time,
+        days: selectedDays
+      });
 
-      // Check next 7 days
-      let found = false;
-      for (let daysAhead = 0; daysAhead < 7 && !found; daysAhead++) {
-        const checkDay = (currentDay + daysAhead) % 7;
-        const dayName = DAYS[checkDay];
-        const daySchedule = getDaySchedule(dayName);
-        
-        if (!daySchedule.enabled) continue;
+      saveSchedule();
+      renderSchedule();
+      updateScheduleUI();
 
-        const onMinutes = timeToMinutes(daySchedule.onTime);
-        const offMinutes = timeToMinutes(daySchedule.offTime);
+      // Reset form
+      scheduleForm.classList.remove('show');
+      addScheduleBtn.innerHTML = '<i class="fas fa-plus"></i> New Scheduled Operation';
+      document.querySelectorAll('.day-select-btn.selected').forEach(btn => btn.classList.remove('selected'));
+      alert('Schedule added successfully!');
+    });
 
-        let nextTime, nextAction, nextDayOffset = daysAhead;
-
-        if (daysAhead === 0) {
-          // Today
-          if (onMinutes < offMinutes) {
-            if (currentMinutes < onMinutes) {
-              nextTime = daySchedule.onTime;
-              nextAction = 'ON';
-              found = true;
-            } else if (currentMinutes < offMinutes) {
-              nextTime = daySchedule.offTime;
-              nextAction = 'OFF';
-              found = true;
-            }
-          } else {
-            // Schedule crosses midnight
-            if (currentMinutes < offMinutes) {
-              nextTime = daySchedule.offTime;
-              nextAction = 'OFF';
-              found = true;
-            } else if (currentMinutes < onMinutes) {
-              nextTime = daySchedule.onTime;
-              nextAction = 'ON';
-              found = true;
-            }
-          }
-        }
-
-        if (!found) {
-          // Check next day's schedule
-          const nextDayName = DAYS[(checkDay + 1) % 7];
-          const nextDaySchedule = getDaySchedule(nextDayName);
-          if (nextDaySchedule.enabled) {
-            nextTime = nextDaySchedule.onTime;
-            nextAction = 'ON';
-            nextDayOffset = daysAhead + 1;
-            found = true;
-          }
-        }
-
-        if (found) {
-          const dayLabel = nextDayOffset === 0 ? 'Today' : 
-                           nextDayOffset === 1 ? 'Tomorrow' : 
-                           `${DAYS[(currentDay + nextDayOffset) % 7]}`;
-          const time12 = formatTime12(nextTime);
-          nextScheduledAction.textContent = `${nextAction} at ${time12} (${dayLabel})`;
-          return;
-        }
+    // Schedule enable toggle
+    scheduleEnableSwitch.addEventListener('click', function() {
+      scheduleEnabled = !scheduleEnabled;
+      updateScheduleUI();
+      if (scheduleEnabled) {
+        checkSchedule();
       }
+    });
 
-      nextScheduledAction.textContent = 'No schedule set';
+    function timeToMinutes(timeStr) {
+      const parts = timeStr.split(':');
+      return parseInt(parts[0]) * 60 + parseInt(parts[1]);
     }
 
     // Schedule check function - runs every minute
     function checkSchedule() {
-      if (!scheduleEnabled || !isOnline) return;
+      if (!scheduleEnabled || !isOnline || scheduleItems.length === 0) return;
 
       const now = new Date();
       const currentDay = now.getDay();
@@ -1436,31 +1504,27 @@
       lastScheduleCheck = currentCheck;
 
       const dayName = DAYS[currentDay];
-      const daySchedule = getDaySchedule(dayName);
-      
-      if (!daySchedule.enabled) return;
 
-      const onMinutes = timeToMinutes(daySchedule.onTime);
-      const offMinutes = timeToMinutes(daySchedule.offTime);
+      scheduleItems.forEach(item => {
+        if (!item.days.includes(dayName)) return;
 
-      // Check ON trigger
-      if (currentMinutes === onMinutes && !pumpState) {
-        console.log(`Schedule (${dayName}): Turning ON at ${daySchedule.onTime}`);
-        setPump(true, true);
-        addHistoryEntry('SCHEDULE_ON', `Auto ON (${dayName})`);
-        return;
-      }
+        const itemMinutes = timeToMinutes(item.time);
 
-      // Check OFF trigger
-      if (currentMinutes === offMinutes && pumpState) {
-        console.log(`Schedule (${dayName}): Turning OFF at ${daySchedule.offTime}`);
-        setPump(false, true);
-        addHistoryEntry('SCHEDULE_OFF', `Auto OFF (${dayName})`);
-        return;
-      }
+        if (currentMinutes === itemMinutes) {
+          if (item.operation === 'ON' && !pumpState) {
+            console.log(`Schedule: Turning ON at ${item.time} (${dayName})`);
+            setPump(true, true);
+            addHistoryEntry('SCHEDULE_ON', `Auto ON (${dayName})`);
+          } else if (item.operation === 'OFF' && pumpState) {
+            console.log(`Schedule: Turning OFF at ${item.time} (${dayName})`);
+            setPump(false, true);
+            addHistoryEntry('SCHEDULE_OFF', `Auto OFF (${dayName})`);
+          }
+        }
+      });
     }
 
-    // Update header time every second
+    // Update header time
     function updateHeaderTime() {
       const d = new Date();
       headerTime.textContent = d.toLocaleTimeString('en-US', { hour12: true, hour: '2-digit', minute: '2-digit', second: '2-digit' });
@@ -1798,35 +1862,6 @@
 
     autoRestartSwitch.addEventListener('click', toggleAutoRestart);
 
-    // Schedule event listeners
-    scheduleEnableSwitch.addEventListener('click', function() {
-      scheduleEnabled = !scheduleEnabled;
-      updateScheduleUI();
-      if (scheduleEnabled) {
-        checkSchedule();
-      }
-    });
-
-    saveScheduleBtn.addEventListener('click', function() {
-      // Collect data from grid
-      document.querySelectorAll('.day-schedule').forEach((dayDiv, index) => {
-        const day = DAYS[index];
-        const checkbox = dayDiv.querySelector('.day-enable-checkbox');
-        const onInput = dayDiv.querySelector('.schedule-on-time');
-        const offInput = dayDiv.querySelector('.schedule-off-time');
-        scheduleData[day] = {
-          enabled: checkbox.checked,
-          onTime: onInput.value,
-          offTime: offInput.value
-        };
-      });
-      updateScheduleUI();
-      if (scheduleEnabled) {
-        checkSchedule();
-      }
-      alert('Weekly schedule saved!');
-    });
-
     // Start schedule checking
     function startScheduleChecking() {
       if (scheduleCheckInterval) clearInterval(scheduleCheckInterval);
@@ -1838,9 +1873,6 @@
     async function refreshCycle() {
       if (dashboardContainer.classList.contains('show')) {
         await readAllPins();
-        if (scheduleEnabled) {
-          updateNextScheduleInfo();
-        }
       }
     }
 
@@ -1859,7 +1891,7 @@
         refreshCycle();
         startAutoRefresh();
         startScheduleChecking();
-        setTimeout(checkSchedule, 1000);
+        setTimeout(checkSchedule, 2000);
       }, 500);
     }
 
