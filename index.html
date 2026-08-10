@@ -6,6 +6,7 @@
   <title>Smart Pump Controller</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
+    /* ===== All existing styles from previous version ===== */
     * {
       margin: 0;
       padding: 0;
@@ -171,6 +172,66 @@
       gap: 10px;
     }
     .security-badge i { font-size: 1rem; color: #4cc9ff; }
+
+    /* Notification Banner */
+    .notification-banner {
+      background: rgba(100, 200, 255, 0.08);
+      border: 1px solid rgba(100, 200, 255, 0.15);
+      border-radius: 12px;
+      padding: 8px 14px;
+      margin: 0 0 1.5rem 0;
+      color: #7fc9e8;
+      font-size: 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .notification-banner:hover {
+      background: rgba(100, 200, 255, 0.15);
+    }
+    .notification-banner i { font-size: 1rem; color: #4cc9ff; }
+    .notification-banner .status { 
+      padding: 0.2rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+    .notification-banner .status.granted {
+      background: rgba(100, 200, 100, 0.15);
+      color: #6fcf97;
+    }
+    .notification-banner .status.denied {
+      background: rgba(200, 80, 80, 0.15);
+      color: #f28b82;
+    }
+    .notification-banner .status.default {
+      background: rgba(255, 215, 0, 0.15);
+      color: #ffd700;
+    }
+    .notification-toggle {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .notification-toggle label {
+      color: #8ab8d4;
+      font-size: 0.7rem;
+    }
+    .notification-toggle .switch {
+      width: 36px;
+      height: 20px;
+    }
+    .notification-toggle .switch .knob {
+      width: 16px;
+      height: 16px;
+    }
+    .notification-toggle .switch.active .knob {
+      left: 18px;
+    }
+
     .nav-tabs {
       display: flex;
       gap: 0.5rem;
@@ -627,7 +688,7 @@
       box-shadow: 0 0 16px #0077be44;
     }
 
-    /* ===== SCHEDULE STYLES ===== */
+    /* Schedule Styles - condensed */
     .schedule-section {
       margin: 0.5rem 0 0.8rem 0;
       padding: 1rem 1.5rem;
@@ -761,7 +822,6 @@
       font-size: 0.9rem;
     }
 
-    /* Add/Edit Schedule Form */
     .schedule-form {
       display: none;
       background: rgba(0, 30, 45, 0.2);
@@ -968,6 +1028,8 @@
       .remaining-value { font-size: 1.6rem; }
       .schedule-form-row { flex-direction: column; align-items: stretch; }
       .schedule-form-group { flex-wrap: wrap; }
+      .notification-banner { flex-direction: column; align-items: stretch; text-align: center; }
+      .notification-toggle { justify-content: center; }
     }
   </style>
 </head>
@@ -1004,6 +1066,21 @@
         <span style="color: #8ab8d4; font-size: 0.85rem; background: rgba(0,35,50,0.5); padding: 0.3rem 1rem; border-radius: 60px; border: 1px solid rgba(0,200,255,0.08);">
           <i class="far fa-clock"></i> <span id="headerTime">--:--:--</span>
         </span>
+      </div>
+    </div>
+
+    <!-- NOTIFICATION BANNER -->
+    <div class="notification-banner" id="notificationBanner">
+      <div>
+        <i class="fas fa-bell"></i>
+        <span id="notificationText">🔔 Enable notifications for pump alerts</span>
+      </div>
+      <div class="notification-toggle">
+        <label>Notifications</label>
+        <div class="switch" id="notificationSwitch">
+          <div class="knob"></div>
+        </div>
+        <span class="status default" id="notificationStatus">Off</span>
       </div>
     </div>
 
@@ -1113,10 +1190,9 @@
       </div>
 
       <div id="scheduleList">
-        <!-- Schedule items will be rendered here -->
+        <!-- Schedule items rendered by JS -->
       </div>
 
-      <!-- Add/Edit Schedule Form -->
       <div class="schedule-form" id="scheduleForm">
         <div class="schedule-form-row">
           <div class="schedule-form-group">
@@ -1282,6 +1358,121 @@
       });
     });
 
+    // ===== NOTIFICATIONS =====
+    const notificationBanner = document.getElementById('notificationBanner');
+    const notificationSwitch = document.getElementById('notificationSwitch');
+    const notificationStatus = document.getElementById('notificationStatus');
+    const notificationText = document.getElementById('notificationText');
+    let notificationsEnabled = false;
+
+    function checkNotificationPermission() {
+      if (!('Notification' in window)) {
+        notificationStatus.className = 'status denied';
+        notificationStatus.textContent = 'Unsupported';
+        notificationText.textContent = '❌ Notifications not supported in this browser';
+        return false;
+      }
+
+      const permission = Notification.permission;
+      
+      if (permission === 'granted') {
+        notificationStatus.className = 'status granted';
+        notificationStatus.textContent = 'Enabled';
+        notificationText.textContent = '🔔 Notifications enabled';
+        notificationSwitch.classList.add('active');
+        notificationsEnabled = true;
+        return true;
+      } else if (permission === 'denied') {
+        notificationStatus.className = 'status denied';
+        notificationStatus.textContent = 'Blocked';
+        notificationText.textContent = '🔕 Notifications blocked. Click to enable in browser settings.';
+        notificationSwitch.classList.remove('active');
+        notificationsEnabled = false;
+        return false;
+      } else {
+        notificationStatus.className = 'status default';
+        notificationStatus.textContent = 'Off';
+        notificationText.textContent = '🔔 Click to enable notifications';
+        notificationSwitch.classList.remove('active');
+        notificationsEnabled = false;
+        return false;
+      }
+    }
+
+    function requestNotificationPermission() {
+      if (!('Notification' in window)) {
+        alert('Notifications are not supported in this browser.');
+        return;
+      }
+
+      if (Notification.permission === 'granted') {
+        notificationsEnabled = true;
+        checkNotificationPermission();
+        return;
+      }
+
+      if (Notification.permission === 'denied') {
+        alert('Notifications are blocked. Please enable them in your browser settings.');
+        return;
+      }
+
+      Notification.requestPermission().then(permission => {
+        if (permission === 'granted') {
+          notificationsEnabled = true;
+          checkNotificationPermission();
+          // Send test notification
+          sendNotification('✅ Notifications Enabled', 'Smart Pump will now send you alerts!', 'success');
+        } else {
+          notificationsEnabled = false;
+          checkNotificationPermission();
+        }
+      });
+    }
+
+    function sendNotification(title, message, type = 'info') {
+      if (!notificationsEnabled || Notification.permission !== 'granted') {
+        return;
+      }
+
+      const icon = type === 'on' ? '🔵' : type === 'off' ? '🔴' : '🔔';
+      const iconEmoji = type === 'on' ? '🔵' : type === 'off' ? '🔴' : '🟡';
+      
+      try {
+        const notification = new Notification(`🔔 Smart Pump`, {
+          body: `${title}\n${message}`,
+          icon: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Ccircle cx="50" cy="50" r="45" fill="%23007bff"/%3E%3Ctext x="50" y="65" text-anchor="middle" font-size="40" fill="white"%3E💧%3C/text%3E%3C/svg%3E',
+          silent: false,
+          requireInteraction: true
+        });
+
+        notification.onclick = function() {
+          window.focus();
+          this.close();
+        };
+
+        setTimeout(() => notification.close(), 10000);
+      } catch (e) {
+        console.warn('Notification error:', e);
+      }
+    }
+
+    // Notification toggle click
+    notificationBanner.addEventListener('click', function(e) {
+      // Don't trigger if clicking on the switch
+      if (e.target.closest('.switch')) return;
+      requestNotificationPermission();
+    });
+
+    notificationSwitch.addEventListener('click', function(e) {
+      e.stopPropagation();
+      if (notificationsEnabled) {
+        // If enabled, don't turn off via switch - use banner click for settings
+        alert('To disable notifications, click the banner and select "Block" in browser settings.\n\nOr click "🔔 Click to enable notifications" banner.');
+      } else {
+        requestNotificationPermission();
+      }
+    });
+
     // ===== PUMP CONTROLLER =====
     const SERVER = "https://blr1.blynk.cloud";
     const TOKEN = "Ge3cwEz3nPc3K2Eq-aaoIYluyA8KUwik";
@@ -1413,7 +1604,6 @@
       scheduleList.innerHTML = html;
     }
 
-    // Make functions globally accessible
     window.deleteScheduleItem = function(index) {
       if (confirm('Remove this scheduled operation?')) {
         scheduleItems.splice(index, 1);
@@ -1427,23 +1617,16 @@
       const item = scheduleItems[index];
       editingIndex = index;
       
-      // Fill form with item data
       scheduleOperation.value = item.operation;
       scheduleTime.value = item.time;
       
-      // Select days
       document.querySelectorAll('.day-select-btn').forEach(btn => {
         btn.classList.toggle('selected', item.days.includes(btn.dataset.day));
       });
       
-      // Show form
       scheduleForm.classList.add('show');
       addScheduleBtn.innerHTML = '<i class="fas fa-times"></i> Cancel';
-      
-      // Change save button text
       saveScheduleFormBtn.innerHTML = '<i class="fas fa-edit"></i> Update';
-      
-      // Scroll to form
       scheduleForm.scrollIntoView({ behavior: 'smooth', block: 'center' });
     };
 
@@ -1476,20 +1659,16 @@
       });
     });
 
-    // Add schedule form
     addScheduleBtn.addEventListener('click', function() {
       if (scheduleForm.classList.contains('show')) {
-        // Cancel - close form
         scheduleForm.classList.remove('show');
         editingIndex = -1;
         this.innerHTML = '<i class="fas fa-plus"></i> New Scheduled Operation';
         saveScheduleFormBtn.innerHTML = '<i class="fas fa-save"></i> Save';
-        // Clear day selections
         document.querySelectorAll('.day-select-btn.selected').forEach(btn => btn.classList.remove('selected'));
       } else {
         scheduleForm.classList.add('show');
         this.innerHTML = '<i class="fas fa-times"></i> Cancel';
-        // Reset form
         editingIndex = -1;
         saveScheduleFormBtn.innerHTML = '<i class="fas fa-save"></i> Save';
         document.querySelectorAll('.day-select-btn.selected').forEach(btn => btn.classList.remove('selected'));
@@ -1518,7 +1697,6 @@
       }
 
       if (editingIndex >= 0) {
-        // Update existing schedule
         scheduleItems[editingIndex] = {
           ...scheduleItems[editingIndex],
           operation: operation,
@@ -1528,7 +1706,6 @@
         editingIndex = -1;
         saveScheduleFormBtn.innerHTML = '<i class="fas fa-save"></i> Save';
       } else {
-        // Add new schedule
         scheduleItems.push({
           id: Date.now(),
           operation: operation,
@@ -1541,7 +1718,6 @@
       renderSchedule();
       updateScheduleUI();
 
-      // Reset form
       scheduleForm.classList.remove('show');
       addScheduleBtn.innerHTML = '<i class="fas fa-plus"></i> New Scheduled Operation';
       document.querySelectorAll('.day-select-btn.selected').forEach(btn => btn.classList.remove('selected'));
@@ -1549,7 +1725,6 @@
       alert(editingIndex >= 0 ? 'Schedule updated successfully!' : 'Schedule added successfully!');
     });
 
-    // Schedule enable toggle
     scheduleEnableSwitch.addEventListener('click', function() {
       scheduleEnabled = !scheduleEnabled;
       updateScheduleUI();
@@ -1563,7 +1738,6 @@
       return parseInt(parts[0]) * 60 + parseInt(parts[1]);
     }
 
-    // Schedule check function - runs every minute
     function checkSchedule() {
       if (!scheduleEnabled || !isOnline || scheduleItems.length === 0) return;
 
@@ -1587,10 +1761,12 @@
             console.log(`Schedule: Turning ON at ${item.time} (${dayName})`);
             setPump(true, true);
             addHistoryEntry('SCHEDULE_ON', `Auto ON (${dayName})`);
+            sendNotification('📅 Schedule ON', `Pump turned ON at ${formatTime12(item.time)} (${dayName})`, 'on');
           } else if (item.operation === 'OFF' && pumpState) {
             console.log(`Schedule: Turning OFF at ${item.time} (${dayName})`);
             setPump(false, true);
             addHistoryEntry('SCHEDULE_OFF', `Auto OFF (${dayName})`);
+            sendNotification('📅 Schedule OFF', `Pump turned OFF at ${formatTime12(item.time)} (${dayName})`, 'off');
           }
         }
       });
@@ -1772,6 +1948,13 @@
               addHistoryEntry(action, status);
               lastAction = `${action} at ${new Date().toLocaleTimeString('en-US', { hour12: true, hour: '2-digit', minute: '2-digit' })}`;
               updateLastActionDisplay();
+              
+              // Send notification for manual actions
+              if (action === 'ON') {
+                sendNotification('⚡ Pump Turned ON', `Pump started manually`, 'on');
+              } else {
+                sendNotification('⏹️ Pump Turned OFF', `Pump stopped manually`, 'off');
+              }
             }
           }
 
@@ -1825,6 +2008,10 @@
       if (faultMsg && faultMsg.length > 0 && isOnline) {
         container.style.display = 'inline-block';
         faultMessage.textContent = faultMsg;
+        // Send fault notification
+        if (notificationsEnabled) {
+          sendNotification('⚠️ Fault Detected', `Pump fault: ${faultMsg}`, 'off');
+        }
       } else {
         container.style.display = 'none';
       }
@@ -1878,11 +2065,19 @@
           addHistoryEntry(action, status);
           lastAction = `${action} at ${new Date().toLocaleTimeString('en-US', { hour12: true, hour: '2-digit', minute: '2-digit' })}`;
           updateLastActionDisplay();
+          
+          // Send notification for manual actions
+          if (state) {
+            sendNotification('✅ Pump Turned ON', 'Pump started successfully', 'on');
+          } else {
+            sendNotification('⏹️ Pump Turned OFF', 'Pump stopped successfully', 'off');
+          }
         }
       } catch (e) {
         console.warn('setPump error', e);
         if (!fromSchedule) {
           alert('Failed to control pump. Please check your connection.');
+          sendNotification('❌ Action Failed', 'Failed to control pump', 'off');
         }
       }
     }
@@ -1898,6 +2093,7 @@
       }
       try {
         await updatePin('V2', String(minutes));
+        sendNotification('⏱️ Timer Set', `Timer set to ${minutes} minutes`, 'info');
       } catch (e) {
         console.warn('setTimer error', e);
         alert('Failed to set timer. Please check your connection.');
@@ -1914,6 +2110,7 @@
         await updatePin('V4', newVal ? '1' : '0');
         autoRestart = newVal;
         updateAutoRestartUI();
+        sendNotification('🔄 Auto Restart', `Auto restart ${newVal ? 'Enabled' : 'Disabled'}`, 'info');
       } catch (e) {
         console.warn('toggleAutoRestart error', e);
         alert('Failed to toggle auto restart. Please check your connection.');
@@ -1953,6 +2150,9 @@
       intervalId = setInterval(refreshCycle, 1000);
       window.refreshInterval = intervalId;
     }
+
+    // Check notification permission on load
+    checkNotificationPermission();
 
     // Load schedule and start
     loadSchedule();
