@@ -1,5 +1,4 @@
-
-      <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -616,7 +615,7 @@
       box-shadow: 0 0 16px #0077be44;
     }
 
-    /* History Page */
+    /* History Page - NO CLEAR BUTTON */
     .history-list {
       max-height: 380px;
       overflow-y: auto;
@@ -686,6 +685,23 @@
       font-size: 0.9rem;
     }
 
+    .history-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.8rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .history-header span {
+      color: #8ab8d4;
+      font-size: 0.9rem;
+    }
+    .history-header .auto-delete-info {
+      color: #6f9eb0;
+      font-size: 0.7rem;
+    }
+
     .last-updated {
       text-align: right;
       font-size: 0.75rem;
@@ -735,6 +751,7 @@
       .nav-tabs { flex-direction: row; }
       .nav-tab { font-size: 0.8rem; padding: 0.5rem; }
       .remaining-value { font-size: 1.6rem; }
+      .history-header { flex-direction: column; align-items: flex-start; }
     }
   </style>
 </head>
@@ -861,19 +878,17 @@
       </div>
     </div>
 
-    <!-- ===== HISTORY PAGE ===== -->
+    <!-- ===== HISTORY PAGE (NO CLEAR BUTTON) ===== -->
     <div class="page" id="history-page">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem; flex-wrap: wrap; gap: 0.5rem;">
-        <span style="color: #8ab8d4; font-size: 0.9rem;"><i class="fas fa-list"></i> Pump Activity Log</span>
-        <button class="btn" style="padding: 0.3rem 1rem; font-size: 0.75rem; background: rgba(200, 80, 80, 0.1); border: 1px solid rgba(200, 80, 80, 0.15); color: #f28b82;" id="clearHistoryBtn">
-          <i class="fas fa-trash"></i> Clear
-        </button>
+      <div class="history-header">
+        <span><i class="fas fa-list"></i> Pump Activity Log</span>
+        <span class="auto-delete-info"><i class="fas fa-clock"></i> Auto-deletes after 1 day</span>
       </div>
       <div class="history-list" id="historyList">
         <div class="history-empty"><i class="fas fa-inbox"></i> No history yet</div>
       </div>
       <div style="margin-top: 0.5rem; font-size: 0.7rem; color: #6f9eb0;">
-        <i class="fas fa-info-circle"></i> Shows pump start/stop events with status feedback
+        <i class="fas fa-info-circle"></i> Shows verified pump start/stop events
       </div>
     </div>
 
@@ -1020,11 +1035,11 @@
     let lastAction = '';
 
     // ===== 5-SECOND VERIFICATION SYSTEM =====
-    let pendingHistory = null;        // Stores pending history entry
-    let verificationTimer = null;     // Timer reference
-    let isVerifying = false;          // Flag to prevent duplicate verification
-    let confirmedPumpState = false;   // Last confirmed state
-    let confirmedFaultMsg = '';       // Last confirmed fault message
+    let pendingHistory = null;
+    let verificationTimer = null;
+    let isVerifying = false;
+    let confirmedPumpState = false;
+    let confirmedFaultMsg = '';
 
     // Update header time
     function updateHeaderTime() {
@@ -1034,14 +1049,26 @@
     setInterval(updateHeaderTime, 1000);
     updateHeaderTime();
 
+    // ===== AUTO-DELETE HISTORY AFTER 1 DAY =====
+    function cleanOldHistory() {
+      const oneDayAgo = Date.now() - (24 * 60 * 60 * 1000);
+      const originalLength = history.length;
+      history = history.filter(entry => entry.timestamp > oneDayAgo);
+      if (history.length !== originalLength) {
+        saveHistory();
+        renderHistory();
+      }
+    }
+
     // Load history
     function loadHistory() {
       try {
         const saved = localStorage.getItem('pumpHistory');
         if (saved) {
           history = JSON.parse(saved);
-          const sevenDaysAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
-          history = history.filter(entry => entry.timestamp > sevenDaysAgo);
+          // Auto-delete entries older than 1 day
+          const oneDayAgo = Date.now() - (24 * 60 * 60 * 1000);
+          history = history.filter(entry => entry.timestamp > oneDayAgo);
           if (history.length > 100) history = history.slice(0, 100);
           saveHistory();
         }
@@ -1053,11 +1080,11 @@
       localStorage.setItem('pumpHistory', JSON.stringify(history));
     }
 
-    // ===== FIXED: History with 5-second verification =====
+    // ===== FIXED: History - Only record verified events =====
     function addHistoryEntry(action, status, faultMsgText) {
       const now = new Date();
       const entry = {
-        action: action, // 'ON', 'OFF'
+        action: action, // 'ON' or 'OFF' only
         status: status || '',
         fault: faultMsgText || '',
         timestamp: now.getTime(),
@@ -1066,8 +1093,9 @@
         day: DAYS[now.getDay()]
       };
       history.unshift(entry);
-      const sevenDaysAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
-      history = history.filter(entry => entry.timestamp > sevenDaysAgo);
+      // Keep only last 100 entries and auto-delete after 1 day
+      const oneDayAgo = Date.now() - (24 * 60 * 60 * 1000);
+      history = history.filter(e => e.timestamp > oneDayAgo);
       if (history.length > 100) history = history.slice(0, 100);
       saveHistory();
       renderHistory();
@@ -1118,14 +1146,6 @@
       historyList.innerHTML = html;
     }
 
-    document.getElementById('clearHistoryBtn').addEventListener('click', function() {
-      if (confirm('Clear all history?')) {
-        history = [];
-        saveHistory();
-        renderHistory();
-      }
-    });
-
     async function fetchPin(pin) {
       const url = `${SERVER}/external/api/get?token=${TOKEN}&pin=${pin}`;
       const res = await fetch(url);
@@ -1174,31 +1194,23 @@
     }
 
     // ===== VERIFICATION FUNCTION =====
-    function startVerification(initialPumpState, initialFaultMsg, statusChangeType) {
-      // Clear any existing timer
+    function startVerification(initialPumpState, initialFaultMsg) {
       if (verificationTimer) {
         clearTimeout(verificationTimer);
         verificationTimer = null;
       }
 
-      // If already verifying, cancel and restart
       isVerifying = true;
-
-      // Store the pending history entry
       pendingHistory = {
         pumpState: initialPumpState,
-        faultMsg: initialFaultMsg,
-        type: statusChangeType // 'ON' or 'OFF'
+        faultMsg: initialFaultMsg
       };
 
-      // Start 5-second verification timer
       verificationTimer = setTimeout(() => {
-        // After 5 seconds, check the actual current state again
         readAllPinsForVerification();
       }, 5000);
     }
 
-    // Special verification read
     async function readAllPinsForVerification() {
       if (!dashboardContainer.classList.contains('show')) return;
       try {
@@ -1210,15 +1222,12 @@
         const currentPumpState = (v0.trim() === '1');
         const currentFaultMsg = v1.trim();
 
-        // Check if state is still the same as when verification started
         if (pendingHistory) {
           const pendingState = pendingHistory.pumpState;
           const pendingFault = pendingHistory.faultMsg;
-          const pendingType = pendingHistory.type;
 
-          // If the current state matches the pending state, record it
+          // Only record if state is STABLE (same as pending)
           if (currentPumpState === pendingState) {
-            // Status confirmed - record history
             if (pendingState === true) {
               // Pump ON
               if (currentFaultMsg && currentFaultMsg.length > 0) {
@@ -1242,19 +1251,15 @@
                 updateLastActionDisplay();
               }
             }
-
-            // Update confirmed state
             confirmedPumpState = currentPumpState;
             confirmedFaultMsg = currentFaultMsg;
           }
 
-          // Clear pending
           pendingHistory = null;
           isVerifying = false;
           verificationTimer = null;
         }
 
-        // Update live UI
         pumpState = currentPumpState;
         faultMsg = currentFaultMsg;
         updatePumpUI();
@@ -1276,6 +1281,9 @@
         updateDeviceStatus(isConnected);
         updateControlsState(isConnected);
 
+        // Auto-clean old history on each refresh
+        cleanOldHistory();
+
         if (isConnected) {
           const [v0, v1, v3, v4] = await Promise.all([
             fetchPin('V0'),
@@ -1287,19 +1295,14 @@
           const newPumpState = (v0.trim() === '1');
           const newFaultMsg = v1.trim();
 
-          // ===== 5-SECOND VERIFICATION LOGIC =====
-          // Only start verification if state changed AND we're not already verifying
+          // Only trigger verification if state changed from confirmed state
           if (newPumpState !== confirmedPumpState && !isVerifying) {
-            // Determine change type
-            const changeType = newPumpState ? 'ON' : 'OFF';
-            startVerification(newPumpState, newFaultMsg, changeType);
+            startVerification(newPumpState, newFaultMsg);
           }
 
-          // If verification is already running and state changed again, restart verification
+          // If verification is running and state changed again, restart
           if (newPumpState !== pendingHistory?.pumpState && isVerifying) {
-            // State changed during verification - restart
-            const changeType = newPumpState ? 'ON' : 'OFF';
-            startVerification(newPumpState, newFaultMsg, changeType);
+            startVerification(newPumpState, newFaultMsg);
           }
 
           // Always update live UI immediately
@@ -1398,8 +1401,8 @@
       }
       try {
         await updatePin('V0', state ? '1' : '0');
-        // Reset confirmed state to trigger verification on next read
-        confirmedPumpState = !state; // Force change detection
+        // Force confirmed state change to trigger verification
+        confirmedPumpState = !state;
         setTimeout(() => {
           readAllPins();
         }, 500);
