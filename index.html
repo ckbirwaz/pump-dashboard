@@ -184,6 +184,7 @@
     }
     .security-badge i { font-size: 1rem; color: #4cc9ff; }
 
+    /* ===== NAV TABS ===== */
     .nav-tabs {
       display: flex;
       gap: 0.5rem;
@@ -214,13 +215,15 @@
     .nav-tab:hover { color: #d4edff; }
     .page { display: none; }
     .page.active { display: block; }
+
+    /* ===== HEADER - REARRANGED ===== */
     .header {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      margin-bottom: 1rem;
-      flex-wrap: wrap;
-      gap: 0.8rem 1rem;
+      justify-content: center;
+      flex-direction: column;
+      margin-bottom: 1.5rem;
+      gap: 0.5rem;
     }
     .header h1 {
       font-size: 2rem;
@@ -239,12 +242,18 @@
       color: #4cc9ff;
       filter: drop-shadow(0 0 6px #4cc9ff66);
     }
+    .header .status-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
     .device-status-badge {
       display: flex;
       align-items: center;
       gap: 0.6rem;
       background: rgba(0, 35, 50, 0.7);
-      padding: 0.4rem 1.2rem;
+      padding: 0.3rem 1.2rem;
       border-radius: 60px;
       border: 1px solid rgba(0, 200, 255, 0.12);
       font-weight: 500;
@@ -302,6 +311,7 @@
       pointer-events: none;
     }
 
+    /* ===== GRID ===== */
     .grid-2col {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -342,6 +352,7 @@
       color: #8abedb;
       margin-left: 0.2rem;
     }
+
     .pump-status-badge {
       display: inline-flex;
       align-items: center;
@@ -369,6 +380,7 @@
       color: #f28b82;
       background: rgba(200, 80, 80, 0.05);
     }
+
     .motor-icon {
       display: inline-block;
       font-size: 1.6rem;
@@ -401,6 +413,7 @@
       50% { transform: translateY(-6px) scale(1.2); opacity: 1; }
       100% { transform: translateY(0px) scale(0.8); opacity: 0.3; }
     }
+
     .fault-text {
       color: #f6b26b;
       font-size: 0.95rem;
@@ -410,6 +423,7 @@
       display: inline-block;
       border-left: 3px solid #f6b26b;
     }
+
     .timer-display {
       font-size: 2.4rem;
       font-weight: 500;
@@ -421,6 +435,8 @@
       color: #5fc3ff;
       margin-right: 0.4rem;
     }
+
+    /* ===== CONTROLS ===== */
     .controls {
       display: flex;
       flex-wrap: wrap;
@@ -486,138 +502,6 @@
     .btn-primary:hover {
       transform: scale(1.02);
       box-shadow: 0 6px 22px rgba(0, 120, 200, 0.25);
-    }
-    .btn-cyclic {
-      background: linear-gradient(135deg, #7b4a9e, #5a2d7a);
-      color: white;
-      border: 1px solid #9b6abe;
-      box-shadow: 0 4px 14px rgba(120, 70, 180, 0.2);
-      min-width: auto;
-      padding: 0.6rem 1.5rem;
-      font-size: 1rem;
-    }
-    .btn-cyclic:hover {
-      transform: scale(1.05);
-      box-shadow: 0 8px 28px rgba(120, 70, 180, 0.35);
-    }
-    .btn-cyclic.active {
-      background: linear-gradient(135deg, #4a9e7b, #2d7a5a);
-      border-color: #6abe9b;
-    }
-
-    /* ===== CYCLIC MODE SECTION ===== */
-    .cyclic-section {
-      margin: 0.5rem 0 1rem 0;
-      padding: 1rem 1.5rem;
-      background: rgba(120, 70, 180, 0.08);
-      backdrop-filter: blur(6px);
-      border-radius: 2rem;
-      border: 1px solid rgba(150, 100, 200, 0.08);
-    }
-    .cyclic-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 0.8rem;
-      margin-bottom: 0.8rem;
-    }
-    .cyclic-title {
-      color: #c4a0e0;
-      font-size: 0.95rem;
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-    }
-    .cyclic-title i { color: #9b6abe; }
-    .cyclic-title .status-badge {
-      padding: 0.15rem 0.8rem;
-      border-radius: 20px;
-      font-size: 0.7rem;
-      font-weight: 600;
-    }
-    .cyclic-title .status-badge.enabled {
-      background: rgba(100, 200, 100, 0.2);
-      color: #6fcf97;
-      border: 1px solid rgba(100, 200, 100, 0.2);
-    }
-    .cyclic-title .status-badge.disabled {
-      background: rgba(200, 80, 80, 0.2);
-      color: #f28b82;
-      border: 1px solid rgba(200, 80, 80, 0.2);
-    }
-    .cyclic-toggle {
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-    }
-    .cyclic-toggle label {
-      color: #b0d0e0;
-      font-size: 0.8rem;
-    }
-    .cyclic-toggle .switch {
-      width: 50px;
-      height: 28px;
-    }
-    .cyclic-toggle .switch .knob {
-      width: 22px;
-      height: 22px;
-    }
-    .cyclic-toggle .switch.active .knob {
-      left: 26px;
-    }
-
-    .cyclic-inputs {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-      align-items: center;
-    }
-    .cyclic-input-group {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      background: rgba(0, 30, 45, 0.3);
-      padding: 0.2rem 0.8rem;
-      border-radius: 60px;
-      border: 1px solid rgba(100, 70, 150, 0.15);
-    }
-    .cyclic-input-group label {
-      color: #8ab8d4;
-      font-size: 0.75rem;
-    }
-    .cyclic-input-group input {
-      background: transparent;
-      border: none;
-      padding: 0.4rem 0;
-      color: #d4f0ff;
-      font-size: 0.85rem;
-      outline: none;
-      width: 50px;
-      text-align: center;
-    }
-    .cyclic-input-group input:focus {
-      border-color: #9b6abe;
-    }
-    .cyclic-input-group span {
-      color: #6f9eb0;
-      font-size: 0.7rem;
-    }
-    .cyclic-timer-display {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      font-size: 0.85rem;
-      color: #8ab8d4;
-      flex-wrap: wrap;
-    }
-    .cyclic-timer-display .next-action {
-      color: #ffd700;
-      font-weight: 600;
-    }
-    .cyclic-timer-display .countdown {
-      color: #6fcf97;
-      font-weight: 600;
     }
 
     .auto-section {
@@ -745,7 +629,7 @@
       box-shadow: 0 0 16px #0077be44;
     }
 
-    /* History Page */
+    /* ===== HISTORY ===== */
     .history-list {
       max-height: 380px;
       overflow-y: auto;
@@ -786,7 +670,6 @@
     .history-item .action.on { color: #6fcf97; }
     .history-item .action.off { color: #f28b82; }
     .history-item .action.fault { color: #f6b26b; }
-    .history-item .action.cyclic { color: #ffd700; }
     .history-item .action .icon { font-size: 1rem; }
     .history-item .time {
       color: #8ab8d4;
@@ -845,12 +728,16 @@
     }
     .last-updated i { margin-right: 0.3rem; }
 
+    /* ===== FOOTER ===== */
     .footer-actions {
       display: flex;
-      justify-content: flex-end;
-      margin-top: 1rem;
-      padding-top: 0.5rem;
-      border-top: 1px solid rgba(60, 150, 200, 0.06);
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 1.5rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(60, 150, 200, 0.08);
+      flex-wrap: wrap;
+      gap: 0.8rem;
     }
     .lock-btn-bottom {
       background: rgba(200, 80, 80, 0.12);
@@ -867,6 +754,39 @@
       border-color: rgba(200, 80, 80, 0.3);
     }
 
+    /* ===== CONTACT SECTION ===== */
+    .contact-section {
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+      flex-wrap: wrap;
+    }
+    .contact-link {
+      color: #8ab8d4;
+      font-size: 0.8rem;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: 0.2s;
+      padding: 0.2rem 0.6rem;
+      border-radius: 30px;
+      background: rgba(0, 30, 45, 0.2);
+    }
+    .contact-link:hover {
+      color: #b3e4ff;
+      background: rgba(0, 30, 45, 0.4);
+    }
+    .contact-link i {
+      font-size: 1rem;
+    }
+    .contact-link .fa-instagram {
+      color: #E4405F;
+    }
+    .contact-link .fa-envelope {
+      color: #EA4335;
+    }
+
     @media (max-width: 600px) {
       .glass { padding: 1.2rem; }
       .grid-2col { grid-template-columns: 1fr; gap: 1rem; }
@@ -876,10 +796,6 @@
       .btn i { font-size: 1.3rem; }
       .auto-section { flex-direction: column; align-items: center; text-align: center; }
       .remaining-section { flex-direction: column; align-items: center; text-align: center; }
-      .cyclic-section { padding: 0.8rem 1rem; }
-      .cyclic-inputs { flex-direction: column; align-items: stretch; }
-      .cyclic-input-group { justify-content: center; }
-      .cyclic-timer-display { justify-content: center; }
       .header h1 { font-size: 1.5rem; }
       .stat-value { font-size: 1.7rem; }
       .timer-display { font-size: 2rem; }
@@ -888,6 +804,9 @@
       .nav-tab { font-size: 0.8rem; padding: 0.5rem; }
       .remaining-value { font-size: 1.6rem; }
       .history-header { flex-direction: column; align-items: flex-start; }
+      .footer-actions { flex-direction: column-reverse; align-items: stretch; text-align: center; }
+      .contact-section { justify-content: center; }
+      .lock-btn-bottom { width: 100%; text-align: center; }
     }
   </style>
 </head>
@@ -913,9 +832,10 @@
 <div class="dashboard" id="dashboardContainer">
   <div class="glass">
 
+    <!-- ===== HEADER - REARRANGED ===== -->
     <div class="header">
       <h1><i class="fas fa-water-pump"></i> Smart Pump</h1>
-      <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+      <div class="status-row">
         <div class="device-status-badge" id="deviceStatusBadge">
           <span class="status-dot offline" id="statusDot"></span>
           <span class="status-text offline" id="deviceStatusText">Checking...</span>
@@ -926,11 +846,13 @@
       </div>
     </div>
 
+    <!-- Offline Banner -->
     <div class="offline-banner" id="offlineBanner">
       <i class="fas fa-wifi"></i>
       <span>⚠️ Device is Offline — Controls are disabled</span>
     </div>
 
+    <!-- Navigation Tabs -->
     <div class="nav-tabs">
       <button class="nav-tab active" data-page="dashboard-page"><i class="fas fa-tachometer-alt"></i> Dashboard</button>
       <button class="nav-tab" data-page="history-page"><i class="fas fa-history"></i> History</button>
@@ -966,6 +888,7 @@
         </div>
       </div>
 
+      <!-- Controls -->
       <div class="controls">
         <div class="btn-group">
           <button class="btn btn-success" id="btnOn"><i class="fas fa-play"></i> TURN ON</button>
@@ -973,44 +896,7 @@
         </div>
       </div>
 
-      <!-- ===== CYCLIC MODE SECTION ===== -->
-      <div class="cyclic-section">
-        <div class="cyclic-header">
-          <div class="cyclic-title">
-            <i class="fas fa-sync-alt fa-spin"></i>
-            <span>Cyclic Mode</span>
-            <span class="status-badge disabled" id="cyclicStatusBadge">Off</span>
-          </div>
-          <div class="cyclic-toggle">
-            <label>Enable</label>
-            <div class="switch" id="cyclicEnableSwitch">
-              <div class="knob"></div>
-            </div>
-          </div>
-        </div>
-
-        <div class="cyclic-inputs">
-          <div class="cyclic-input-group">
-            <label><i class="fas fa-play" style="color: #6fcf97;"></i> ON</label>
-            <input type="number" id="cyclicOnTime" value="30" min="1" max="999">
-            <span>min</span>
-          </div>
-          <div class="cyclic-input-group">
-            <label><i class="fas fa-stop" style="color: #f28b82;"></i> OFF</label>
-            <input type="number" id="cyclicOffTime" value="10" min="1" max="999">
-            <span>min</span>
-          </div>
-          <button class="btn btn-cyclic" id="applyCyclicBtn">
-            <i class="fas fa-save"></i> Apply
-          </button>
-        </div>
-
-        <div class="cyclic-timer-display" id="cyclicTimerDisplay">
-          <span><i class="fas fa-clock"></i> Next: <span class="next-action" id="cyclicNextAction">—</span></span>
-          <span>Countdown: <span class="countdown" id="cyclicCountdown">—</span></span>
-        </div>
-      </div>
-
+      <!-- Auto Restart -->
       <div class="auto-section">
         <div class="label">
           <i class="fas fa-sync-alt"></i>
@@ -1025,6 +911,7 @@
         </div>
       </div>
 
+      <!-- Remaining Timer -->
       <div class="remaining-section">
         <div class="label">
           <i class="fas fa-hourglass-half"></i>
@@ -1035,6 +922,7 @@
         </div>
       </div>
 
+      <!-- Set Timer -->
       <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 0.8rem;">
         <div class="timer-input-group">
           <i class="fas fa-hourglass-start" style="color: #6fc3ff;"></i>
@@ -1063,7 +951,16 @@
       </div>
     </div>
 
+    <!-- ===== FOOTER ===== -->
     <div class="footer-actions">
+      <div class="contact-section">
+        <a href="https://www.instagram.com/ck_birwaz?igsi=MW1jaDY3eXk3eGg4YQ==" target="_blank" class="contact-link" rel="noopener noreferrer">
+          <i class="fab fa-instagram"></i> Instagram
+        </a>
+        <a href="mailto:chethankallimar989@gmail.com" class="contact-link">
+          <i class="fas fa-envelope"></i> Email
+        </a>
+      </div>
       <button class="lock-btn-bottom" id="lockBtnBottom">
         <i class="fas fa-lock"></i> Lock Dashboard
       </button>
@@ -1194,15 +1091,6 @@
     const autoStatusText = document.getElementById('autoStatusText');
     const autoStatusOn = document.getElementById('autoStatusOn');
 
-    // Cyclic elements
-    const cyclicEnableSwitch = document.getElementById('cyclicEnableSwitch');
-    const cyclicOnTime = document.getElementById('cyclicOnTime');
-    const cyclicOffTime = document.getElementById('cyclicOffTime');
-    const applyCyclicBtn = document.getElementById('applyCyclicBtn');
-    const cyclicStatusBadge = document.getElementById('cyclicStatusBadge');
-    const cyclicNextAction = document.getElementById('cyclicNextAction');
-    const cyclicCountdown = document.getElementById('cyclicCountdown');
-
     const DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
     let pumpState = false;
@@ -1212,15 +1100,6 @@
     let history = [];
     let isOnline = false;
     let lastAction = '';
-
-    // ===== CYCLIC MODE VARIABLES =====
-    let cyclicEnabled = false;
-    let cyclicOnMinutes = 30;
-    let cyclicOffMinutes = 10;
-    let cyclicTimer = null;
-    let cyclicCountdownSeconds = 0;
-    let cyclicIsOnPhase = false;
-    let cyclicLastAction = '';
 
     // ===== 5-SECOND VERIFICATION SYSTEM =====
     let pendingHistory = null;
@@ -1235,159 +1114,6 @@
     }
     setInterval(updateHeaderTime, 1000);
     updateHeaderTime();
-
-    // ===== CYCLIC MODE FUNCTIONS =====
-    function loadCyclicSettings() {
-      try {
-        const saved = localStorage.getItem('cyclicSettings');
-        if (saved) {
-          const data = JSON.parse(saved);
-          cyclicEnabled = data.enabled || false;
-          cyclicOnMinutes = data.onTime || 30;
-          cyclicOffMinutes = data.offTime || 10;
-          cyclicOnTime.value = cyclicOnMinutes;
-          cyclicOffTime.value = cyclicOffMinutes;
-          updateCyclicUI();
-        }
-      } catch (e) {}
-    }
-
-    function saveCyclicSettings() {
-      localStorage.setItem('cyclicSettings', JSON.stringify({
-        enabled: cyclicEnabled,
-        onTime: cyclicOnMinutes,
-        offTime: cyclicOffMinutes
-      }));
-    }
-
-    function updateCyclicUI() {
-      if (cyclicEnabled) {
-        cyclicEnableSwitch.classList.add('active');
-        cyclicStatusBadge.className = 'status-badge enabled';
-        cyclicStatusBadge.textContent = 'Running';
-        cyclicOnTime.disabled = false;
-        cyclicOffTime.disabled = false;
-        applyCyclicBtn.style.opacity = '1';
-        applyCyclicBtn.style.pointerEvents = 'auto';
-        if (!cyclicTimer) {
-          startCyclicMode();
-        }
-      } else {
-        cyclicEnableSwitch.classList.remove('active');
-        cyclicStatusBadge.className = 'status-badge disabled';
-        cyclicStatusBadge.textContent = 'Off';
-        cyclicOnTime.disabled = true;
-        cyclicOffTime.disabled = true;
-        applyCyclicBtn.style.opacity = '0.5';
-        applyCyclicBtn.style.pointerEvents = 'none';
-        stopCyclicMode();
-        cyclicNextAction.textContent = '—';
-        cyclicCountdown.textContent = '—';
-      }
-      saveCyclicSettings();
-    }
-
-    function startCyclicMode() {
-      if (cyclicTimer) {
-        clearInterval(cyclicTimer);
-        cyclicTimer = null;
-      }
-
-      // Check current pump state to determine phase
-      const currentPumpState = pumpState;
-      cyclicIsOnPhase = currentPumpState;
-      
-      // Start the cyclic timer - check every second
-      let elapsedSeconds = 0;
-      const totalPhaseSeconds = (cyclicIsOnPhase ? cyclicOnMinutes : cyclicOffMinutes) * 60;
-      
-      cyclicCountdownSeconds = totalPhaseSeconds;
-      
-      cyclicTimer = setInterval(() => {
-        if (!cyclicEnabled || !isOnline) {
-          return;
-        }
-        
-        const totalSeconds = (cyclicIsOnPhase ? cyclicOnMinutes : cyclicOffMinutes) * 60;
-        const remainingSeconds = totalSeconds - elapsedSeconds;
-        cyclicCountdownSeconds = remainingSeconds;
-        
-        // Update display
-        const mins = Math.floor(remainingSeconds / 60);
-        const secs = remainingSeconds % 60;
-        cyclicCountdown.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
-        
-        if (cyclicIsOnPhase) {
-          cyclicNextAction.textContent = `⏹️ OFF in ${mins}m ${secs}s`;
-        } else {
-          cyclicNextAction.textContent = `▶️ ON in ${mins}m ${secs}s`;
-        }
-        
-        elapsedSeconds++;
-        
-        // Check if phase is complete
-        if (elapsedSeconds >= totalSeconds) {
-          // Switch phase
-          if (cyclicIsOnPhase) {
-            // Turn OFF
-            setPump(false, true);
-            cyclicIsOnPhase = false;
-            addHistoryEntry('CYCLIC_OFF', 'Cyclic OFF', '');
-          } else {
-            // Turn ON
-            setPump(true, true);
-            cyclicIsOnPhase = true;
-            addHistoryEntry('CYCLIC_ON', 'Cyclic ON', '');
-          }
-          elapsedSeconds = 0;
-          const newTotal = (cyclicIsOnPhase ? cyclicOnMinutes : cyclicOffMinutes) * 60;
-          cyclicCountdownSeconds = newTotal;
-        }
-      }, 1000);
-    }
-
-    function stopCyclicMode() {
-      if (cyclicTimer) {
-        clearInterval(cyclicTimer);
-        cyclicTimer = null;
-      }
-      cyclicCountdownSeconds = 0;
-      cyclicIsOnPhase = false;
-    }
-
-    // ===== CYCLIC EVENT LISTENERS =====
-    cyclicEnableSwitch.addEventListener('click', function() {
-      cyclicEnabled = !cyclicEnabled;
-      updateCyclicUI();
-    });
-
-    applyCyclicBtn.addEventListener('click', function() {
-      const onVal = parseInt(cyclicOnTime.value);
-      const offVal = parseInt(cyclicOffTime.value);
-      
-      if (isNaN(onVal) || onVal < 1 || onVal > 999) {
-        alert('Please enter a valid ON time (1-999 minutes)');
-        return;
-      }
-      if (isNaN(offVal) || offVal < 1 || offVal > 999) {
-        alert('Please enter a valid OFF time (1-999 minutes)');
-        return;
-      }
-      
-      cyclicOnMinutes = onVal;
-      cyclicOffMinutes = offVal;
-      
-      if (cyclicEnabled) {
-        // Restart cyclic mode with new times
-        stopCyclicMode();
-        startCyclicMode();
-        saveCyclicSettings();
-        alert(`Cyclic mode updated: ${cyclicOnMinutes}min ON / ${cyclicOffMinutes}min OFF`);
-      } else {
-        saveCyclicSettings();
-        alert(`Settings saved. Enable Cyclic Mode to start.`);
-      }
-    });
 
     function cleanOldHistory() {
       const oneDayAgo = Date.now() - (24 * 60 * 60 * 1000);
@@ -1466,14 +1192,6 @@
             actionClass = 'fault';
             icon = 'fa-exclamation-triangle';
           }
-        } else if (entry.action === 'CYCLIC_ON') {
-          actionClass = 'cyclic';
-          icon = 'fa-sync-alt';
-          label = '🔄 Cyclic ON';
-        } else if (entry.action === 'CYCLIC_OFF') {
-          actionClass = 'cyclic';
-          icon = 'fa-sync-alt';
-          label = '🔄 Cyclic OFF';
         } else {
           actionClass = 'off';
           icon = 'fa-circle';
@@ -1544,11 +1262,6 @@
         btnOff.classList.add('disabled');
         autoRestartSwitch.classList.add('disabled');
         btnSetTimer.classList.add('disabled');
-        if (cyclicEnabled) {
-          stopCyclicMode();
-          cyclicNextAction.textContent = '⛔ Offline';
-          cyclicCountdown.textContent = '⛔';
-        }
       }
     }
 
@@ -1746,9 +1459,8 @@
       lastUpdatedTime.textContent = d.toLocaleTimeString('en-US', { hour12: true, hour: '2-digit', minute: '2-digit', second: '2-digit' });
     }
 
-    // Modified setPump with fromCyclic flag
-    async function setPump(state, fromCyclic = false) {
-      if (!isOnline && !fromCyclic) {
+    async function setPump(state) {
+      if (!isOnline) {
         alert('Device is offline. Please check your connection.');
         return;
       }
@@ -1758,17 +1470,9 @@
         setTimeout(() => {
           readAllPins();
         }, 500);
-        
-        // If cyclic mode is enabled and this is a manual change, stop cyclic
-        if (cyclicEnabled && !fromCyclic) {
-          cyclicEnabled = false;
-          updateCyclicUI();
-        }
       } catch (e) {
         console.warn('setPump error', e);
-        if (!fromCyclic) {
-          alert('Failed to control pump. Please check your connection.');
-        }
+        alert('Failed to control pump. Please check your connection.');
       }
     }
 
@@ -1805,8 +1509,8 @@
       }
     }
 
-    btnOn.addEventListener('click', () => setPump(true, false));
-    btnOff.addEventListener('click', () => setPump(false, false));
+    btnOn.addEventListener('click', () => setPump(true));
+    btnOff.addEventListener('click', () => setPump(false));
 
     btnSetTimer.addEventListener('click', () => {
       const val = parseInt(timerInput.value, 10);
@@ -1834,7 +1538,6 @@
     }
 
     // Initialize
-    loadCyclicSettings();
     loadHistory();
     confirmedPumpState = false;
     confirmedFaultMsg = '';
@@ -1843,16 +1546,12 @@
       setTimeout(() => {
         refreshCycle();
         startAutoRefresh();
-        if (cyclicEnabled) {
-          startCyclicMode();
-        }
       }, 500);
     }
 
     window.addEventListener('beforeunload', function() {
       if (intervalId) clearInterval(intervalId);
       if (verificationTimer) clearTimeout(verificationTimer);
-      if (cyclicTimer) clearInterval(cyclicTimer);
     });
 
   })();
