@@ -1,1560 +1,1567 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
-  <title>Smart Pump Controller</title>
-  <!-- Font Awesome 6 -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    }
-    
-    body {
-      min-height: 100vh;
-      background: #000000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0;
-      margin: 0;
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>Smart Pump Controller</title>
+
+<script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    font-family:Arial,Helvetica,sans-serif;
+    background:#080b10;
+    color:#fff;
+    min-height:100vh;
+}
+
+.container{
+    width:100%;
+    max-width:600px;
+    margin:auto;
+    padding:15px;
+}
+
+.header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:15px;
+}
+
+.title{
+    font-size:24px;
+    font-weight:bold;
+}
+
+.connection{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    font-size:13px;
+}
+
+.dot{
+    width:10px;
+    height:10px;
+    border-radius:50%;
+    background:#777;
+}
+
+.dot.online{
+    background:#20d46b;
+    box-shadow:0 0 10px #20d46b;
+}
+
+.dot.offline{
+    background:#ff4545;
+    box-shadow:0 0 10px #ff4545;
+}
+
+.card{
+    background:#11161d;
+    border:1px solid #202832;
+    border-radius:16px;
+    padding:18px;
+    margin-bottom:14px;
+}
+
+.status-title{
+    color:#929aa5;
+    font-size:13px;
+    margin-bottom:8px;
+}
+
+.status{
+    font-size:28px;
+    font-weight:bold;
+}
+
+.status.on{
+    color:#20d46b;
+}
+
+.status.off{
+    color:#ff5555;
+}
+
+.status.wait{
+    color:#ffc107;
+}
+
+.status.fault{
+    color:#ff4545;
+}
+
+.buttons{
+    display:flex;
+    gap:12px;
+    margin-top:18px;
+}
+
+button{
+    flex:1;
+    border:none;
+    border-radius:12px;
+    padding:15px;
+    font-size:17px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.on-btn{
+    background:#20d46b;
+    color:#061109;
+}
+
+.off-btn{
+    background:#ff4545;
+    color:#fff;
+}
+
+button:disabled{
+    opacity:.4;
+    cursor:not-allowed;
+}
+
+.section-title{
+    font-size:18px;
+    font-weight:bold;
+    margin-bottom:15px;
+}
+
+.timer-row{
+    display:flex;
+    gap:10px;
+}
+
+input{
+    flex:1;
+    background:#080b10;
+    color:#fff;
+    border:1px solid #303945;
+    border-radius:10px;
+    padding:14px;
+    font-size:17px;
+    outline:none;
+}
+
+.set-btn{
+    flex:0 0 110px;
+    background:#2979ff;
+    color:white;
+}
+
+.remaining{
+    text-align:center;
+    font-size:42px;
+    font-weight:bold;
+    letter-spacing:2px;
+    margin-top:10px;
+}
+
+.auto-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.switch{
+    position:relative;
+    width:54px;
+    height:30px;
+}
+
+.switch input{
+    display:none;
+}
+
+.slider{
+    position:absolute;
+    inset:0;
+    background:#343b44;
+    border-radius:30px;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.slider:before{
+    content:"";
+    position:absolute;
+    width:22px;
+    height:22px;
+    left:4px;
+    top:4px;
+    background:white;
+    border-radius:50%;
+    transition:.2s;
+}
+
+.switch input:checked + .slider{
+    background:#20d46b;
+}
+
+.switch input:checked + .slider:before{
+    transform:translateX(24px);
+}
+
+.fault{
+    color:#ff4545;
+    font-weight:bold;
+    min-height:20px;
+}
+
+.history{
+    max-height:300px;
+    overflow-y:auto;
+}
+
+.history-item{
+    padding:10px 0;
+    border-bottom:1px solid #222932;
+    font-size:14px;
+}
+
+.history-time{
+    color:#737c87;
+    font-size:11px;
+    margin-bottom:3px;
+}
+
+.event-start{
+    color:#20d46b;
+}
+
+.event-stop{
+    color:#ff5555;
+}
+
+.event-fault{
+    color:#ff9f43;
+}
+
+.event-info{
+    color:#b5bdc7;
+}
+
+.tabs{
+    display:flex;
+    gap:8px;
+    margin-bottom:15px;
+}
+
+.tab{
+    flex:1;
+    padding:11px;
+    background:#11161d;
+    border:1px solid #202832;
+    color:#9ba4af;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+.tab.active{
+    background:#2979ff;
+    color:white;
+}
+
+.page{
+    display:none;
+}
+
+.page.active{
+    display:block;
+}
+
+.last-action{
+    color:#9ba4af;
+    font-size:13px;
+}
+
+.banner{
+    display:none;
+    background:#391515;
+    color:#ff7272;
+    border:1px solid #702525;
+    padding:10px;
+    border-radius:10px;
+    margin-bottom:14px;
+    text-align:center;
+    font-size:13px;
+}
+
+.banner.show{
+    display:block;
+}
+
+.footer{
+    text-align:center;
+    color:#555f6b;
+    font-size:11px;
+    padding:15px;
+}
+
+@media(max-width:400px){
+    .title{
+        font-size:21px;
     }
 
-    .dashboard {
-      max-width: 820px;
-      width: 100%;
-      display: none;
-      padding: 0;
-      margin: 0;
-    }
-    .dashboard.show { display: block; }
-
-    .glass {
-      background: rgba(8, 32, 44, 0.95);
-      backdrop-filter: blur(16px) saturate(190%);
-      -webkit-backdrop-filter: blur(16px) saturate(190%);
-      border-radius: 0;
-      border: none;
-      box-shadow: none;
-      padding: 2rem 2.2rem;
-      transition: all 0.2s;
-      min-height: 100vh;
-    }
-
-    /* ===== PASSWORD OVERLAY ===== */
-    .password-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: #000000;
-      backdrop-filter: blur(20px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 9999;
-      padding: 1.5rem;
-    }
-    .password-overlay.hidden { display: none; }
-    .password-box {
-      background: rgba(8, 32, 44, 0.9);
-      backdrop-filter: blur(16px);
-      border-radius: 3rem;
-      border: 1px solid rgba(60, 200, 255, 0.10);
-      box-shadow: none;
-      padding: 2.5rem 2.2rem;
-      text-align: center;
-      max-width: 420px;
-      width: 100%;
-      animation: fadeIn 0.5s ease;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.9); }
-      to { opacity: 1; transform: scale(1); }
-    }
-    .password-box .lock-icon {
-      font-size: 3.5rem;
-      color: #4cc9ff;
-      margin-bottom: 1rem;
-      display: block;
-      animation: pulseLock 2s infinite;
-    }
-    @keyframes pulseLock {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.1); }
-      100% { transform: scale(1); }
-    }
-    .password-box h1 {
-      font-size: 2rem;
-      font-weight: 500;
-      letter-spacing: -0.3px;
-      background: linear-gradient(135deg, #b0ecff, #4cc0ff);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      margin-bottom: 0.5rem;
-    }
-    .password-box .subtitle {
-      color: #8ab8d4;
-      font-size: 0.9rem;
-      margin-bottom: 1.5rem;
-    }
-    .password-input-group {
-      margin-bottom: 1.2rem;
-      text-align: left;
-    }
-    .password-input-group label {
-      color: #b0d0e0;
-      font-size: 0.85rem;
-      display: block;
-      margin-bottom: 0.4rem;
-    }
-    .password-input-group input {
-      width: 100%;
-      background: rgba(0, 30, 45, 0.5);
-      border: 1px solid #236480;
-      border-radius: 60px;
-      padding: 0.8rem 1.2rem;
-      color: #d4f0ff;
-      font-size: 1rem;
-      outline: none;
-      backdrop-filter: blur(4px);
-      transition: 0.2s;
-    }
-    .password-input-group input:focus {
-      border-color: #4bb0ff;
-      box-shadow: 0 0 16px #0077be44;
-    }
-    .password-btn {
-      width: 100%;
-      background: linear-gradient(135deg, #0077be, #005f8a);
-      color: white;
-      border: none;
-      padding: 0.8rem;
-      border-radius: 60px;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: 0.2s;
-      border: 1px solid #3a9bdb;
-      box-shadow: 0 4px 14px rgba(0, 120, 200, 0.15);
-    }
-    .password-btn:hover {
-      background: linear-gradient(135deg, #1a8ad4, #006fa8);
-      transform: scale(1.02);
-      box-shadow: 0 6px 22px rgba(0, 120, 200, 0.25);
-    }
-    .password-error {
-      color: #f28b82;
-      font-size: 0.85rem;
-      margin-top: 0.8rem;
-      display: none;
-      animation: shake 0.3s ease;
-    }
-    .password-error.show { display: block; }
-    @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      25% { transform: translateX(-10px); }
-      75% { transform: translateX(10px); }
-    }
-    .attempts-info {
-      margin-top: 1rem;
-      font-size: 0.7rem;
-      color: #6f9eb0;
-    }
-
-    /* ===== DASHBOARD STYLES ===== */
-    .security-badge {
-      background: rgba(100, 200, 255, 0.08);
-      border: 1px solid rgba(100, 200, 255, 0.15);
-      border-radius: 12px;
-      padding: 8px 14px;
-      margin: 0 0 1.5rem 0;
-      color: #7fc9e8;
-      font-size: 0.75rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-    }
-    .security-badge i { font-size: 1rem; color: #4cc9ff; }
-
-    /* ===== NAV TABS ===== */
-    .nav-tabs {
-      display: flex;
-      gap: 0.5rem;
-      margin-bottom: 1.5rem;
-      background: rgba(0, 25, 35, 0.2);
-      border-radius: 3rem;
-      padding: 0.3rem;
-      border: 1px solid rgba(50, 180, 255, 0.06);
-    }
-    .nav-tab {
-      flex: 1;
-      padding: 0.6rem 1rem;
-      border: none;
-      background: transparent;
-      color: #8ab8d4;
-      font-size: 0.9rem;
-      font-weight: 600;
-      cursor: pointer;
-      border-radius: 2rem;
-      transition: 0.3s;
-      text-align: center;
-    }
-    .nav-tab.active {
-      background: rgba(0, 119, 190, 0.3);
-      color: #b3e4ff;
-      box-shadow: 0 0 20px rgba(0, 119, 190, 0.1);
-    }
-    .nav-tab:hover { color: #d4edff; }
-    .page { display: none; }
-    .page.active { display: block; }
-
-    /* ===== HEADER - REARRANGED ===== */
-    .header {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      margin-bottom: 1.5rem;
-      gap: 0.5rem;
-    }
-    .header h1 {
-      font-size: 2rem;
-      font-weight: 500;
-      letter-spacing: -0.3px;
-      background: linear-gradient(135deg, #b0ecff, #4cc0ff);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-    }
-    .header h1 i {
-      font-size: 2.1rem;
-      color: #4cc9ff;
-      filter: drop-shadow(0 0 6px #4cc9ff66);
-    }
-    .header .status-row {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
-    .device-status-badge {
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-      background: rgba(0, 35, 50, 0.7);
-      padding: 0.3rem 1.2rem;
-      border-radius: 60px;
-      border: 1px solid rgba(0, 200, 255, 0.12);
-      font-weight: 500;
-      font-size: 0.9rem;
-      color: #b0d9ff;
-      backdrop-filter: blur(4px);
-    }
-    .status-dot {
-      display: inline-block;
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      margin-right: 4px;
-    }
-    .status-dot.online {
-      background: #6fcf97;
-      box-shadow: 0 0 12px #6fcf9766;
-    }
-    .status-dot.offline {
-      background: #f28b82;
-      box-shadow: 0 0 12px #f28b8266;
-    }
-    .status-text.online { color: #6fcf97; }
-    .status-text.offline { color: #f28b82; }
-
-    .offline-banner {
-      display: none;
-      background: rgba(242, 139, 130, 0.15);
-      border: 1px solid rgba(242, 139, 130, 0.3);
-      border-radius: 12px;
-      padding: 10px 16px;
-      margin: 0 0 1rem 0;
-      color: #f28b82;
-      font-size: 0.85rem;
-      align-items: center;
-      gap: 10px;
-      animation: pulseBanner 2s infinite;
-    }
-    .offline-banner.show { display: flex; }
-    .offline-banner i { font-size: 1.2rem; }
-    @keyframes pulseBanner {
-      0% { opacity: 0.7; }
-      50% { opacity: 1; }
-      100% { opacity: 0.7; }
-    }
-
-    .btn.disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      pointer-events: none;
-    }
-    .switch.disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      pointer-events: none;
-    }
-
-    /* ===== GRID ===== */
-    .grid-2col {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.5rem;
-      margin-bottom: 1.5rem;
-    }
-    .stat-card {
-      background: rgba(0, 30, 45, 0.20);
-      backdrop-filter: blur(6px);
-      border-radius: 2rem;
-      padding: 1.2rem 1.2rem;
-      border: 1px solid rgba(70, 180, 255, 0.06);
-      transition: 0.2s;
-    }
-    .stat-card:hover {
-      border-color: rgba(70, 200, 255, 0.20);
-      background: rgba(0, 45, 60, 0.25);
-    }
-    .stat-label {
-      font-size: 0.8rem;
-      text-transform: uppercase;
-      letter-spacing: 0.6px;
-      color: #8ab8d4;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      margin-bottom: 0.4rem;
-    }
-    .stat-value {
-      font-size: 2rem;
-      font-weight: 500;
-      color: #e3f4ff;
-      line-height: 1.2;
-    }
-    .stat-value small {
-      font-size: 1rem;
-      font-weight: 300;
-      color: #8abedb;
-      margin-left: 0.2rem;
-    }
-
-    .pump-status-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.8rem;
-      background: rgba(0, 20, 30, 0.4);
-      padding: 0.25rem 1.2rem 0.25rem 1rem;
-      border-radius: 60px;
-      font-size: 1.3rem;
-      font-weight: 500;
-      margin-top: 0.2rem;
-      border: 1px solid rgba(255,255,255,0.02);
-    }
-    .pump-on {
-      color: #6fcf97;
-      background: rgba(0, 200, 100, 0.08);
-      border-color: rgba(100, 255, 180, 0.10);
-      animation: glowGreen 2s infinite;
-    }
-    @keyframes glowGreen {
-      0% { text-shadow: 0 0 4px #6fcf9744; }
-      50% { text-shadow: 0 0 18px #6fcf97aa; }
-      100% { text-shadow: 0 0 4px #6fcf9744; }
-    }
-    .pump-off {
-      color: #f28b82;
-      background: rgba(200, 80, 80, 0.05);
-    }
-
-    .motor-icon {
-      display: inline-block;
-      font-size: 1.6rem;
-      color: #6fcf97;
-      animation: motorRun 1.2s linear infinite;
-      filter: drop-shadow(0 0 6px #6fcf9766);
-      margin-left: 0.2rem;
-    }
-    @keyframes motorRun {
-      0% { transform: rotate(0deg) scale(1); }
-      50% { transform: rotate(180deg) scale(1.1); }
-      100% { transform: rotate(360deg) scale(1); }
-    }
-    .water-flow {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.2rem;
-      margin-left: 0.5rem;
-    }
-    .drop {
-      color: #4fc3ff;
-      font-size: 0.9rem;
-      animation: dropFloat 1.4s infinite;
-    }
-    .drop:nth-child(2) { animation-delay: 0.25s; }
-    .drop:nth-child(3) { animation-delay: 0.5s; }
-    .drop:nth-child(4) { animation-delay: 0.75s; }
-    @keyframes dropFloat {
-      0% { transform: translateY(0px) scale(0.8); opacity: 0.3; }
-      50% { transform: translateY(-6px) scale(1.2); opacity: 1; }
-      100% { transform: translateY(0px) scale(0.8); opacity: 0.3; }
-    }
-
-    .fault-text {
-      color: #f6b26b;
-      font-size: 0.95rem;
-      background: rgba(200, 80, 0, 0.10);
-      padding: 0.15rem 1rem;
-      border-radius: 40px;
-      display: inline-block;
-      border-left: 3px solid #f6b26b;
-    }
-
-    .timer-display {
-      font-size: 2.4rem;
-      font-weight: 500;
-      color: #b3e4ff;
-      letter-spacing: 0.5px;
-    }
-    .timer-display i {
-      font-size: 1.8rem;
-      color: #5fc3ff;
-      margin-right: 0.4rem;
-    }
-
-    /* ===== CONTROLS ===== */
-    .controls {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1.5rem;
-      margin: 1.2rem 0 1.5rem 0;
-      align-items: center;
-      justify-content: center;
-      background: rgba(0, 25, 35, 0.25);
-      backdrop-filter: blur(6px);
-      border-radius: 4rem;
-      padding: 1.2rem 2rem;
-      border: 1px solid rgba(50, 180, 255, 0.06);
-    }
-    .btn-group {
-      display: flex;
-      gap: 1.5rem;
-      flex-wrap: wrap;
-      justify-content: center;
-      width: 100%;
-    }
-    .btn {
-      border: none;
-      padding: 1rem 2.5rem;
-      border-radius: 60px;
-      font-weight: 700;
-      font-size: 1.2rem;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.8rem;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      letter-spacing: 0.5px;
-      min-width: 140px;
-      justify-content: center;
-    }
-    .btn i { font-size: 1.6rem; }
-    .btn-success {
-      background: linear-gradient(135deg, #1b8a4a, #0f6a36);
-      color: white;
-      border: 1px solid #34b86a;
-      box-shadow: 0 4px 14px rgba(30, 200, 100, 0.2);
-    }
-    .btn-success:hover {
-      transform: scale(1.05);
-      box-shadow: 0 8px 28px rgba(30, 200, 100, 0.35);
-    }
-    .btn-danger {
-      background: linear-gradient(135deg, #b13e3e, #8f2a2a);
-      color: white;
-      border: 1px solid #d45a5a;
-      box-shadow: 0 4px 14px rgba(200, 60, 60, 0.2);
-    }
-    .btn-danger:hover {
-      transform: scale(1.05);
-      box-shadow: 0 8px 28px rgba(200, 60, 60, 0.35);
-    }
-    .btn-primary {
-      background: linear-gradient(135deg, #0077be, #005f8a);
-      color: white;
-      border: 1px solid #3a9bdb;
-      box-shadow: 0 4px 14px rgba(0, 120, 200, 0.15);
-    }
-    .btn-primary:hover {
-      transform: scale(1.02);
-      box-shadow: 0 6px 22px rgba(0, 120, 200, 0.25);
-    }
-
-    .auto-section {
-      margin: 0 0 0.5rem 0;
-      padding: 0.8rem 1.5rem;
-      background: rgba(0, 25, 35, 0.2);
-      backdrop-filter: blur(6px);
-      border-radius: 2rem;
-      border: 1px solid rgba(50, 180, 255, 0.06);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 0.8rem;
-    }
-    .auto-section .label {
-      color: #b0d0e0;
-      font-size: 0.95rem;
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-    }
-    .auto-section .label i { color: #4cc9ff; }
-    .switch-container {
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-    }
-    .switch-status {
-      font-size: 0.9rem;
-      font-weight: 600;
-      color: #6f9eb0;
-      transition: 0.3s;
-    }
-    .switch-status.active { color: #6fcf97; }
-    .switch-status.inactive { color: #f28b82; }
-    .switch {
-      position: relative;
-      width: 60px;
-      height: 32px;
-      background: #1a3b4b;
-      border-radius: 40px;
-      cursor: pointer;
-      transition: all 0.4s ease;
-      border: 1px solid #2a6a7a;
-      box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
-    }
-    .switch.active {
-      background: #1f8a5a;
-      border-color: #3bcb7a;
-      box-shadow: 0 0 20px #1f9a6a66, inset 0 2px 4px rgba(0,0,0,0.2);
-    }
-    .switch .knob {
-      width: 26px;
-      height: 26px;
-      background: #d0ecff;
-      border-radius: 50%;
-      position: relative;
-      top: 2px;
-      left: 2px;
-      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-    }
-    .switch.active .knob {
-      left: 30px;
-      background: #ffffff;
-      box-shadow: 0 0 16px #b3f0ff, 0 2px 8px rgba(0,0,0,0.2);
-    }
-
-    .remaining-section {
-      margin: 0.5rem 0 1rem 0;
-      padding: 0.8rem 1.5rem;
-      background: rgba(0, 25, 35, 0.15);
-      backdrop-filter: blur(6px);
-      border-radius: 2rem;
-      border: 1px solid rgba(50, 180, 255, 0.04);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 0.8rem;
-    }
-    .remaining-section .label {
-      color: #b0d0e0;
-      font-size: 0.95rem;
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-    }
-    .remaining-section .label i { color: #5fc3ff; }
-    .remaining-value {
-      font-size: 2rem;
-      font-weight: 600;
-      color: #b3e4ff;
-      letter-spacing: 0.5px;
-    }
-    .remaining-value small {
-      font-size: 1rem;
-      font-weight: 300;
-      color: #8abedb;
-      margin-left: 0.2rem;
-    }
-
-    .timer-input-group {
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-      flex-wrap: wrap;
-      margin: 0.4rem 0 0.2rem 0;
-      width: 100%;
-    }
-    .timer-input-group input {
-      background: rgba(0, 30, 45, 0.5);
-      border: 1px solid #236480;
-      border-radius: 60px;
-      padding: 0.55rem 1.2rem;
-      width: 140px;
-      color: #d4f0ff;
-      font-size: 0.95rem;
-      outline: none;
-      backdrop-filter: blur(4px);
-    }
-    .timer-input-group input:focus {
-      border-color: #4bb0ff;
-      box-shadow: 0 0 16px #0077be44;
-    }
-
-    /* ===== HISTORY ===== */
-    .history-list {
-      max-height: 380px;
-      overflow-y: auto;
-      margin-top: 0.5rem;
-    }
-    .history-list::-webkit-scrollbar {
-      width: 6px;
-    }
-    .history-list::-webkit-scrollbar-track {
-      background: rgba(0, 25, 35, 0.2);
-      border-radius: 10px;
-    }
-    .history-list::-webkit-scrollbar-thumb {
-      background: #236480;
-      border-radius: 10px;
-    }
-    .history-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0.7rem 1rem;
-      margin-bottom: 0.4rem;
-      background: rgba(0, 30, 45, 0.15);
-      border-radius: 1rem;
-      border-left: 3px solid #236480;
-      transition: 0.2s;
-    }
-    .history-item:hover {
-      background: rgba(0, 45, 60, 0.25);
-    }
-    .history-item .action {
-      font-weight: 600;
-      font-size: 0.95rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    .history-item .action.on { color: #6fcf97; }
-    .history-item .action.off { color: #f28b82; }
-    .history-item .action.fault { color: #f6b26b; }
-    .history-item .action .icon { font-size: 1rem; }
-    .history-item .time {
-      color: #8ab8d4;
-      font-size: 0.8rem;
-    }
-    .history-item .date {
-      color: #6f9eb0;
-      font-size: 0.7rem;
-      margin-left: 0.5rem;
-    }
-    .history-item .status-msg {
-      font-size: 0.7rem;
-      color: #6f9eb0;
-      margin-left: 0.3rem;
-    }
-    .history-item .day-badge {
-      font-size: 0.6rem;
-      background: rgba(0, 30, 45, 0.3);
-      padding: 0.1rem 0.5rem;
-      border-radius: 20px;
-      color: #6f9eb0;
-      margin-left: 0.3rem;
-    }
-    .history-empty {
-      text-align: center;
-      color: #6f9eb0;
-      padding: 2rem;
-      font-size: 0.9rem;
-    }
-
-    .history-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 0.8rem;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-    }
-    .history-header span {
-      color: #8ab8d4;
-      font-size: 0.9rem;
-    }
-    .history-header .auto-delete-info {
-      color: #6f9eb0;
-      font-size: 0.7rem;
-    }
-
-    .last-updated {
-      text-align: right;
-      font-size: 0.75rem;
-      color: #6f9eb0;
-      margin-top: 0.8rem;
-      letter-spacing: 0.3px;
-      border-top: 1px solid rgba(60, 150, 200, 0.06);
-      padding-top: 0.8rem;
-    }
-    .last-updated i { margin-right: 0.3rem; }
-
-    /* ===== FOOTER ===== */
-    .footer-actions {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 1.5rem;
-      padding-top: 1rem;
-      border-top: 1px solid rgba(60, 150, 200, 0.08);
-      flex-wrap: wrap;
-      gap: 0.8rem;
-    }
-    .lock-btn-bottom {
-      background: rgba(200, 80, 80, 0.12);
-      border: 1px solid rgba(200, 80, 80, 0.15);
-      color: #f28b82;
-      padding: 0.4rem 1.2rem;
-      border-radius: 60px;
-      cursor: pointer;
-      font-size: 0.8rem;
-      transition: 0.2s;
-    }
-    .lock-btn-bottom:hover {
-      background: rgba(200, 80, 80, 0.25);
-      border-color: rgba(200, 80, 80, 0.3);
-    }
-
-    /* ===== CONTACT SECTION ===== */
-    .contact-section {
-      display: flex;
-      align-items: center;
-      gap: 1.2rem;
-      flex-wrap: wrap;
-    }
-    .contact-link {
-      color: #8ab8d4;
-      font-size: 0.8rem;
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-      transition: 0.2s;
-      padding: 0.2rem 0.6rem;
-      border-radius: 30px;
-      background: rgba(0, 30, 45, 0.2);
-    }
-    .contact-link:hover {
-      color: #b3e4ff;
-      background: rgba(0, 30, 45, 0.4);
-    }
-    .contact-link i {
-      font-size: 1rem;
-    }
-    .contact-link .fa-instagram {
-      color: #E4405F;
-    }
-    .contact-link .fa-envelope {
-      color: #EA4335;
-    }
-
-    @media (max-width: 600px) {
-      .glass { padding: 1.2rem; }
-      .grid-2col { grid-template-columns: 1fr; gap: 1rem; }
-      .controls { flex-direction: column; align-items: stretch; border-radius: 2rem; padding: 1.2rem; }
-      .btn-group { flex-direction: column; align-items: center; }
-      .btn { width: 100%; padding: 0.9rem; font-size: 1rem; }
-      .btn i { font-size: 1.3rem; }
-      .auto-section { flex-direction: column; align-items: center; text-align: center; }
-      .remaining-section { flex-direction: column; align-items: center; text-align: center; }
-      .header h1 { font-size: 1.5rem; }
-      .stat-value { font-size: 1.7rem; }
-      .timer-display { font-size: 2rem; }
-      .password-box { padding: 1.8rem; margin: 1rem; }
-      .nav-tabs { flex-direction: row; }
-      .nav-tab { font-size: 0.8rem; padding: 0.5rem; }
-      .remaining-value { font-size: 1.6rem; }
-      .history-header { flex-direction: column; align-items: flex-start; }
-      .footer-actions { flex-direction: column-reverse; align-items: stretch; text-align: center; }
-      .contact-section { justify-content: center; }
-      .lock-btn-bottom { width: 100%; text-align: center; }
-    }
-  </style>
+    .remaining{
+        font-size:36px;
+    }
+}
+</style>
 </head>
+
 <body>
 
-<!-- PASSWORD OVERLAY -->
-<div class="password-overlay" id="passwordOverlay">
-  <div class="password-box">
-    <i class="fas fa-lock lock-icon"></i>
-    <h1>Smart Pump</h1>
-    <p class="subtitle">Enter password to access the dashboard</p>
-    <div class="password-input-group">
-      <label><i class="fas fa-key"></i> Password</label>
-      <input type="password" id="passwordInput" placeholder="Enter password" autofocus>
-    </div>
-    <button class="password-btn" id="unlockBtn"><i class="fas fa-unlock"></i> Unlock Dashboard</button>
-    <div class="password-error" id="passwordError"><i class="fas fa-exclamation-circle"></i> Incorrect password! Try again.</div>
-    <div class="attempts-info" id="attemptsInfo"></div>
-  </div>
-</div>
+<div class="container">
 
-<!-- DASHBOARD -->
-<div class="dashboard" id="dashboardContainer">
-  <div class="glass">
-
-    <!-- ===== HEADER - REARRANGED ===== -->
     <div class="header">
-      <h1><i class="fas fa-water-pump"></i> Smart Pump</h1>
-      <div class="status-row">
-        <div class="device-status-badge" id="deviceStatusBadge">
-          <span class="status-dot offline" id="statusDot"></span>
-          <span class="status-text offline" id="deviceStatusText">Checking...</span>
+        <div class="title">Smart Pump</div>
+
+        <div class="connection">
+            <span id="connectionDot" class="dot offline"></span>
+            <span id="connectionText">Connecting...</span>
         </div>
-        <span style="color: #8ab8d4; font-size: 0.85rem; background: rgba(0,35,50,0.5); padding: 0.3rem 1rem; border-radius: 60px; border: 1px solid rgba(0,200,255,0.08);">
-          <i class="far fa-clock"></i> <span id="headerTime">--:--:--</span>
-        </span>
-      </div>
     </div>
 
-    <!-- Offline Banner -->
-    <div class="offline-banner" id="offlineBanner">
-      <i class="fas fa-wifi"></i>
-      <span>⚠️ Device is Offline — Controls are disabled</span>
+    <div id="offlineBanner" class="banner">
+        MQTT connection lost
     </div>
 
-    <!-- Navigation Tabs -->
-    <div class="nav-tabs">
-      <button class="nav-tab active" data-page="dashboard-page"><i class="fas fa-tachometer-alt"></i> Dashboard</button>
-      <button class="nav-tab" data-page="history-page"><i class="fas fa-history"></i> History</button>
+    <div class="tabs">
+        <button class="tab active" onclick="showPage('dashboard',this)">
+            Dashboard
+        </button>
+
+        <button class="tab" onclick="showPage('history',this)">
+            History
+        </button>
     </div>
 
-    <!-- ===== DASHBOARD PAGE ===== -->
-    <div class="page active" id="dashboard-page">
 
-      <div class="grid-2col">
-        <div class="stat-card">
-          <div class="stat-label"><i class="fas fa-power-off"></i> Pump Status</div>
-          <div class="stat-value">
-            <span class="pump-status-badge pump-off" id="pumpBadge">
-              <i class="fas fa-circle"></i> OFF
-            </span>
-            <span id="flowIndicator" style="display: none;" class="water-flow">
-              <i class="fas fa-tint drop"></i>
-              <i class="fas fa-tint drop"></i>
-              <i class="fas fa-tint drop"></i>
-              <i class="fas fa-tint drop"></i>
-              <i class="fas fa-sync-alt motor-icon"></i>
-            </span>
-          </div>
-          <div style="margin-top: 0.5rem;" id="faultDisplay">
-            <span class="fault-text" style="display: none;"><i class="fas fa-exclamation-triangle"></i> <span id="faultMessage">—</span></span>
-          </div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label"><i class="fas fa-history"></i> Last Action</div>
-          <div class="stat-value" style="font-size: 1.2rem; color: #8ab8d4;" id="lastActionDisplay">
-            <i class="fas fa-minus-circle"></i> No action yet
-          </div>
-        </div>
-      </div>
+    <!-- DASHBOARD -->
 
-      <!-- Controls -->
-      <div class="controls">
-        <div class="btn-group">
-          <button class="btn btn-success" id="btnOn"><i class="fas fa-play"></i> TURN ON</button>
-          <button class="btn btn-danger" id="btnOff"><i class="fas fa-stop"></i> TURN OFF</button>
-        </div>
-      </div>
+    <div id="dashboard" class="page active">
 
-      <!-- Auto Restart -->
-      <div class="auto-section">
-        <div class="label">
-          <i class="fas fa-sync-alt"></i>
-          <span>Auto Restart</span>
-        </div>
-        <div class="switch-container">
-          <span class="switch-status inactive" id="autoStatusText">Off</span>
-          <div class="switch" id="autoRestartSwitch">
-            <div class="knob"></div>
-          </div>
-          <span class="switch-status active" id="autoStatusOn" style="display: none;">On</span>
-        </div>
-      </div>
+        <div class="card">
 
-      <!-- Remaining Timer -->
-      <div class="remaining-section">
-        <div class="label">
-          <i class="fas fa-hourglass-half"></i>
-          <span>Remaining Timer</span>
-        </div>
-        <div class="remaining-value">
-          <span id="remainingMinutes">0</span> <small>min</small>
-        </div>
-      </div>
+            <div class="status-title">
+                PUMP STATUS
+            </div>
 
-      <!-- Set Timer -->
-      <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 0.8rem;">
-        <div class="timer-input-group">
-          <i class="fas fa-hourglass-start" style="color: #6fc3ff;"></i>
-          <input type="number" id="timerInput" min="1" max="1000" value="10" step="1">
-          <span style="color: #98c7db; font-size: 0.9rem;">min</span>
-          <button class="btn btn-primary" id="btnSetTimer"><i class="fas fa-check"></i> Set Timer</button>
-        </div>
-      </div>
+            <div id="pumpStatus" class="status off">
+                Pump OFF
+            </div>
 
-      <div class="last-updated" id="lastUpdated">
-        <i class="far fa-clock"></i> Last updated: <span id="lastUpdatedTime">—</span>
-      </div>
+            <div class="buttons">
+
+                <button
+                    id="onButton"
+                    class="on-btn"
+                    onclick="setPump('ON')">
+                    PUMP ON
+                </button>
+
+                <button
+                    id="offButton"
+                    class="off-btn"
+                    onclick="setPump('OFF')">
+                    PUMP OFF
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="section-title">
+                Remaining Time
+            </div>
+
+            <div id="remainingTime" class="remaining">
+                00:00
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="section-title">
+                Pump Timer
+            </div>
+
+            <div class="timer-row">
+
+                <input
+                    id="timerInput"
+                    type="number"
+                    min="1"
+                    max="1000"
+                    placeholder="Minutes">
+
+                <button
+                    class="set-btn"
+                    onclick="setTimer()">
+                    SET
+                </button>
+
+            </div>
+
+            <div
+                id="timerMessage"
+                class="last-action"
+                style="margin-top:10px;">
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="auto-row">
+
+                <div>
+                    <div class="section-title" style="margin-bottom:4px;">
+                        Auto Restart
+                    </div>
+
+                    <div class="last-action">
+                        Restart pump after power failure
+                    </div>
+                </div>
+
+                <label class="switch">
+
+                    <input
+                        id="autoRestart"
+                        type="checkbox"
+                        onchange="setAutoRestart(this.checked)">
+
+                    <span class="slider"></span>
+
+                </label>
+
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="section-title">
+                Fault
+            </div>
+
+            <div id="faultText" class="fault">
+                No fault
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="section-title">
+                Last Action
+            </div>
+
+            <div id="lastAction" class="last-action">
+                Waiting for pump...
+            </div>
+
+        </div>
+
     </div>
 
-    <!-- ===== HISTORY PAGE ===== -->
-    <div class="page" id="history-page">
-      <div class="history-header">
-        <span><i class="fas fa-list"></i> Pump Activity Log</span>
-        <span class="auto-delete-info"><i class="fas fa-clock"></i> Auto-deletes after 1 day</span>
-      </div>
-      <div class="history-list" id="historyList">
-        <div class="history-empty"><i class="fas fa-inbox"></i> No history yet</div>
-      </div>
-      <div style="margin-top: 0.5rem; font-size: 0.7rem; color: #6f9eb0;">
-        <i class="fas fa-info-circle"></i> Shows verified pump start/stop events
-      </div>
+
+    <!-- HISTORY -->
+
+    <div id="history" class="page">
+
+        <div class="card">
+
+            <div class="section-title">
+                Pump History
+            </div>
+
+            <div id="historyList" class="history">
+                No history
+            </div>
+
+        </div>
+
     </div>
 
-    <!-- ===== FOOTER ===== -->
-    <div class="footer-actions">
-      <div class="contact-section">
-        <a href="https://www.instagram.com/ck_birwaz?igsi=MW1jaDY3eXk3eGg4YQ==" target="_blank" class="contact-link" rel="noopener noreferrer">
-          <i class="fab fa-instagram"></i> Instagram
-        </a>
-        <a href="mailto:chethankallimar989@gmail.com" class="contact-link">
-          <i class="fas fa-envelope"></i> Email
-        </a>
-      </div>
-      <button class="lock-btn-bottom" id="lockBtnBottom">
-        <i class="fas fa-lock"></i> Lock Dashboard
-      </button>
+
+    <div class="footer">
+        Smart Pump Controller • MQTT
     </div>
 
-  </div>
 </div>
+
 
 <script>
-  (function() {
-    // ===== PASSWORD PROTECTION =====
-    const CORRECT_PASSWORD = "admin123";
-    const passwordOverlay = document.getElementById('passwordOverlay');
-    const dashboardContainer = document.getElementById('dashboardContainer');
-    const passwordInput = document.getElementById('passwordInput');
-    const unlockBtn = document.getElementById('unlockBtn');
-    const passwordError = document.getElementById('passwordError');
-    const lockBtnBottom = document.getElementById('lockBtnBottom');
-    const attemptsInfo = document.getElementById('attemptsInfo');
 
-    let attempts = 0;
+/* =====================================================
+   MQTT CONFIGURATION
+   ===================================================== */
 
-    function isDeviceAuthorized() {
-      return localStorage.getItem('pumpAuthorized') === 'true';
-    }
+const MQTT_HOST =
+    "wss://hc241e22.ala.asia-southeast1.emqxsl.com:8084/mqtt";
 
-    function authorizeDevice() {
-      localStorage.setItem('pumpAuthorized', 'true');
-    }
+const MQTT_USERNAME =
+    "YOUR_USERNAME";
 
-    function deauthorizeDevice() {
-      localStorage.removeItem('pumpAuthorized');
-    }
+const MQTT_PASSWORD =
+    "YOUR_PASSWORD";
 
-    function unlockDashboard() {
-      const enteredPassword = passwordInput.value.trim();
-      if (enteredPassword === CORRECT_PASSWORD) {
-        passwordOverlay.classList.add('hidden');
-        dashboardContainer.classList.add('show');
-        passwordError.classList.remove('show');
-        authorizeDevice();
-        if (typeof startAutoRefresh === 'function') startAutoRefresh();
-        if (typeof refreshCycle === 'function') refreshCycle();
-        attempts = 0;
-        attemptsInfo.textContent = '';
-      } else {
-        attempts++;
-        passwordError.classList.add('show');
-        passwordInput.value = '';
-        passwordInput.focus();
-        passwordError.style.animation = 'none';
-        setTimeout(() => { passwordError.style.animation = 'shake 0.3s ease'; }, 10);
-        const remaining = 5 - attempts;
-        if (remaining > 0) {
-          attemptsInfo.textContent = `${remaining} attempt${remaining > 1 ? 's' : ''} remaining`;
-          attemptsInfo.style.color = '#f6b26b';
-        } else {
-          attemptsInfo.textContent = '🔒 Too many failed attempts. Please try again later.';
-          attemptsInfo.style.color = '#f28b82';
-          unlockBtn.disabled = true;
-          setTimeout(() => {
-            attempts = 0;
-            unlockBtn.disabled = false;
-            attemptsInfo.textContent = '';
-            passwordError.classList.remove('show');
-          }, 30000);
+const MQTT_BASE =
+    "pump001";
+
+
+/* =====================================================
+   TOPICS
+   ===================================================== */
+
+const TOPICS = {
+
+    command:
+        MQTT_BASE + "/command",
+
+    status:
+        MQTT_BASE + "/status",
+
+    timer:
+        MQTT_BASE + "/timer",
+
+    autoRestart:
+        MQTT_BASE + "/autoRestart",
+
+    fault:
+        MQTT_BASE + "/fault",
+
+    online:
+        MQTT_BASE + "/online",
+
+    event:
+        MQTT_BASE + "/event"
+};
+
+
+let mqttClient = null;
+
+let lastPumpStatus = "OFF";
+
+let lastDeviceMessage = 0;
+
+
+/* =====================================================
+   MQTT CONNECT
+   ===================================================== */
+
+function connectMQTT(){
+
+    setConnection(false,"Connecting...");
+
+    const clientId =
+        "dashboard_" +
+        Math.random()
+            .toString(16)
+            .substring(2,10);
+
+    console.log("MQTT Client:",clientId);
+
+    mqttClient = mqtt.connect(
+        MQTT_HOST,
+        {
+
+            clientId:clientId,
+
+            username:MQTT_USERNAME,
+
+            password:MQTT_PASSWORD,
+
+            clean:true,
+
+            reconnectPeriod:3000,
+
+            connectTimeout:10000,
+
+            keepalive:30
         }
-      }
-    }
+    );
 
-    function lockDashboard() {
-      passwordOverlay.classList.remove('hidden');
-      dashboardContainer.classList.remove('show');
-      passwordInput.value = '';
-      passwordError.classList.remove('show');
-      deauthorizeDevice();
-      if (window.refreshInterval) clearInterval(window.refreshInterval);
-      document.getElementById('pumpBadge').className = 'pump-status-badge pump-off';
-      document.getElementById('pumpBadge').innerHTML = '<i class="fas fa-circle"></i> OFF';
-      document.getElementById('flowIndicator').style.display = 'none';
-      document.getElementById('deviceStatusText').textContent = '—';
-      attempts = 0;
-      attemptsInfo.textContent = '';
-      unlockBtn.disabled = false;
-    }
 
-    if (isDeviceAuthorized()) {
-      passwordOverlay.classList.add('hidden');
-      dashboardContainer.classList.add('show');
-    }
+    mqttClient.on("connect",function(){
 
-    unlockBtn.addEventListener('click', unlockDashboard);
-    passwordInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') unlockDashboard(); });
-    lockBtnBottom.addEventListener('click', lockDashboard);
+        console.log("MQTT connected");
 
-    // ===== NAVIGATION TABS =====
-    document.querySelectorAll('.nav-tab').forEach(tab => {
-      tab.addEventListener('click', function() {
-        document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-        this.classList.add('active');
-        const pageId = this.dataset.page;
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.getElementById(pageId).classList.add('active');
-      });
-    });
+        setConnection(true,"Connected");
 
-    // ===== PUMP CONTROLLER =====
-    const SERVER = "https://blr1.blynk.cloud";
-    const TOKEN = "Ge3cwEz3nPc3K2Eq-aaoIYluyA8KUwik";
+        mqttClient.subscribe(
+            [
 
-    const pumpBadge = document.getElementById('pumpBadge');
-    const flowIndicator = document.getElementById('flowIndicator');
-    const faultDisplay = document.getElementById('faultDisplay');
-    const faultMessage = document.getElementById('faultMessage');
-    const remainingMinutes = document.getElementById('remainingMinutes');
-    const deviceStatusText = document.getElementById('deviceStatusText');
-    const statusDot = document.getElementById('statusDot');
-    const lastUpdatedTime = document.getElementById('lastUpdatedTime');
-    const headerTime = document.getElementById('headerTime');
-    const lastActionDisplay = document.getElementById('lastActionDisplay');
-    const historyList = document.getElementById('historyList');
-    const offlineBanner = document.getElementById('offlineBanner');
-    const btnOn = document.getElementById('btnOn');
-    const btnOff = document.getElementById('btnOff');
-    const btnSetTimer = document.getElementById('btnSetTimer');
-    const timerInput = document.getElementById('timerInput');
-    const autoRestartSwitch = document.getElementById('autoRestartSwitch');
-    const autoStatusText = document.getElementById('autoStatusText');
-    const autoStatusOn = document.getElementById('autoStatusOn');
+                TOPICS.status,
+                TOPICS.timer,
+                TOPICS.autoRestart,
+                TOPICS.fault,
+                TOPICS.online,
+                TOPICS.event
 
-    const DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            ],
+            function(error){
 
-    let pumpState = false;
-    let faultMsg = '';
-    let remaining = 0;
-    let autoRestart = false;
-    let history = [];
-    let isOnline = false;
-    let lastAction = '';
+                if(error){
 
-    // ===== 5-SECOND VERIFICATION SYSTEM =====
-    let pendingHistory = null;
-    let verificationTimer = null;
-    let isVerifying = false;
-    let confirmedPumpState = false;
-    let confirmedFaultMsg = '';
+                    console.error(
+                        "Subscribe error:",
+                        error
+                    );
 
-    function updateHeaderTime() {
-      const d = new Date();
-      headerTime.textContent = d.toLocaleTimeString('en-US', { hour12: true, hour: '2-digit', minute: '2-digit', second: '2-digit' });
-    }
-    setInterval(updateHeaderTime, 1000);
-    updateHeaderTime();
+                }else{
 
-    function cleanOldHistory() {
-      const oneDayAgo = Date.now() - (24 * 60 * 60 * 1000);
-      const originalLength = history.length;
-      history = history.filter(entry => entry.timestamp > oneDayAgo);
-      if (history.length !== originalLength) {
-        saveHistory();
-        renderHistory();
-      }
-    }
+                    console.log(
+                        "Subscribed to pump topics"
+                    );
 
-    function loadHistory() {
-      try {
-        const saved = localStorage.getItem('pumpHistory');
-        if (saved) {
-          history = JSON.parse(saved);
-          const oneDayAgo = Date.now() - (24 * 60 * 60 * 1000);
-          history = history.filter(entry => entry.timestamp > oneDayAgo);
-          if (history.length > 100) history = history.slice(0, 100);
-          saveHistory();
-        }
-      } catch (e) { history = []; }
-      renderHistory();
-    }
+                }
 
-    function saveHistory() {
-      localStorage.setItem('pumpHistory', JSON.stringify(history));
-    }
-
-    function addHistoryEntry(action, status, faultMsgText) {
-      const now = new Date();
-      const entry = {
-        action: action,
-        status: status || '',
-        fault: faultMsgText || '',
-        timestamp: now.getTime(),
-        date: now.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-        time: now.toLocaleTimeString('en-US', { hour12: true, hour: '2-digit', minute: '2-digit' }),
-        day: DAYS[now.getDay()]
-      };
-      history.unshift(entry);
-      const oneDayAgo = Date.now() - (24 * 60 * 60 * 1000);
-      history = history.filter(e => e.timestamp > oneDayAgo);
-      if (history.length > 100) history = history.slice(0, 100);
-      saveHistory();
-      renderHistory();
-    }
-
-    function renderHistory() {
-      if (history.length === 0) {
-        historyList.innerHTML = '<div class="history-empty"><i class="fas fa-inbox"></i> No history yet</div>';
-        return;
-      }
-      let html = '';
-      history.forEach(entry => {
-        let actionClass = '';
-        let icon = '';
-        let label = '';
-        let faultText = entry.fault ? `⚠️ ${entry.fault}` : '';
-
-        if (entry.action === 'ON') {
-          actionClass = 'on';
-          icon = 'fa-play';
-          label = '✅ Pump Started';
-          if (faultText) {
-            label = '⚠️ Pump Started';
-            actionClass = 'fault';
-            icon = 'fa-exclamation-triangle';
-          }
-        } else if (entry.action === 'OFF') {
-          actionClass = 'off';
-          icon = 'fa-stop';
-          label = '⏹️ Pump Stopped';
-          if (faultText) {
-            label = '⚠️ Pump Stopped';
-            actionClass = 'fault';
-            icon = 'fa-exclamation-triangle';
-          }
-        } else {
-          actionClass = 'off';
-          icon = 'fa-circle';
-          label = entry.action || 'Event';
-        }
-
-        const statusText = entry.fault ? ` ${entry.fault}` : (entry.status ? ` ${entry.status}` : '');
-
-        html += `
-          <div class="history-item">
-            <span class="action ${actionClass}">
-              <i class="fas ${icon} icon"></i>
-              ${label}
-              <span class="status-msg">${statusText}</span>
-              <span class="day-badge">${entry.day || ''}</span>
-            </span>
-            <span>
-              <span class="time">${entry.time}</span>
-              <span class="date">${entry.date}</span>
-            </span>
-          </div>
-        `;
-      });
-      historyList.innerHTML = html;
-    }
-
-    async function fetchPin(pin) {
-      const url = `${SERVER}/external/api/get?token=${TOKEN}&pin=${pin}`;
-      const res = await fetch(url);
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      return await res.text();
-    }
-
-    async function updatePin(pin, value) {
-      const url = `${SERVER}/external/api/update?token=${TOKEN}&pin=${pin}&value=${encodeURIComponent(value)}`;
-      const res = await fetch(url, { method: 'GET' });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      return await res.text();
-    }
-
-    async function checkHardwareStatus() {
-      try {
-        const url = `${SERVER}/external/api/isHardwareConnected?token=${TOKEN}`;
-        const res = await fetch(url);
-        if (!res.ok) return false;
-        const text = await res.text();
-        const trimmed = text.trim().toLowerCase();
-        if (trimmed === '1' || trimmed === 'true') return true;
-        if (trimmed === '0' || trimmed === 'false' || trimmed === '') return false;
-        const num = parseInt(trimmed);
-        if (!isNaN(num)) return num === 1;
-        return false;
-      } catch (e) {
-        return false;
-      }
-    }
-
-    function updateControlsState(online) {
-      if (online) {
-        offlineBanner.classList.remove('show');
-        btnOn.classList.remove('disabled');
-        btnOff.classList.remove('disabled');
-        autoRestartSwitch.classList.remove('disabled');
-        btnSetTimer.classList.remove('disabled');
-      } else {
-        offlineBanner.classList.add('show');
-        btnOn.classList.add('disabled');
-        btnOff.classList.add('disabled');
-        autoRestartSwitch.classList.add('disabled');
-        btnSetTimer.classList.add('disabled');
-      }
-    }
-
-    // ===== VERIFICATION FUNCTION =====
-    function startVerification(initialPumpState, initialFaultMsg) {
-      if (verificationTimer) {
-        clearTimeout(verificationTimer);
-        verificationTimer = null;
-      }
-
-      isVerifying = true;
-      pendingHistory = {
-        pumpState: initialPumpState,
-        faultMsg: initialFaultMsg
-      };
-
-      verificationTimer = setTimeout(() => {
-        readAllPinsForVerification();
-      }, 5000);
-    }
-
-    async function readAllPinsForVerification() {
-      if (!dashboardContainer.classList.contains('show')) return;
-      try {
-        const [v0, v1] = await Promise.all([
-          fetchPin('V0'),
-          fetchPin('V1')
-        ]);
-
-        const currentPumpState = (v0.trim() === '1');
-        const currentFaultMsg = v1.trim();
-
-        if (pendingHistory) {
-          const pendingState = pendingHistory.pumpState;
-          const pendingFault = pendingHistory.faultMsg;
-
-          if (currentPumpState === pendingState) {
-            if (pendingState === true) {
-              if (currentFaultMsg && currentFaultMsg.length > 0) {
-                addHistoryEntry('ON', 'Motor Fault', currentFaultMsg);
-                lastAction = `⚠️ Fault: ${currentFaultMsg}`;
-                updateLastActionDisplay();
-              } else {
-                addHistoryEntry('ON', 'Running', '');
-                lastAction = `✅ Started at ${new Date().toLocaleTimeString('en-US', { hour12: true, hour: '2-digit', minute: '2-digit' })}`;
-                updateLastActionDisplay();
-              }
-            } else {
-              if (currentFaultMsg && currentFaultMsg.length > 0) {
-                addHistoryEntry('OFF', 'Stopped with Fault', currentFaultMsg);
-                lastAction = `⚠️ Fault: ${currentFaultMsg}`;
-                updateLastActionDisplay();
-              } else {
-                addHistoryEntry('OFF', 'Stopped', '');
-                lastAction = `⏹️ Stopped at ${new Date().toLocaleTimeString('en-US', { hour12: true, hour: '2-digit', minute: '2-digit' })}`;
-                updateLastActionDisplay();
-              }
             }
-            confirmedPumpState = currentPumpState;
-            confirmedFaultMsg = currentFaultMsg;
-          }
+        );
 
-          pendingHistory = null;
-          isVerifying = false;
-          verificationTimer = null;
-        }
-
-        pumpState = currentPumpState;
-        faultMsg = currentFaultMsg;
-        updatePumpUI();
-        updateFaultUI();
-
-      } catch (err) {
-        console.warn('Verification read error:', err);
-        isVerifying = false;
-        verificationTimer = null;
-        pendingHistory = null;
-      }
-    }
-
-    async function readAllPins() {
-      if (!dashboardContainer.classList.contains('show')) return;
-      try {
-        const isConnected = await checkHardwareStatus();
-        isOnline = isConnected;
-        updateDeviceStatus(isConnected);
-        updateControlsState(isConnected);
-
-        cleanOldHistory();
-
-        if (isConnected) {
-          const [v0, v1, v3, v4] = await Promise.all([
-            fetchPin('V0'),
-            fetchPin('V1'),
-            fetchPin('V3'),
-            fetchPin('V4')
-          ]);
-
-          const newPumpState = (v0.trim() === '1');
-          const newFaultMsg = v1.trim();
-
-          if (newPumpState !== confirmedPumpState && !isVerifying) {
-            startVerification(newPumpState, newFaultMsg);
-          }
-
-          if (newPumpState !== pendingHistory?.pumpState && isVerifying) {
-            startVerification(newPumpState, newFaultMsg);
-          }
-
-          pumpState = newPumpState;
-          faultMsg = newFaultMsg;
-          remaining = parseInt(v3, 10) || 0;
-          autoRestart = (v4.trim() === '1');
-
-          updatePumpUI();
-          updateFaultUI();
-          updateRemainingUI();
-          updateAutoRestartUI();
-        } else {
-          pumpBadge.className = 'pump-status-badge pump-off';
-          pumpBadge.innerHTML = '<i class="fas fa-circle"></i> OFF';
-          flowIndicator.style.display = 'none';
-          faultDisplay.querySelector('.fault-text').style.display = 'none';
-        }
-
-        updateLastUpdated();
-
-      } catch (err) {
-        console.warn('Read error:', err);
-        updateDeviceStatus(false);
-        updateControlsState(false);
-        deviceStatusText.textContent = 'Error';
-      }
-    }
-
-    function updateLastActionDisplay() {
-      if (lastAction) {
-        lastActionDisplay.innerHTML = `<i class="fas fa-check-circle" style="color: #6fcf97;"></i> ${lastAction}`;
-      }
-    }
-
-    function updatePumpUI() {
-      const badge = pumpBadge;
-      if (pumpState) {
-        badge.className = 'pump-status-badge pump-on';
-        badge.innerHTML = '<i class="fas fa-circle"></i> ON';
-        flowIndicator.style.display = 'inline-flex';
-      } else {
-        badge.className = 'pump-status-badge pump-off';
-        badge.innerHTML = '<i class="fas fa-circle"></i> OFF';
-        flowIndicator.style.display = 'none';
-      }
-    }
-
-    function updateFaultUI() {
-      const container = faultDisplay.querySelector('.fault-text');
-      if (faultMsg && faultMsg.length > 0 && isOnline) {
-        container.style.display = 'inline-block';
-        faultMessage.textContent = faultMsg;
-      } else {
-        container.style.display = 'none';
-      }
-    }
-
-    function updateRemainingUI() {
-      remainingMinutes.textContent = remaining;
-    }
-
-    function updateAutoRestartUI() {
-      if (autoRestart) {
-        autoRestartSwitch.classList.add('active');
-        autoStatusText.style.display = 'none';
-        autoStatusOn.style.display = 'inline';
-      } else {
-        autoRestartSwitch.classList.remove('active');
-        autoStatusText.style.display = 'inline';
-        autoStatusOn.style.display = 'none';
-      }
-    }
-
-    function updateDeviceStatus(online) {
-      if (online) {
-        statusDot.className = 'status-dot online';
-        deviceStatusText.className = 'status-text online';
-        deviceStatusText.textContent = 'Online';
-      } else {
-        statusDot.className = 'status-dot offline';
-        deviceStatusText.className = 'status-text offline';
-        deviceStatusText.textContent = 'Offline';
-      }
-    }
-
-    function updateLastUpdated() {
-      const d = new Date();
-      lastUpdatedTime.textContent = d.toLocaleTimeString('en-US', { hour12: true, hour: '2-digit', minute: '2-digit', second: '2-digit' });
-    }
-
-    async function setPump(state) {
-      if (!isOnline) {
-        alert('Device is offline. Please check your connection.');
-        return;
-      }
-      try {
-        await updatePin('V0', state ? '1' : '0');
-        confirmedPumpState = !state;
-        setTimeout(() => {
-          readAllPins();
-        }, 500);
-      } catch (e) {
-        console.warn('setPump error', e);
-        alert('Failed to control pump. Please check your connection.');
-      }
-    }
-
-    async function setTimerMinutes(minutes) {
-      if (!isOnline) {
-        alert('Device is offline. Please check your connection.');
-        return;
-      }
-      if (isNaN(minutes) || minutes < 1 || minutes > 1000) {
-        alert('Please enter a timer value between 1 and 1000 minutes.');
-        return;
-      }
-      try {
-        await updatePin('V2', String(minutes));
-      } catch (e) {
-        console.warn('setTimer error', e);
-        alert('Failed to set timer. Please check your connection.');
-      }
-    }
-
-    async function toggleAutoRestart() {
-      if (!isOnline) {
-        alert('Device is offline. Please check your connection.');
-        return;
-      }
-      const newVal = !autoRestart;
-      try {
-        await updatePin('V4', newVal ? '1' : '0');
-        autoRestart = newVal;
-        updateAutoRestartUI();
-      } catch (e) {
-        console.warn('toggleAutoRestart error', e);
-        alert('Failed to toggle auto restart. Please check your connection.');
-      }
-    }
-
-    btnOn.addEventListener('click', () => setPump(true));
-    btnOff.addEventListener('click', () => setPump(false));
-
-    btnSetTimer.addEventListener('click', () => {
-      const val = parseInt(timerInput.value, 10);
-      if (!isNaN(val) && val >= 1 && val <= 1000) {
-        setTimerMinutes(val);
-      } else {
-        alert('Please enter a number between 1 and 1000.');
-      }
     });
 
-    autoRestartSwitch.addEventListener('click', toggleAutoRestart);
 
-    let intervalId = null;
+    mqttClient.on("reconnect",function(){
 
-    async function refreshCycle() {
-      if (dashboardContainer.classList.contains('show')) {
-        await readAllPins();
-      }
-    }
+        setConnection(false,"Reconnecting...");
 
-    function startAutoRefresh() {
-      if (intervalId) clearInterval(intervalId);
-      intervalId = setInterval(refreshCycle, 1000);
-      window.refreshInterval = intervalId;
-    }
-
-    // Initialize
-    loadHistory();
-    confirmedPumpState = false;
-    confirmedFaultMsg = '';
-
-    if (isDeviceAuthorized()) {
-      setTimeout(() => {
-        refreshCycle();
-        startAutoRefresh();
-      }, 500);
-    }
-
-    window.addEventListener('beforeunload', function() {
-      if (intervalId) clearInterval(intervalId);
-      if (verificationTimer) clearTimeout(verificationTimer);
     });
 
-  })();
+
+    mqttClient.on("close",function(){
+
+        setConnection(false,"Disconnected");
+
+    });
+
+
+    mqttClient.on("error",function(error){
+
+        console.error(
+            "MQTT error:",
+            error
+        );
+
+        setConnection(false,"Connection Error");
+
+    });
+
+
+    mqttClient.on(
+        "message",
+        function(topic,payload){
+
+            const message =
+                payload.toString().trim();
+
+            console.log(
+                "MQTT:",
+                topic,
+                message
+            );
+
+            lastDeviceMessage =
+                Date.now();
+
+            handleMQTTMessage(
+                topic,
+                message
+            );
+
+        }
+    );
+}
+
+
+/* =====================================================
+   HANDLE MQTT MESSAGE
+   ===================================================== */
+
+function handleMQTTMessage(topic,message){
+
+    if(topic === TOPICS.status){
+
+        updatePumpStatus(message);
+
+    }
+
+
+    else if(topic === TOPICS.timer){
+
+        updateTimer(message);
+
+    }
+
+
+    else if(topic === TOPICS.autoRestart){
+
+        const value =
+            message === "1" ||
+            message.toLowerCase() === "true";
+
+        document.getElementById(
+            "autoRestart"
+        ).checked = value;
+
+    }
+
+
+    else if(topic === TOPICS.fault){
+
+        updateFault(message);
+
+    }
+
+
+    else if(topic === TOPICS.online){
+
+        if(
+            message.toUpperCase()
+            === "ONLINE"
+        ){
+
+            lastDeviceMessage =
+                Date.now();
+
+        }
+
+    }
+
+
+    else if(topic === TOPICS.event){
+
+        handleEvent(message);
+
+    }
+
+}
+
+
+/* =====================================================
+   PUMP STATUS
+   ===================================================== */
+
+function updatePumpStatus(status){
+
+    status = status.trim();
+
+    lastPumpStatus = status;
+
+    const element =
+        document.getElementById(
+            "pumpStatus"
+        );
+
+    element.className =
+        "status";
+
+
+    if(status === "ON"){
+
+        element.textContent =
+            "Pump ON";
+
+        element.classList.add("on");
+
+    }
+
+
+    else if(status === "OFF"){
+
+        element.textContent =
+            "Pump OFF";
+
+        element.classList.add("off");
+
+    }
+
+
+    else if(
+        status === "Starting..." ||
+        status === "Starting"
+    ){
+
+        element.textContent =
+            "Starting...";
+
+        element.classList.add("wait");
+
+    }
+
+
+    else if(
+        status === "Stopping..." ||
+        status === "Stopping"
+    ){
+
+        element.textContent =
+            "Stopping...";
+
+        element.classList.add("wait");
+
+    }
+
+
+    else if(status.startsWith("FAULT")){
+
+        element.textContent =
+            status;
+
+        element.classList.add("fault");
+
+    }
+
+
+    else{
+
+        element.textContent =
+            status;
+
+    }
+
+
+    document.getElementById(
+        "lastAction"
+    ).textContent =
+        status;
+
+
+    updateButtons();
+
+}
+
+
+/* =====================================================
+   BUTTON STATE
+   ===================================================== */
+
+function updateButtons(){
+
+    const on =
+        document.getElementById(
+            "onButton"
+        );
+
+    const off =
+        document.getElementById(
+            "offButton"
+        );
+
+
+    if(lastPumpStatus === "ON"){
+
+        on.disabled = true;
+        off.disabled = false;
+
+    }
+
+    else if(lastPumpStatus === "OFF"){
+
+        on.disabled = false;
+        off.disabled = true;
+
+    }
+
+    else{
+
+        on.disabled = false;
+        off.disabled = false;
+
+    }
+
+}
+
+
+/* =====================================================
+   PUMP COMMAND
+   ===================================================== */
+
+function setPump(command){
+
+    if(!mqttClient ||
+       !mqttClient.connected){
+
+        alert(
+            "MQTT is not connected"
+        );
+
+        return;
+    }
+
+
+    console.log(
+        "Sending pump command:",
+        command
+    );
+
+
+    mqttClient.publish(
+
+        TOPICS.command,
+
+        command,
+
+        {
+            qos:0,
+            retain:false
+        },
+
+        function(error){
+
+            if(error){
+
+                console.error(
+                    "Publish error:",
+                    error
+                );
+
+                return;
+            }
+
+
+            document.getElementById(
+                "lastAction"
+            ).textContent =
+                command === "ON"
+                ? "Starting pump..."
+                : "Stopping pump...";
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   TIMER
+   ===================================================== */
+
+function setTimer(){
+
+    const input =
+        document.getElementById(
+            "timerInput"
+        );
+
+    let minutes =
+        parseInt(input.value);
+
+
+    if(
+        isNaN(minutes) ||
+        minutes < 1 ||
+        minutes > 1000
+    ){
+
+        alert(
+            "Enter timer from 1 to 1000 minutes"
+        );
+
+        return;
+    }
+
+
+    if(
+        !mqttClient ||
+        !mqttClient.connected
+    ){
+
+        alert(
+            "MQTT is not connected"
+        );
+
+        return;
+    }
+
+
+    /*
+       ESP32 should receive:
+
+       TIMER:10
+
+       TIMER:20
+
+       etc.
+    */
+
+    const command =
+        "TIMER:" + minutes;
+
+
+    mqttClient.publish(
+
+        TOPICS.command,
+
+        command,
+
+        {
+            qos:0,
+            retain:false
+        },
+
+        function(error){
+
+            if(error){
+
+                console.error(error);
+
+                return;
+            }
+
+
+            document.getElementById(
+                "timerMessage"
+            ).textContent =
+                "Timer set: " +
+                minutes +
+                " minutes";
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   TIMER DISPLAY
+   ===================================================== */
+
+function updateTimer(value){
+
+    value = value.trim();
+
+
+    /*
+       Normal format:
+
+       09:59
+
+       01:25
+
+       00:00
+    */
+
+    if(
+        value.includes(":")
+    ){
+
+        document.getElementById(
+            "remainingTime"
+        ).textContent =
+            value;
+
+        return;
+
+    }
+
+
+    /*
+       If ESP32 sends seconds,
+       convert to MM:SS
+    */
+
+    const seconds =
+        parseInt(value);
+
+
+    if(!isNaN(seconds)){
+
+        const min =
+            Math.floor(
+                seconds / 60
+            );
+
+        const sec =
+            seconds % 60;
+
+
+        document.getElementById(
+            "remainingTime"
+        ).textContent =
+            String(min).padStart(2,"0")
+            + ":" +
+            String(sec).padStart(2,"0");
+
+    }
+
+}
+
+
+/* =====================================================
+   AUTO RESTART
+   ===================================================== */
+
+function setAutoRestart(enabled){
+
+    if(
+        !mqttClient ||
+        !mqttClient.connected
+    ){
+
+        alert(
+            "MQTT is not connected"
+        );
+
+        document.getElementById(
+            "autoRestart"
+        ).checked =
+            !enabled;
+
+        return;
+    }
+
+
+    const value =
+        enabled ? "1" : "0";
+
+
+    mqttClient.publish(
+
+        TOPICS.autoRestart,
+
+        value,
+
+        {
+            qos:0,
+            retain:true
+        },
+
+        function(error){
+
+            if(error){
+
+                console.error(
+                    "Auto restart error:",
+                    error
+                );
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   FAULT
+   ===================================================== */
+
+function updateFault(message){
+
+    const fault =
+        document.getElementById(
+            "faultText"
+        );
+
+
+    if(
+        !message ||
+        message === "NONE" ||
+        message === "0"
+    ){
+
+        fault.textContent =
+            "No fault";
+
+        fault.className =
+            "fault";
+
+    }
+
+    else{
+
+        fault.textContent =
+            message;
+
+        fault.className =
+            "fault";
+
+    }
+
+}
+
+
+/* =====================================================
+   EVENTS / HISTORY
+   ===================================================== */
+
+function handleEvent(message){
+
+    let eventText =
+        message;
+
+    /*
+       Supports JSON if ESP32 sends:
+
+       {
+         "event":"Pump Started",
+         "time":"..."
+       }
+    */
+
+    try{
+
+        const data =
+            JSON.parse(message);
+
+        if(data.event){
+
+            eventText =
+                data.event;
+
+        }
+
+    }catch(e){
+
+        // Normal text event
+    }
+
+
+    addHistory(
+        eventText
+    );
+
+    document.getElementById(
+        "lastAction"
+    ).textContent =
+        eventText;
+
+}
+
+
+/* =====================================================
+   LOCAL HISTORY
+   ===================================================== */
+
+function addHistory(message){
+
+    let history =
+        JSON.parse(
+            localStorage.getItem(
+                "pumpHistory"
+            ) || "[]"
+        );
+
+
+    history.unshift({
+
+        message:message,
+
+        time:new Date().toLocaleString()
+
+    });
+
+
+    /*
+       Keep latest 100 events
+    */
+
+    history =
+        history.slice(0,100);
+
+
+    localStorage.setItem(
+        "pumpHistory",
+        JSON.stringify(history)
+    );
+
+
+    renderHistory();
+
+}
+
+
+/* =====================================================
+   HISTORY DISPLAY
+   ===================================================== */
+
+function renderHistory(){
+
+    const list =
+        document.getElementById(
+            "historyList"
+        );
+
+
+    let history =
+        JSON.parse(
+            localStorage.getItem(
+                "pumpHistory"
+            ) || "[]"
+        );
+
+
+    if(history.length === 0){
+
+        list.innerHTML =
+            "No history";
+
+        return;
+
+    }
+
+
+    list.innerHTML = "";
+
+
+    history.forEach(function(item){
+
+        const row =
+            document.createElement(
+                "div"
+            );
+
+        row.className =
+            "history-item";
+
+
+        let type =
+            "event-info";
+
+
+        const text =
+            item.message.toLowerCase();
+
+
+        if(
+            text.includes("start") ||
+            text.includes("on")
+        ){
+
+            type =
+                "event-start";
+
+        }
+
+
+        if(
+            text.includes("stop") ||
+            text.includes("off")
+        ){
+
+            type =
+                "event-stop";
+
+        }
+
+
+        if(
+            text.includes("fault") ||
+            text.includes("failed")
+        ){
+
+            type =
+                "event-fault";
+
+        }
+
+
+        row.innerHTML =
+
+            '<div class="history-time">'
+            + escapeHTML(item.time)
+            + '</div>'
+
+            + '<div class="' + type + '">'
+            + escapeHTML(item.message)
+            + '</div>';
+
+
+        list.appendChild(row);
+
+    });
+
+}
+
+
+/* =====================================================
+   HTML ESCAPE
+   ===================================================== */
+
+function escapeHTML(text){
+
+    return String(text)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+
+}
+
+
+/* =====================================================
+   CONNECTION UI
+   ===================================================== */
+
+function setConnection(
+    connected,
+    text
+){
+
+    const dot =
+        document.getElementById(
+            "connectionDot"
+        );
+
+    const label =
+        document.getElementById(
+            "connectionText"
+        );
+
+    const banner =
+        document.getElementById(
+            "offlineBanner"
+        );
+
+
+    if(connected){
+
+        dot.className =
+            "dot online";
+
+        label.textContent =
+            text;
+
+        banner.classList.remove(
+            "show"
+        );
+
+    }
+
+    else{
+
+        dot.className =
+            "dot offline";
+
+        label.textContent =
+            text;
+
+        banner.classList.add(
+            "show"
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   TABS
+   ===================================================== */
+
+function showPage(
+    page,
+    button
+){
+
+    document
+        .querySelectorAll(".page")
+        .forEach(function(p){
+
+            p.classList.remove(
+                "active"
+            );
+
+        });
+
+
+    document
+        .querySelectorAll(".tab")
+        .forEach(function(t){
+
+            t.classList.remove(
+                "active"
+            );
+
+        });
+
+
+    document
+        .getElementById(page)
+        .classList.add(
+            "active"
+        );
+
+
+    button.classList.add(
+        "active"
+    );
+
+
+    if(page === "history"){
+
+        renderHistory();
+
+    }
+
+}
+
+
+/* =====================================================
+   MQTT WATCHDOG
+   ===================================================== */
+
+setInterval(function(){
+
+    if(
+        mqttClient &&
+        mqttClient.connected
+    ){
+
+        setConnection(
+            true,
+            "Connected"
+        );
+
+    }
+    else{
+
+        setConnection(
+            false,
+            "Disconnected"
+        );
+
+    }
+
+},5000);
+
+
+/* =====================================================
+   START
+   ===================================================== */
+
+renderHistory();
+
+updateButtons();
+
+connectMQTT();
+
 </script>
+
 </body>
 </html>
