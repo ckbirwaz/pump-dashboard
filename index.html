@@ -1,120 +1,1852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>Smart Pump</title>
+
 <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
 
+<style>
+
+*{
+box-sizing:border-box;
+margin:0;
+padding:0;
+}
+
+body{
+font-family:Arial,sans-serif;
+background:#080b10;
+color:white;
+min-height:100vh;
+}
+
+.container{
+max-width:650px;
+margin:auto;
+padding:20px 15px;
+}
+
+/* HEADER */
+
+.header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:20px;
+}
+
+.title{
+font-size:30px;
+font-weight:bold;
+}
+
+.connection{
+display:flex;
+align-items:center;
+gap:8px;
+font-size:15px;
+}
+
+.dot{
+width:12px;
+height:12px;
+border-radius:50%;
+background:#ff3b3b;
+}
+
+.dot.online{
+background:#20d46b;
+box-shadow:0 0 12px #20d46b;
+}
+
+/* BANNER */
+
+.banner{
+display:none;
+background:#321010;
+border:1px solid #6b2020;
+color:#ff6565;
+padding:12px;
+border-radius:12px;
+text-align:center;
+margin-bottom:15px;
+}
+
+.banner.show{
+display:block;
+}
+
+/* TABS */
+
+.tabs{
+display:flex;
+gap:15px;
+margin-bottom:20px;
+}
+
+.tab{
+background:#11161d;
+border:1px solid #252d36;
+color:#aeb6c0;
+padding:16px;
+border-radius:15px;
+font-size:20px;
+font-weight:bold;
+}
+
+.tab.active{
+background:#2979ff;
+color:white;
+}
+
+.page{
+display:none;
+}
+
+.page.active{
+display:block;
+}
+
+/* CARD */
+
+.card{
+background:#11161d;
+border:1px solid #242c35;
+border-radius:20px;
+padding:25px;
+margin-bottom:18px;
+}
+
+.label{
+font-size:15px;
+color:#9ca5b0;
+margin-bottom:10px;
+}
+
+.section-title{
+font-size:25px;
+font-weight:bold;
+margin-bottom:20px;
+}
+
+/* STATUS */
+
+.status{
+font-size:42px;
+font-weight:bold;
+margin-bottom:25px;
+}
+
+.status.on{
+color:#20d46b;
+}
+
+.status.off{
+color:#ff4d55;
+}
+
+.status.wait{
+color:#ffc107;
+}
+
+.status.fault{
+color:#ff4d55;
+}
+
+/* BUTTONS */
+
+.buttons{
+display:flex;
+gap:15px;
+}
+
+button{
+border:none;
+cursor:pointer;
+font-weight:bold;
+}
+
+.pump-button{
+flex:1;
+padding:18px 10px;
+border-radius:15px;
+font-size:20px;
+}
+
+.on-button{
+background:#20d46b;
+color:#061109;
+}
+
+.off-button{
+background:#ff4545;
+color:white;
+}
+
+.pump-button:disabled{
+opacity:.35;
+}
+
+/* TIMER */
+
+.remaining{
+text-align:center;
+font-size:60px;
+font-weight:bold;
+letter-spacing:3px;
+}
+
+.timer-row{
+display:flex;
+gap:15px;
+}
+
+input{
+width:100%;
+background:#080b10;
+border:1px solid #303944;
+color:white;
+border-radius:13px;
+padding:17px;
+font-size:20px;
+outline:none;
+}
+
+.set-button{
+width:120px;
+background:#2979ff;
+color:white;
+border-radius:13px;
+font-size:20px;
+}
+
+/* AUTO RESTART */
+
+.auto-row{
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.auto-description{
+color:#9ca5b0;
+font-size:15px;
+}
+
+/* SWITCH */
+
+.switch{
+position:relative;
+width:60px;
+height:34px;
+display:block;
+}
+
+.switch input{
+display:none;
+}
+
+.slider{
+position:absolute;
+left:0;
+right:0;
+top:0;
+bottom:0;
+background:#353c45;
+border-radius:40px;
+}
+
+.slider:before{
+content:"";
+position:absolute;
+width:26px;
+height:26px;
+left:4px;
+top:4px;
+background:white;
+border-radius:50%;
+transition:.2s;
+}
+
+.switch input:checked + .slider{
+background:#20d46b;
+}
+
+.switch input:checked + .slider:before{
+transform:translateX(26px);
+}
+
+/* FAULT */
+
+.fault{
+font-size:19px;
+font-weight:bold;
+color:#ff4d55;
+}
+
+/* LAST ACTION */
+
+.last-action{
+color:#aab2bc;
+font-size:16px;
+}
+
+/* HISTORY */
+
+.history{
+max-height:450px;
+overflow-y:auto;
+}
+
+.history-item{
+padding:15px 0;
+border-bottom:1px solid #252d36;
+}
+
+.history-time{
+font-size:12px;
+color:#68727d;
+margin-bottom:5px;
+}
+
+.history-message{
+font-size:16px;
+}
+
+.start{
+color:#20d46b;
+}
+
+.stop{
+color:#ff5555;
+}
+
+.fault-event{
+color:#ffb347;
+}
+
+/* FOOTER */
+
+.footer{
+text-align:center;
+color:#59636e;
+font-size:12px;
+padding:20px;
+}
+
+/* MOBILE */
+
+@media(max-width:450px){
+
+.title{
+font-size:28px;
+}
+
+.status{
+font-size:38px;
+}
+
+.remaining{
+font-size:48px;
+}
+
+.card{
+padding:20px;
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+
+<!-- HEADER -->
+
+<div class="header">
+
+<div class="title">
+Smart Pump
+</div>
+
+<div class="connection">
+
+<span id="connectionDot"
+class="dot"></span>
+
+<span id="connectionText">
+Connecting...
+</span>
+
+</div>
+
+</div>
+
+
+<!-- OFFLINE -->
+
+<div id="offlineBanner"
+class="banner">
+
+MQTT connection lost
+
+</div>
+
+
+<!-- TABS -->
+
+<div class="tabs">
+
+<button
+id="dashboardTab"
+class="tab active"
+onclick="showPage('dashboard')">
+
+Dashboard
+
+</button>
+
+<button
+id="historyTab"
+class="tab"
+onclick="showPage('history')">
+
+History
+
+</button>
+
+</div>
+
+
+<!-- ================= DASHBOARD ================= -->
+
+<div id="dashboard"
+class="page active">
+
+
+<!-- PUMP -->
+
+<div class="card">
+
+<div class="label">
+PUMP STATUS
+</div>
+
+<div
+id="pumpStatus"
+class="status off">
+
+Pump OFF
+
+</div>
+
+
+<div class="buttons">
+
+<button
+id="onButton"
+class="pump-button on-button"
+onclick="pumpCommand('ON')">
+
+PUMP ON
+
+</button>
+
+
+<button
+id="offButton"
+class="pump-button off-button"
+onclick="pumpCommand('OFF')">
+
+PUMP OFF
+
+</button>
+
+</div>
+
+</div>
+
+
+<!-- REMAINING -->
+
+<div class="card">
+
+<div class="section-title">
+Remaining Time
+</div>
+
+<div
+id="remainingTime"
+class="remaining">
+
+00:00
+
+</div>
+
+</div>
+
+
+<!-- TIMER -->
+
+<div class="card">
+
+<div class="section-title">
+Pump Timer
+</div>
+
+<div class="timer-row">
+
+<input
+id="timerInput"
+type="number"
+min="1"
+max="1000"
+placeholder="Minutes"
+>
+
+<button
+class="set-button"
+onclick="setTimer()">
+
+SET
+
+</button>
+
+</div>
+
+<div
+id="timerMessage"
+class="last-action"
+style="margin-top:12px">
+
+</div>
+
+</div>
+
+
+<!-- AUTO RESTART -->
+
+<div class="card">
+
+<div class="auto-row">
+
+<div>
+
+<div class="section-title"
+style="margin-bottom:6px">
+
+Auto Restart
+
+</div>
+
+<div class="auto-description">
+
+Restart pump after power failure
+
+</div>
+
+</div>
+
+
+<label class="switch">
+
+<input
+id="autoRestart"
+type="checkbox"
+onchange="changeAutoRestart(this.checked)"
+>
+
+<span class="slider"></span>
+
+</label>
+
+</div>
+
+</div>
+
+
+<!-- FAULT -->
+
+<div class="card">
+
+<div class="section-title">
+Fault
+</div>
+
+<div
+id="faultText"
+class="fault">
+
+No fault
+
+</div>
+
+</div>
+
+
+<!-- LAST ACTION -->
+
+<div class="card">
+
+<div class="section-title">
+Last Action
+</div>
+
+<div
+id="lastAction"
+class="last-action">
+
+Waiting for pump...
+
+</div>
+
+</div>
+
+
+</div>
+
+
+<!-- ================= HISTORY ================= -->
+
+<div id="history"
+class="page">
+
+<div class="card">
+
+<div class="section-title">
+Pump History
+</div>
+
+<div
+id="historyList"
+class="history">
+
+No history
+
+</div>
+
+</div>
+
+</div>
+
+
+<div class="footer">
+
+Smart Pump Controller • MQTT
+
+</div>
+
+
+</div>
+
+
 <script>
+
+
+/* ==================================================
+   EMQX SETTINGS
+   ================================================== */
+
 
 const MQTT_HOST =
 "wss://hc241e22.ala.asia-southeast1.emqxsl.com:8084/mqtt";
 
+
 const MQTT_USERNAME =
 "smartpump123";
+
 
 const MQTT_PASSWORD =
 "Chethan123@";
 
+
+const PUMP_ID =
+"pump001";
+
+
+/* ==================================================
+   TOPICS
+   ================================================== */
+
+
+const COMMAND_TOPIC =
+PUMP_ID + "/command";
+
+const STATUS_TOPIC =
+PUMP_ID + "/status";
+
+const TIMER_TOPIC =
+PUMP_ID + "/timer";
+
+const AUTO_TOPIC =
+PUMP_ID + "/autoRestart";
+
+const FAULT_TOPIC =
+PUMP_ID + "/fault";
+
+const ONLINE_TOPIC =
+PUMP_ID + "/online";
+
+const EVENT_TOPIC =
+PUMP_ID + "/event";
+
+
+let mqttClient = null;
+
+let pumpStatus = "OFF";
+
+
+/* ==================================================
+   MQTT CONNECT
+   ================================================== */
+
+
+function connectMQTT(){
+
+console.log("Starting MQTT...");
+
+setConnection(
+false,
+"Connecting..."
+);
+
+
 const clientId =
-"webtest_" +
+"web_dashboard_" +
 Math.random()
 .toString(16)
 .substring(2,10);
 
-console.log("Connecting to:", MQTT_HOST);
-console.log("Username:", MQTT_USERNAME);
-console.log("Client ID:", clientId);
 
-const client = mqtt.connect(MQTT_HOST, {
+mqttClient =
+mqtt.connect(
 
-    clientId: clientId,
+MQTT_HOST,
 
-    username: MQTT_USERNAME,
+{
 
-    password: MQTT_PASSWORD,
+clientId:clientId,
 
-    clean: true,
+username:
+MQTT_USERNAME,
 
-    reconnectPeriod: 3000,
+password:
+MQTT_PASSWORD,
 
-    connectTimeout: 15000,
+clean:true,
 
-    keepalive: 30
+keepalive:30,
 
-});
+connectTimeout:15000,
 
+reconnectPeriod:3000
 
-client.on("connect", function(){
+}
 
-    console.log("================================");
-    console.log("MQTT CONNECTED SUCCESSFULLY");
-    console.log("================================");
-
-    alert("MQTT CONNECTED");
-
-    client.subscribe(
-        "pump001/#",
-        function(error){
-
-            if(error){
-
-                console.error(
-                    "SUBSCRIBE ERROR:",
-                    error
-                );
-
-            }
-            else{
-
-                console.log(
-                    "Subscribed: pump001/#"
-                );
-
-            }
-
-        }
-    );
-
-});
+);
 
 
-client.on("error", function(error){
+/* CONNECT */
 
-    console.error(
-        "MQTT ERROR:",
-        error
-    );
+mqttClient.on(
+"connect",
+function(){
 
-    alert(
-        "MQTT ERROR: " +
-        error.message
-    );
-
-});
+console.log(
+"MQTT CONNECTED"
+);
 
 
-client.on("close", function(){
+setConnection(
+true,
+"Connected"
+);
 
-    console.log(
-        "MQTT CONNECTION CLOSED"
-    );
+
+/* SUBSCRIBE */
+
+mqttClient.subscribe(
+
+"PUMP001/#",
+
+function(error){
+
+if(error){
+
+console.error(
+"Subscribe error:",
+error
+);
+
+}
+
+else{
+
+console.log(
+"Subscribed"
+);
+
+}
+
+}
+
+);
 
 });
 
 
-client.on("reconnect", function(){
+/* RECONNECT */
 
-    console.log(
-        "MQTT RECONNECTING..."
-    );
+mqttClient.on(
+"reconnect",
+function(){
+
+console.log(
+"MQTT reconnecting..."
+);
+
+setConnection(
+false,
+"Reconnecting..."
+);
+
+});
+
+
+/* CLOSE */
+
+mqttClient.on(
+"close",
+function(){
+
+console.log(
+"MQTT closed"
+);
+
+setConnection(
+false,
+"Disconnected"
+);
 
 });
 
 
-client.on("message", function(topic,payload){
+/* ERROR */
 
-    console.log(
-        "MESSAGE:",
-        topic,
-        payload.toString()
-    );
+mqttClient.on(
+"error",
+function(error){
+
+console.error(
+"MQTT ERROR:",
+error
+);
 
 });
+
+
+/* MESSAGE */
+
+mqttClient.on(
+"message",
+function(topic,payload){
+
+const message =
+payload.toString().trim();
+
+
+console.log(
+"MQTT MESSAGE:",
+topic,
+message
+);
+
+
+processMessage(
+topic,
+message
+);
+
+});
+
+}
+
+
+/* ==================================================
+   PROCESS MESSAGE
+   ================================================== */
+
+
+function processMessage(
+topic,
+message
+){
+
+
+if(topic === STATUS_TOPIC){
+
+updateStatus(
+message
+);
+
+}
+
+
+else if(topic === TIMER_TOPIC){
+
+updateTimer(
+message
+);
+
+}
+
+
+else if(topic === AUTO_TOPIC){
+
+updateAutoRestart(
+message
+);
+
+}
+
+
+else if(topic === FAULT_TOPIC){
+
+updateFault(
+message
+);
+
+}
+
+
+else if(topic === ONLINE_TOPIC){
+
+if(
+message.toUpperCase()
+===
+"ONLINE"
+){
+
+setConnection(
+true,
+"Connected"
+);
+
+}
+
+}
+
+
+else if(topic === EVENT_TOPIC){
+
+addHistory(
+message
+);
+
+}
+
+}
+
+
+/* ==================================================
+   PUMP STATUS
+   ================================================== */
+
+
+function updateStatus(
+status
+){
+
+status =
+status.trim();
+
+
+pumpStatus =
+status;
+
+
+const element =
+document.getElementById(
+"pumpStatus"
+);
+
+
+element.className =
+"status";
+
+
+if(status === "ON"){
+
+element.textContent =
+"Pump ON";
+
+element.classList.add(
+"on"
+);
+
+}
+
+
+else if(status === "OFF"){
+
+element.textContent =
+"Pump OFF";
+
+element.classList.add(
+"off"
+);
+
+}
+
+
+else if(
+status === "Starting..." ||
+status === "Starting"
+){
+
+element.textContent =
+"Starting...";
+
+element.classList.add(
+"wait"
+);
+
+}
+
+
+else if(
+status === "Stopping..." ||
+status === "Stopping"
+){
+
+element.textContent =
+"Stopping...";
+
+element.classList.add(
+"wait"
+);
+
+}
+
+
+else if(
+status.startsWith(
+"FAULT"
+)
+){
+
+element.textContent =
+status;
+
+element.classList.add(
+"fault"
+);
+
+}
+
+
+else{
+
+element.textContent =
+status;
+
+}
+
+
+document.getElementById(
+"lastAction"
+).textContent =
+status;
+
+
+updateButtons();
+
+}
+
+
+/* ==================================================
+   BUTTON STATE
+   ================================================== */
+
+
+function updateButtons(){
+
+const on =
+document.getElementById(
+"onButton"
+);
+
+const off =
+document.getElementById(
+"offButton"
+);
+
+
+if(pumpStatus === "ON"){
+
+on.disabled =
+true;
+
+off.disabled =
+false;
+
+}
+
+
+else if(pumpStatus === "OFF"){
+
+on.disabled =
+false;
+
+off.disabled =
+true;
+
+}
+
+
+else{
+
+on.disabled =
+false;
+
+off.disabled =
+false;
+
+}
+
+}
+
+
+/* ==================================================
+   PUMP COMMAND
+   ================================================== */
+
+
+function pumpCommand(
+command
+){
+
+if(
+!mqttClient ||
+!mqttClient.connected
+){
+
+alert(
+"MQTT is not connected"
+);
+
+return;
+
+}
+
+
+console.log(
+"COMMAND:",
+command
+);
+
+
+mqttClient.publish(
+
+COMMAND_TOPIC,
+
+command,
+
+{
+
+qos:0,
+
+retain:false
+
+},
+
+function(error){
+
+if(error){
+
+console.error(
+"Publish error:",
+error
+);
+
+return;
+
+}
+
+
+document.getElementById(
+"lastAction"
+).textContent =
+
+command === "ON"
+?
+"Starting pump..."
+:
+"Stopping pump...";
+
+}
+
+);
+
+}
+
+
+/* ==================================================
+   TIMER
+   ================================================== */
+
+
+function setTimer(){
+
+const input =
+document.getElementById(
+"timerInput"
+);
+
+
+let minutes =
+parseInt(
+input.value
+);
+
+
+if(
+isNaN(minutes) ||
+minutes < 1 ||
+minutes > 1000
+){
+
+alert(
+"Enter 1 to 1000 minutes"
+);
+
+return;
+
+}
+
+
+if(
+!mqttClient ||
+!mqttClient.connected
+){
+
+alert(
+"MQTT is not connected"
+);
+
+return;
+
+}
+
+
+/*
+   ESP32 command:
+
+   TIMER:10
+*/
+
+const command =
+"TIMER:" +
+minutes;
+
+
+mqttClient.publish(
+
+COMMAND_TOPIC,
+
+command,
+
+{
+
+qos:0,
+
+retain:false
+
+},
+
+function(error){
+
+if(error){
+
+console.error(
+error
+);
+
+return;
+
+}
+
+
+document.getElementById(
+"timerMessage"
+).textContent =
+
+"Timer set: " +
+minutes +
+" minutes";
+
+}
+
+);
+
+}
+
+
+/* ==================================================
+   TIMER DISPLAY
+   ================================================== */
+
+
+function updateTimer(
+value
+){
+
+value =
+value.trim();
+
+
+if(
+value.includes(":")
+){
+
+document.getElementById(
+"remainingTime"
+).textContent =
+value;
+
+return;
+
+}
+
+
+const seconds =
+parseInt(
+value
+);
+
+
+if(
+!isNaN(seconds)
+){
+
+const minutes =
+Math.floor(
+seconds / 60
+);
+
+const sec =
+seconds % 60;
+
+
+document.getElementById(
+"remainingTime"
+).textContent =
+
+String(minutes)
+.padStart(2,"0")
+
++
+
+":"
+
++
+
+String(sec)
+.padStart(2,"0");
+
+}
+
+}
+
+
+/* ==================================================
+   AUTO RESTART
+   ================================================== */
+
+
+function changeAutoRestart(
+enabled
+){
+
+if(
+!mqttClient ||
+!mqttClient.connected
+){
+
+alert(
+"MQTT is not connected"
+);
+
+document.getElementById(
+"autoRestart"
+).checked =
+!enabled;
+
+return;
+
+}
+
+
+mqttClient.publish(
+
+AUTO_TOPIC,
+
+enabled
+?
+"1"
+:
+"0",
+
+{
+
+qos:0,
+
+retain:true
+
+}
+
+);
+
+}
+
+
+function updateAutoRestart(
+message
+){
+
+document.getElementById(
+"autoRestart"
+).checked =
+
+message === "1" ||
+
+message.toLowerCase()
+===
+"true";
+
+}
+
+
+/* ==================================================
+   FAULT
+   ================================================== */
+
+
+function updateFault(
+message
+){
+
+const element =
+document.getElementById(
+"faultText"
+);
+
+
+if(
+!message ||
+message === "NONE" ||
+message === "0"
+){
+
+element.textContent =
+"No fault";
+
+}
+
+else{
+
+element.textContent =
+message;
+
+}
+
+}
+
+
+/* ==================================================
+   HISTORY
+   ================================================== */
+
+
+function addHistory(
+message
+){
+
+let history =
+JSON.parse(
+
+localStorage.getItem(
+"pumpHistory"
+)
+
+||
+"[]"
+
+);
+
+
+history.unshift({
+
+message:
+message,
+
+time:
+new Date()
+.toLocaleString()
+
+});
+
+
+/* Keep last 100 */
+
+history =
+history.slice(
+0,
+100
+);
+
+
+localStorage.setItem(
+
+"pumpHistory",
+
+JSON.stringify(
+history
+)
+
+);
+
+
+renderHistory();
+
+}
+
+
+/* ==================================================
+   HISTORY DISPLAY
+   ================================================== */
+
+
+function renderHistory(){
+
+const list =
+document.getElementById(
+"historyList"
+);
+
+
+let history =
+JSON.parse(
+
+localStorage.getItem(
+"pumpHistory"
+)
+
+||
+"[]"
+
+);
+
+
+if(
+history.length === 0
+){
+
+list.innerHTML =
+"No history";
+
+return;
+
+}
+
+
+list.innerHTML =
+"";
+
+
+history.forEach(
+function(item){
+
+const row =
+document.createElement(
+"div"
+);
+
+
+row.className =
+"history-item";
+
+
+const text =
+item.message
+.toLowerCase();
+
+
+let type =
+"";
+
+
+if(
+text.includes("start") ||
+text.includes("on")
+){
+
+type =
+"start";
+
+}
+
+
+else if(
+text.includes("stop") ||
+text.includes("off")
+){
+
+type =
+"stop";
+
+}
+
+
+else if(
+text.includes("fault") ||
+text.includes("failed")
+){
+
+type =
+"fault-event";
+
+}
+
+
+row.innerHTML =
+
+'<div class="history-time">' +
+
+escapeHTML(
+item.time
+) +
+
+'</div>' +
+
+'<div class="history-message ' +
+type +
+'">' +
+
+escapeHTML(
+item.message
+) +
+
+'</div>';
+
+
+list.appendChild(
+row
+);
+
+}
+
+);
+
+}
+
+
+/* ==================================================
+   HTML SECURITY
+   ================================================== */
+
+
+function escapeHTML(
+text
+){
+
+return String(text)
+
+.replaceAll(
+"&",
+"&amp;"
+)
+
+.replaceAll(
+"<",
+"&lt;"
+)
+
+.replaceAll(
+">",
+"&gt;"
+)
+
+.replaceAll(
+'"',
+"&quot;"
+)
+
+.replaceAll(
+"'",
+"&#039;"
+);
+
+}
+
+
+/* ==================================================
+   CONNECTION
+   ================================================== */
+
+
+function setConnection(
+connected,
+text
+){
+
+const dot =
+document.getElementById(
+"connectionDot"
+);
+
+
+const label =
+document.getElementById(
+"connectionText"
+);
+
+
+const banner =
+document.getElementById(
+"offlineBanner"
+);
+
+
+if(connected){
+
+dot.className =
+"dot online";
+
+label.textContent =
+text;
+
+banner.classList.remove(
+"show"
+);
+
+}
+
+else{
+
+dot.className =
+"dot";
+
+label.textContent =
+text;
+
+banner.classList.add(
+"show"
+);
+
+}
+
+}
+
+
+/* ==================================================
+   PAGE
+   ================================================== */
+
+
+function showPage(
+page
+){
+
+const dashboard =
+document.getElementById(
+"dashboard"
+);
+
+const history =
+document.getElementById(
+"history"
+);
+
+const dashboardTab =
+document.getElementById(
+"dashboardTab"
+);
+
+const historyTab =
+document.getElementById(
+"historyTab"
+);
+
+
+if(page === "dashboard"){
+
+dashboard.classList.add(
+"active"
+);
+
+history.classList.remove(
+"active"
+);
+
+dashboardTab.classList.add(
+"active"
+);
+
+historyTab.classList.remove(
+"active"
+);
+
+}
+
+
+else{
+
+dashboard.classList.remove(
+"active"
+);
+
+history.classList.add(
+"active"
+);
+
+dashboardTab.classList.remove(
+"active"
+);
+
+historyTab.classList.add(
+"active"
+);
+
+renderHistory();
+
+}
+
+}
+
+
+/* ==================================================
+   START
+   ================================================== */
+
+
+renderHistory();
+
+updateButtons();
+
+connectMQTT();
+
 
 </script>
+
+</body>
+</html>
